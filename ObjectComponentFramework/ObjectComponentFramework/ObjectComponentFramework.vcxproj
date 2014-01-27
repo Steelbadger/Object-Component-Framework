@@ -58,6 +58,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,26 +88,49 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Hardware.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Scale.cpp" />
     <ClCompile Include="simd.cpp" />
+    <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectXMathInterface.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="FirstPersonController.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Hardware.h" />
+    <ClInclude Include="LookupTable.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Orientation.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Scale.h" />
     <ClInclude Include="simd.h" />
+    <ClInclude Include="simdMatrix.h" />
     <ClInclude Include="simdQuaternion.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureTypes.h" />
+    <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />

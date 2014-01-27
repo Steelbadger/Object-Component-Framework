@@ -37,7 +37,7 @@ namespace SIMD
 		Floats& operator *= (const Floats& rhs);
 		Floats& operator /= (const Floats& rhs);
 
-		float operator [] (const int index);
+		float operator [] (const int index) const;
 
 		Floats operator > (const Floats& lhs) const;
 		Floats operator < (const Floats& lhs) const;

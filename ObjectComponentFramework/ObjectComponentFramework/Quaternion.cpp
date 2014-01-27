@@ -30,12 +30,12 @@ Quaternion::Quaternion(const Vector3 & rhs):
 {
 }
 
-Quaternion::Quaternion(float s_, Vector3 rhs):
+Quaternion::Quaternion(float s_, Vector3 &rhs):
 	s(s_), x(rhs.x), y(rhs.y), z(rhs.z)
 {
 }
 
-Quaternion::Quaternion(float s_, Vector4 rhs):
+Quaternion::Quaternion(float s_, Vector4 &rhs):
 	s(s_), x(rhs.x), y(rhs.y), z(rhs.z)
 {
 }

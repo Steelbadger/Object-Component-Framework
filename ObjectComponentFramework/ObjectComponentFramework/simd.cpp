@@ -103,7 +103,7 @@ namespace SIMD {
 		return *this;
 	}
 
-	float Floats::operator [] (const int index)
+	float Floats::operator [] (const int index) const
 	{
 		return data.m128_f32[3-index];
 	}

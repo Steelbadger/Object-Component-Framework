@@ -4,12 +4,12 @@
 //////////////////////////////////////////////////////////////////
 
 #include "Matrix4x4.h"
-#include "Vector4.h"
 
 #include <iostream>
 
 
 class Vector3;
+class Vector4;
 
 class Quaternion
 {
@@ -18,8 +18,8 @@ public:
 	Quaternion(float s, float x, float y, float z);
 	Quaternion(const Vector4 & rhs);
 	Quaternion(const Vector3 & rhs);
-	Quaternion(float s, Vector3 rhs);
-	Quaternion(float s, Vector4 rhs);
+	Quaternion(float s, Vector3 &rhs);
+	Quaternion(float s, Vector4 &rhs);
 	~Quaternion(void);
 
 	void Rotation(float angle, float xComp, float yComp, float zComp);

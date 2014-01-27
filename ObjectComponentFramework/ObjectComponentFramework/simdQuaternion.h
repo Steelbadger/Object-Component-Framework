@@ -1,3 +1,5 @@
+#pragma once
+
 #include <mmintrin.h>
 #include <xmmintrin.h>
 #include <emmintrin.h>
@@ -62,36 +64,35 @@ namespace SIMD
 	}
 
 	inline Quaternion operator * (const Quaternion &q1,
-							   const Quaternion &q2)
+								const Quaternion &q2)
 	{
 		__m128 s, x, y, z;
 		__m128 qu1 = q1.GetData();
-		__m128 sign = _mm_set_ps(1, -1, -1, -1);
 		__m128 qu2 = q2.GetData();
-		__m128 q2s = _mm_mul_ps(qu2, sign);
-		__m128 q2x = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(2, 3, 0, 1));
-		sign = _mm_set_ps(1, 1, 1, -1);
-		q2x = _mm_mul_ps(q2x, sign);
-		__m128 q2y = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(1, 0, 3, 2));
-		sign = _mm_set_ps(1, -1, 1, 1);
-		q2y = _mm_mul_ps(q2y, sign);
-		__m128 q2z = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(0, 2, 1, 3));
-		sign = _mm_set_ps(1, 1, -1, 1);
 
-		s = _mm_mul_ps(qu1, q2s);
+		__m128 q2x = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(2, 3, 0, 1));
+		__m128 q2y = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(1, 0, 3, 2));
+		__m128 q2z = _mm_shuffle_ps(qu2, qu2, _MM_SHUFFLE(0, 1, 2, 3));
+
+		__m128 signs = _mm_set_ps(1, -1, -1, -1);
+		__m128 signx = _mm_set_ps(1, 1, 1, -1);
+		__m128 signy = _mm_set_ps(1, -1, 1, 1);
+		__m128 signz = _mm_set_ps(1, 1, -1, 1);
+
+		s = _mm_mul_ps(qu1, qu2);
 		x = _mm_mul_ps(qu1, q2x);
 		y = _mm_mul_ps(qu1, q2y);
 		z = _mm_mul_ps(qu1, q2z);
-		
-		const int smask = 0xF1;
-		const int xmask = 0xF2;
-		const int ymask = 0xF4;
-		const int zmask = 0xF8;
-		__m128 tmp = _mm_set1_ps(1.0);
-		s = _mm_dp_ps(s, tmp, smask);
-		x = _mm_dp_ps(x, tmp, xmask);
-		y = _mm_dp_ps(y, tmp, ymask);
-		z = _mm_dp_ps(z, tmp, zmask);
+
+		const int smask = 0xF8;
+		const int xmask = 0xF4;
+		const int ymask = 0xF2;
+		const int zmask = 0xF1;
+
+		s = _mm_dp_ps(s, signs, smask);
+		x = _mm_dp_ps(x, signx, xmask);
+		y = _mm_dp_ps(y, signy, ymask);
+		z = _mm_dp_ps(z, signz, zmask);
 
 		__m128 final = _mm_add_ps(_mm_add_ps(s, x), _mm_add_ps(y, z));
 

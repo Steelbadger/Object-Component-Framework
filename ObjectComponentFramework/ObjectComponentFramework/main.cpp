@@ -8,26 +8,34 @@
 #include "Quaternion.h"
 #include "simdQuaternion.h"
 
+const int lutSize = 2;
+const int NumIterations = 10000000;
+HardwareState input = HardwareState::GetInstance();
+
+D3DXVECTOR4 DXLUT[lutSize];
+Vector4 MYLUT[lutSize];
+SIMD::Floats SIMDLUT[lutSize];
+
+void Addition();
+void LUTAddition();
+void LUTLength();
+void CrossProduct();
+void Interpolate();
+void TestResults();
+void MatrixVsQuaternion();
+
 
 void main()
 {
 	std::cout << "Running" << std::endl;
 
-	int NumIterations = 10000000;
-	const int lutSize = 10000;
-
 	std::cout << "Running calculations with " << NumIterations << " iterations..." << std::endl << std::endl;
-	D3DXVECTOR4 DXLUT[lutSize];
-	Vector4 MYLUT[lutSize];
-	SIMD::Floats SIMDLUT[lutSize];
 
-
-	HardwareState input = HardwareState::GetInstance();
 	input.Update();
 	input.GetTimeForLastFrameHighResolution();
 	input.Update();
 
-	for(int i = 0; i < 1000; i++) {
+	for(int i = 0; i < lutSize; i++) {
 		DXLUT[i] = D3DXVECTOR4(float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, 1.0f);
 		MYLUT[i] = Vector4(float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, 1.0f);
 		SIMDLUT[i] = SIMD::Floats(float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, 1.0f);
@@ -39,6 +47,34 @@ void main()
 
 	///////////////////////////////////ADDITION\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+	Addition();
+
+	///////////////////////////////////LUT ADDITION\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	LUTAddition();
+
+	///////////////////////////////////LENGTH\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	LUTLength();
+
+	///////////////////////////////////CROSS PRODUCT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	CrossProduct();
+
+	///////////////////////////////////INTERPOLATE\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	Interpolate();
+
+
+	TestResults();
+
+	MatrixVsQuaternion();
+
+	return;
+}
+
+void Addition()
+{
 	input.Update();
 
 	for(int i = 0; i < NumIterations; i++) {
@@ -72,9 +108,10 @@ void main()
 
 	input.Update();
 	std::cout << "Simd Maths Addition: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+}
 
-	///////////////////////////////////LUT ADDITION\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+void LUTAddition()
+{
 	std::cout << std::endl << "Now using LUTS" << std::endl << std::endl;
 	input.Update();
 
@@ -101,9 +138,10 @@ void main()
 
 	input.Update();
 	std::cout << "Simd Maths Addition: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+}
 
-	///////////////////////////////////LENGTH\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+void LUTLength()
+{
 	std::cout << std::endl << "Now Finding Length" << std::endl << std::endl;
 	input.Update();
 
@@ -133,10 +171,10 @@ void main()
 
 	input.Update();
 	std::cout << "Simd Maths Length: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+}
 
-
-	///////////////////////////////////CROSS PRODUCT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+void CrossProduct()
+{
 	std::cout << std::endl << "Now Cross Product" << std::endl << std::endl;
 	input.Update();
 
@@ -173,9 +211,10 @@ void main()
 
 	input.Update();
 	std::cout << "Simd Maths Cross Product: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+}
 
-	///////////////////////////////////INTERPOLATE\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+void Interpolate()
+{
 	std::cout << std::endl << "Now Quaternion Interpolate" << std::endl << std::endl;
 	input.Update();
 
@@ -222,50 +261,124 @@ void main()
 	input.Update();
 	std::cout << "SIMD Maths Quaternion Normalise and Slerp " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
 	input.Update();
+}
 
-	D3DXQUATERNION temp1(13.2f, -2.5f, 5.1f, 8.3f);
-	D3DXQUATERNION temp2(-3.2f, 0.2f, 1.2f, -9.6f);
+void TestResults()
+{
+	float x = 6.8f;
+	float y = 2.5f;
+	float z = -5.3f;
+	float s = 2.3f;
 
-	D3DXQuaternionNormalize(&temp1, &temp1);
-	D3DXQuaternionNormalize(&temp2, &temp2);
+	Quaternion myq(s, x, y, z);
+	D3DXQUATERNION dxq(x, y, z, s);
+	SIMD::Quaternion simq(s, x, y, z);
 
-	const float interp = 1.0f;
+	float px = 1.0f;
+	float py = 2.3f;
+	float pz = -4.5f;
 
-	D3DXQUATERNION temp3;
-	D3DXQuaternionSlerp(&temp3, &temp1, &temp2, interp);
-	D3DXQuaternionNormalize(&temp3, &temp3);
+	Vector4 myp(px, py, pz, 1.0f);
+	D3DXVECTOR4 dxp(px, py, pz, 1.0f);
+	Vector4 outp;
 
-	Quaternion temp4(8.3f, 13.2f, -2.5f, 5.1f);
-	Quaternion temp5(-9.6f, -3.2f, 0.2f, 1.2f);
+	std::cout << "Rotate: " << std::endl << myp << std::endl << "by" << std::endl << myq << std::endl << std::endl;
 
-	temp4.NormalizeSelf();
-	temp5.NormalizeSelf();
+	myq.NormalizeSelf();
+	D3DXQuaternionNormalize(&dxq, &dxq);
+	simq.NormalizeSelf();
 
-	Quaternion temp6 = Slerp(temp4, temp5, interp);
-	temp6.NormalizeSelf();
+	D3DXMATRIX temp;
+	D3DXMatrixRotationQuaternion(&temp, &dxq);
+	D3DXVec4Transform(&dxp, &dxp, &temp);
+	dxp = dxp/dxp.w;
 
-	SIMD::Quaternion temp7(8.3f, 13.2f, -2.5f, 5.1f);
-	SIMD::Quaternion temp8(-9.6f, -3.2f, 0.2f, 1.2f);
+	std::cout << "DirectX: (" << dxp.x << ", " << dxp.y << ", " << dxp.z << ", " << dxp.w << ")" << std::endl;
 
-	temp7.NormalizeSelf();
-	temp8.NormalizeSelf();
+	outp = myq * Quaternion(myp) * myq.Inverse();
 
-	SIMD::Quaternion temp9 = SIMD::Slerp(temp7, temp8, interp);
-	temp9.NormalizeSelf();
+	std::cout << "MyMaths: " << outp << std::endl;
 
-	std::cout << std::endl << "Compare Results: " << std::endl;
-	std::cout << "(" << temp1.w << ", (" << temp1.x << ", " << temp1.y << ", " << temp1.z << ")) : " << temp4 << std::endl;
-	std::cout << "(" << temp2.w << ", (" << temp2.x << ", " << temp2.y << ", " << temp2.z << ")) : " << temp5 << std::endl;
+	outp = simq * SIMD::Quaternion(myp) * simq.Inverse();
 
-	std::cout << "DXQuat:\t(" << temp3.w << ", (" << temp3.x << ", " << temp3.y << ", " << temp3.z << "))" << std::endl;
-	std::cout << "MyQuat:\t" << temp6 << std::endl << std::endl;
-	std::cout << "SIMDQuat:\t" << temp9 << std::endl << std::endl;
+	std::cout << "SimMath: " << outp << std::endl << std::endl;
+}
 
-	D3DXVECTOR3 test(1, 0, 0);
-	SIMD::Floats test2(1, 0, 0, 1.0);
-	Vector4 test3(1, 0, 0, 1);
-	
+void MatrixVsQuaternion()
+{
+	float x = 6.8f;
+	float y = 2.5f;
+	float z = -5.3f;
+	float s = 2.3f;
+
+	Quaternion myq(s, x, y, z);
+	D3DXQUATERNION dxq(x, y, z, s);
+	SIMD::Quaternion simq(s, x, y, z);
+
+	std::cout << std::endl << "Now Quaternion Vs Matrix" << std::endl << std::endl;
+	input.Update();
+
+	for (int i = 0 ; i < NumIterations; i++) {
+		D3DXVECTOR4 temp = DXLUT[rand()%lutSize];
+		D3DXQUATERNION point(temp.x, temp.y, temp.z, 0.0f);
+		D3DXQUATERNION dxqinv;
+		D3DXQuaternionInverse(&dxqinv, &dxq);
+		
+		D3DXQuaternionMultiply(&point, &dxq, &point);
+		D3DXQuaternionMultiply(&point, &point, &dxqinv);
+	}
+
+	input.Update();
+	std::cout << "DirectX Maths Quaternion Multiplication: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
 
 
-	return;
+
+	for (int i = 0 ; i < NumIterations; i++) {
+		D3DXVECTOR4 temp = DXLUT[rand()%lutSize];
+		D3DXVECTOR4 point(temp.x, temp.y, temp.z, 1.0f);
+		D3DXMATRIX dxqmat;
+		D3DXMatrixRotationQuaternion(&dxqmat, &dxq);
+		
+		D3DXVec4Transform(&point, &point, &dxqmat);
+		point = point/point.w;
+	}
+
+	input.Update();
+	std::cout << "DirectX Maths Quaternion Matrix Multiplication: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
+
+	for (int i = 0 ; i < NumIterations; i++) {
+		D3DXVECTOR4 temp = DXLUT[rand()%lutSize];
+		Vector4 point(temp.x, temp.y, temp.z, 1.0f);
+		point = myq * Quaternion(point) * myq.Inverse();
+	}
+
+	input.Update();
+	std::cout << "My Maths Quaternion Multiplication: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
+
+
+	for (int i = 0 ; i < NumIterations; i++) {
+		D3DXVECTOR4 temp = DXLUT[rand()%lutSize];
+		Vector4 point(temp.x, temp.y, temp.z, 1.0f);
+		Matrix4x4 mat = myq.GetRotationMatrix();
+		point = mat * point;
+		point = point/point.w;
+	}
+
+	input.Update();
+	std::cout << "My Maths Matrix Multiplication: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
+
+	for (int i = 0 ; i < NumIterations; i++) {
+		SIMD::Quaternion temp = SIMDLUT[rand()%lutSize];
+		temp = simq * temp * simq.Inverse();
+	}
+
+	input.Update();
+	std::cout << "My SIMD Maths Quaternion Multiplication: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
+
+
 }

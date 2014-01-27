@@ -73,6 +73,11 @@ Matrix4x4::Matrix4x4(float _elem[][4])
 	memcpy(elem, _elem, sizeof(float) * 16);
 }
 
+Matrix4x4::Matrix4x4(const float* data)
+{
+	memcpy(elem, data, sizeof(float) * 16);
+}
+
 Matrix4x4 operator*( const Matrix4x4 &M1,
                      const Matrix4x4 &M2)
 {
@@ -248,13 +253,13 @@ void Matrix4x4::Projection(float fov, float aspect, float near, float far)
 	memcpy(elem, NULLMATRIX.elem, sizeof(float) * 16);
 
 	float h = 1.0f/tan(fov*PI/360);
-	float neg_depth = near-far;
+	float neg_depth = far - near;
 
 	elem[0][0] = h / aspect;
 	elem[1][1] = h;
-	elem[2][2] = (far + near)/neg_depth;
-	elem[2][3] = -1;
-	elem[3][2] = 2.0f*(near*far)/neg_depth;
+	elem[2][2] = far/neg_depth;
+	elem[2][3] = 1;
+	elem[3][2] = (-near*far)/neg_depth;
 
 }
 

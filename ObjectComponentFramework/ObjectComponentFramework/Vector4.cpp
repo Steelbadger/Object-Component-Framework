@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include <stdio.h>
+#include "simdQuaternion.h"
 
 Vector4::Vector4(void)
 {
@@ -24,6 +25,11 @@ Vector4::Vector4(const Vector3 &rhs):
 
 Vector4::Vector4(const Quaternion &rhs):
 	x(rhs.x), y(rhs.y), z(rhs.z), w(1.0f)
+{
+}
+
+Vector4::Vector4(const SIMD::Quaternion &rhs):
+	x(rhs.X()), y(rhs.Y()), z(rhs.Z()), w(1.0f)
 {
 }
 

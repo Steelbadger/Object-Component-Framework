@@ -5,6 +5,9 @@
 
 class Vector3;
 class Quaternion;
+namespace SIMD {
+	class Quaternion;
+}
 
 class Vector4
 {
@@ -15,6 +18,7 @@ public:
 	Vector4(const Vector4 & rhs);
 	Vector4(const Vector3 & rhs);
 	Vector4(const Quaternion &rhs);
+	Vector4(const SIMD::Quaternion &rhs);
 
 	~Vector4(void);
 
