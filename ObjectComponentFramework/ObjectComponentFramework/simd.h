@@ -76,6 +76,7 @@ namespace SIMD
 	Floats Cross(const Floats& lhs, const Floats& rhs);
 	float Dot(const Floats& lhs, const Floats& rhs);
 	Floats Cosine(const Floats& values);
+	Floats Sine(const Floats& values);
 
 
 	class Integers

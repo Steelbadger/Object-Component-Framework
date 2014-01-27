@@ -48,6 +48,9 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simdQuaternion.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathsClasses.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DirectXMathInterface.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="simdQuaternion.h">
       <Filter>Header Files\Maths</Filter>
     </ClInclude>
   </ItemGroup>

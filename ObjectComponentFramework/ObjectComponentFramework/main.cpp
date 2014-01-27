@@ -6,6 +6,7 @@
 #include "Hardware.h"
 #include "simd.h"
 #include "Quaternion.h"
+#include "simdQuaternion.h"
 
 
 void main()
@@ -13,7 +14,7 @@ void main()
 	std::cout << "Running" << std::endl;
 
 	int NumIterations = 10000000;
-	const int lutSize = 1000;
+	const int lutSize = 10000;
 
 	std::cout << "Running calculations with " << NumIterations << " iterations..." << std::endl << std::endl;
 	D3DXVECTOR4 DXLUT[lutSize];
@@ -208,14 +209,30 @@ void main()
 	std::cout << "My Maths Quaternion Normalise and Slerp " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
 	input.Update();
 
+	for(int i = 0; i < NumIterations; i++) {
+		SIMD::Quaternion temp1(float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/10000.0f);
+		SIMD::Quaternion temp2(float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/100.0f, float(rand()%10000)/10000.0f);
+
+		temp1.NormalizeSelf();
+		temp2.NormalizeSelf();
+
+		SIMD::Quaternion temp3 = SIMD::Slerp(temp1, temp2, 0.5f);
+	}
+
+	input.Update();
+	std::cout << "SIMD Maths Quaternion Normalise and Slerp " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl;
+	input.Update();
+
 	D3DXQUATERNION temp1(13.2f, -2.5f, 5.1f, 8.3f);
 	D3DXQUATERNION temp2(-3.2f, 0.2f, 1.2f, -9.6f);
 
 	D3DXQuaternionNormalize(&temp1, &temp1);
 	D3DXQuaternionNormalize(&temp2, &temp2);
 
+	const float interp = 1.0f;
+
 	D3DXQUATERNION temp3;
-	D3DXQuaternionSlerp(&temp3, &temp1, &temp2, 0.2f);
+	D3DXQuaternionSlerp(&temp3, &temp1, &temp2, interp);
 	D3DXQuaternionNormalize(&temp3, &temp3);
 
 	Quaternion temp4(8.3f, 13.2f, -2.5f, 5.1f);
@@ -224,8 +241,17 @@ void main()
 	temp4.NormalizeSelf();
 	temp5.NormalizeSelf();
 
-	Quaternion temp6 = Slerp(temp4, temp5, 0.2f);
+	Quaternion temp6 = Slerp(temp4, temp5, interp);
 	temp6.NormalizeSelf();
+
+	SIMD::Quaternion temp7(8.3f, 13.2f, -2.5f, 5.1f);
+	SIMD::Quaternion temp8(-9.6f, -3.2f, 0.2f, 1.2f);
+
+	temp7.NormalizeSelf();
+	temp8.NormalizeSelf();
+
+	SIMD::Quaternion temp9 = SIMD::Slerp(temp7, temp8, interp);
+	temp9.NormalizeSelf();
 
 	std::cout << std::endl << "Compare Results: " << std::endl;
 	std::cout << "(" << temp1.w << ", (" << temp1.x << ", " << temp1.y << ", " << temp1.z << ")) : " << temp4 << std::endl;
@@ -233,10 +259,13 @@ void main()
 
 	std::cout << "DXQuat:\t(" << temp3.w << ", (" << temp3.x << ", " << temp3.y << ", " << temp3.z << "))" << std::endl;
 	std::cout << "MyQuat:\t" << temp6 << std::endl << std::endl;
+	std::cout << "SIMDQuat:\t" << temp9 << std::endl << std::endl;
 
-	D3DXQUATERNION temp7(temp6.x, temp6.y, temp6.z, temp6.s);
+	D3DXVECTOR3 test(1, 0, 0);
+	SIMD::Floats test2(1, 0, 0, 1.0);
+	Vector4 test3(1, 0, 0, 1);
+	
 
-	std::cout << "Dot Product: " << D3DXQuaternionDot(&temp3, &temp7) << std::endl;
 
 	return;
 }

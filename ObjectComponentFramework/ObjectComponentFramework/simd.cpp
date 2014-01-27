@@ -406,6 +406,37 @@ namespace SIMD {
 		return cos;
 	}
 
+	Floats Sine(const Floats& values)
+	{
+		Floats x = values;
+		Floats logic = x > 3.14159265;
+		Floats sub(6.28318531);
+		sub = sub & logic;
+		x -= sub;
+
+		logic = x < -3.14159265;
+		sub = 6.28318531;
+		sub = sub & logic;
+		x += sub;
+		
+		logic = x < 0.0f;
+
+		sub = 2.0f & logic;
+		sub -= 1.0f;
+
+		Floats sin = (1.27323954 * x) + (0.405284735 * x * x * sub);
+
+
+		logic = sin < 0.0f;
+
+		sub = -2.0f & logic;
+		sub += 1.0f;
+
+		sin = .225 * (sin * sin * sub - sin) + sin;
+
+		return sin;
+	}
+
 //////////////////////FLOATING POINT BINARY OPERATORS\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 	Floats operator | (const Floats& lhs, const Floats& rhs)

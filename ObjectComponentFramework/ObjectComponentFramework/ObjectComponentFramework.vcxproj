@@ -93,6 +93,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="simd.cpp" />
+    <ClCompile Include="simdQuaternion.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="simd.h" />
+    <ClInclude Include="simdQuaternion.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
