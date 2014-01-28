@@ -20,6 +20,11 @@ public:
 	}
 
 	void DeleteComponent(ComponentType id, ObjectID object) {
+		if (interfaces.size() <= id) {
+			std::cout << "Attempting to Delete Component of Unmanaged Type" << std::endl;
+			return;
+		}
+
 		if (interfaces[id]->Exists(object)) {
 			interfaces[id]->Remove(object);
 		} else {

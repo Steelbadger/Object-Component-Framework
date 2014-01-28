@@ -90,27 +90,36 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="ControllerFunctors.cpp" />
+    <ClCompile Include="FirstPersonController.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Hardware.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Orientation.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scale.cpp" />
+    <ClCompile Include="ShaderLibrary.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="ControllerFunctors.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="FirstPersonController.h" />
     <ClInclude Include="GameObject.h" />
@@ -125,15 +134,19 @@
     <ClInclude Include="Position.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scale.h" />
+    <ClInclude Include="ShaderInterface.h" />
+    <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="simd.h" />
     <ClInclude Include="simdMatrix.h" />
     <ClInclude Include="simdQuaternion.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureTypes.h" />
+    <ClInclude Include="Transformation.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -61,7 +61,7 @@ D3DXMATRIX Camera::GetViewMatrix()
 
 		D3DXVECTOR3 lookAt = position + forward;
 
-		GameObject::Get(GetParentID()).GetLocalMatrix();
+		//GameObject::Get(GetParentID()).GetLocalMatrix();
 
 		// Finally create the view matrix from the three updated vectors.
 		D3DXMatrixLookAtLH(&viewMatrix, &position, &lookAt, &up);
