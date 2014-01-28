@@ -19,7 +19,7 @@ public:
 			delete update;
 			update = nullptr;
 		}
-		update = new T(updateFunctor);
+		update = updateFunctor.Copy();
 	}
 	Controller& operator=(const Controller& rhs);
 private:

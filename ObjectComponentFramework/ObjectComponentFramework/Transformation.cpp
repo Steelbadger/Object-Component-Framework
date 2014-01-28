@@ -72,7 +72,11 @@ void Transformation::CalculateGlobalTransformation()
 	if (localChanged) {
 		CalculateLocalTransformation();
 	}
-	D3DXMATRIX parent = GameObject::GetComponent<Transformation>(GetParentID()).GetTransformation();
+	D3DXMATRIX parent;
+	D3DXMatrixIdentity(&parent);
+	if (GameObject::Get(GetParentID()).HasParent()) {
+		parent = GameObject::GetComponent<Transformation>(GameObject::Get(GetParentID()).GetParentID()).GetTransformation();
+	}
 
 	globalTransform = localTransform * parent;
 	globalChanged = false;

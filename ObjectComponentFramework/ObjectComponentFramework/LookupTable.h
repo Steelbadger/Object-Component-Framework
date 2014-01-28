@@ -14,7 +14,7 @@ public:
 };
  
 
-template<class T, int InitialSize = 10>
+template<class T, int InitialSize = 1>
 class DynamicLookupTable : public LookupTableInterface {
 private:
 	struct Storage {
@@ -27,8 +27,8 @@ private:
 
 public:
     DynamicLookupTable() {
-		storage.reserve(InitialSize);
-		spacesStack.reserve(InitialSize);
+		storage.reserve(100000);
+		spacesStack.reserve(100000);
         for (int i = 0; i < InitialSize; i++) {
 			spacesStack.push_back((InitialSize-1)-i);
 			storage.push_back(Storage());

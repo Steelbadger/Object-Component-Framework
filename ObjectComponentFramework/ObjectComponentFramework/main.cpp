@@ -21,7 +21,7 @@
 
 const int lutSize = 2;
 const int NumIterations = 10000000;
-const int OBJECTS = 1000;
+const int OBJECTS = 100000;
 
 HardwareState input = HardwareState::GetInstance();
 
@@ -40,6 +40,7 @@ void main()
 	input.GetTimeForLastFrameHighResolution();
 	input.Update();
 
+	
 	SpinController uppy;
 	uppy.SetSpinSpeed(0.2f, 0.1f, 0.24f);
 
@@ -50,11 +51,11 @@ void main()
 	GameObject::AddComponent<Orientation>(oldthingy);
 	GameObject::AddComponent<Scale>(oldthingy);
 	GameObject::AddComponent<Controller>(oldthingy);
-
-	Controller* cont = &GameObject::GetComponent<Controller>(oldthingy);
+	GameObject::AddComponent<Transformation>(oldthingy);
 
 	GameObject::GetComponent<Position>(oldthingy).SetPosition(2.0f, 0.0f, 2.0f);
 	GameObject::GetComponent<Controller>(oldthingy).SetControlFunction<SpinController>(uppy);
+	
 
 	for (int i = 0; i < OBJECTS-1; i++) {
 		ObjectID thingy = GameObject::New();
@@ -62,13 +63,15 @@ void main()
 		GameObject::AddComponent<Orientation>(thingy);
 		GameObject::AddComponent<Scale>(thingy);
 		GameObject::AddComponent<Controller>(thingy);
+		GameObject::AddComponent<Transformation>(thingy);
 
 		GameObject::GetComponent<Position>(thingy).SetPosition(2.0f, 0.0f, 2.0f);
 		GameObject::GetComponent<Controller>(thingy).SetControlFunction<SpinController>(uppy);
 
-		GameObject::SetParentChild(oldthingy, thingy);
+//		GameObject::SetParentChild(oldthingy, thingy);
 		oldthingy = thingy;
 	}
+	
 
 	input.Update();
 	std::cout << "Generating " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
@@ -91,6 +94,17 @@ void main()
 	input.Update();
 	std::cout << "Updating " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
 	input.Update();
+
+	for (int i = 0 ; i < Transformation::GetList().Size() ; i++) {
+		if (Transformation::GetList().Exists(i)) {
+			Transformation::GetList().Get(i).GetTransformation();
+		}
+	}
+
+	input.Update();
+	std::cout << "Fetching " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
+	input.Update();
+
 
 
 	return;

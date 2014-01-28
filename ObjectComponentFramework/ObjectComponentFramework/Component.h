@@ -88,6 +88,6 @@ private:
 	static ComponentType componentTypeID;
 };
 
-template<class T> DynamicLookupTable<T, 10> Component<T>::componentStorage;
+template<class T> DynamicLookupTable<T> Component<T>::componentStorage;
 template<class T> bool Component<T>::componentClassCreated = false;
 template<class T> ComponentType Component<T>::componentTypeID;
