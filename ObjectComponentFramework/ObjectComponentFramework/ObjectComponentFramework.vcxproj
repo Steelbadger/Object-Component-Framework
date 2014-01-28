@@ -92,7 +92,6 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerFunctors.cpp" />
-    <ClCompile Include="FirstPersonController.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Hardware.cpp" />
     <ClCompile Include="main.cpp" />
@@ -121,7 +120,6 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerFunctors.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="FirstPersonController.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Hardware.h" />
     <ClInclude Include="LookupTable.h" />

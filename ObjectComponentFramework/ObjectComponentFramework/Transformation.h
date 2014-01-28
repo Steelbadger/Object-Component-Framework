@@ -13,6 +13,8 @@ public:
 
 	D3DXMATRIX GetTransformation();
 	void SetChanged();
+	inline bool ViewHasChanged(){return viewChanged;}
+	inline void SetViewUnchanged(){viewChanged = false;}
 private:
 	void CalculateLocalTransformation();
 	void CalculateGlobalTransformation();
@@ -20,6 +22,7 @@ private:
 
 	bool localChanged;
 	bool globalChanged;
+	bool viewChanged;
 
 	D3DXMATRIX localTransform;
 	D3DXMATRIX globalTransform;

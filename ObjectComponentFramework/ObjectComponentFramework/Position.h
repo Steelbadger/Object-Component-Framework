@@ -1,8 +1,8 @@
 #pragma once
-
-#include "Component.h"
 #include <D3D11.h>
 #include <D3DX10math.h>
+
+#include "Component.h"
 
 class Position : public Component<Position>
 {

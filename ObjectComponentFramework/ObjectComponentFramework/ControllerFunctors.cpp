@@ -95,3 +95,36 @@ void FirstPersonController::SetSensitivity(float s)
 {
 	sensitivity = s;
 }
+
+SpinController::SpinController()
+{
+}
+
+SpinController::~SpinController()
+{
+}
+
+void SpinController::operator()(ObjectID p) 
+{
+	HardwareState input = HardwareState::GetInstance();
+
+	float time = input.GetTimeForLastFrameHighResolution();
+
+	Orientation* orientation = &GameObject::GetComponent<Orientation>(p);
+	orientation->Rotate(spinSpeedx*time, D3DXVECTOR3(1,0,0));
+	orientation->Rotate(spinSpeedy*time, D3DXVECTOR3(0,1,0));
+	orientation->Rotate(spinSpeedz*time, D3DXVECTOR3(0,0,1));
+}
+
+void SpinController::SetSpinSpeed(float x, float y, float z)
+{
+	spinSpeedx = x;
+	spinSpeedy = y;
+	spinSpeedz = z;
+}
+
+ControlFunctor* SpinController::Copy() const
+{
+	return static_cast<ControlFunctor*>(new SpinController());
+}
+

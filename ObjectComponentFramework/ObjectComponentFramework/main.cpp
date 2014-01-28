@@ -1,3 +1,12 @@
+#include "GameObject.h"
+#include "Position.h"
+#include "Orientation.h"
+#include "Scale.h"
+#include "Controller.h"
+#include "Transformation.h"
+#include "ControllerFunctors.h"
+#include "ComponentManager.h"
+
 #include <iostream>
 #include <D3D11.h>
 #include <D3DX10math.h>
@@ -8,13 +17,84 @@
 #include "Quaternion.h"
 #include "simdQuaternion.h"
 
+
+
 const int lutSize = 2;
 const int NumIterations = 10000000;
+const int OBJECTS = 1000;
+
 HardwareState input = HardwareState::GetInstance();
 
 D3DXVECTOR4 DXLUT[lutSize];
 Vector4 MYLUT[lutSize];
 SIMD::Floats SIMDLUT[lutSize];
+
+void SPEEDTEST();
+
+
+void main()
+{
+//	SPEEDTEST();
+
+	input.Update();
+	input.GetTimeForLastFrameHighResolution();
+	input.Update();
+
+	SpinController uppy;
+	uppy.SetSpinSpeed(0.2f, 0.1f, 0.24f);
+
+	ObjectID oldthingy = GameObject::New();
+	GameObject* obj = &GameObject::Get(oldthingy);
+
+	GameObject::AddComponent<Position>(oldthingy);
+	GameObject::AddComponent<Orientation>(oldthingy);
+	GameObject::AddComponent<Scale>(oldthingy);
+	GameObject::AddComponent<Controller>(oldthingy);
+
+	Controller* cont = &GameObject::GetComponent<Controller>(oldthingy);
+
+	GameObject::GetComponent<Position>(oldthingy).SetPosition(2.0f, 0.0f, 2.0f);
+	GameObject::GetComponent<Controller>(oldthingy).SetControlFunction<SpinController>(uppy);
+
+	for (int i = 0; i < OBJECTS-1; i++) {
+		ObjectID thingy = GameObject::New();
+		GameObject::AddComponent<Position>(thingy);
+		GameObject::AddComponent<Orientation>(thingy);
+		GameObject::AddComponent<Scale>(thingy);
+		GameObject::AddComponent<Controller>(thingy);
+
+		GameObject::GetComponent<Position>(thingy).SetPosition(2.0f, 0.0f, 2.0f);
+		GameObject::GetComponent<Controller>(thingy).SetControlFunction<SpinController>(uppy);
+
+		GameObject::SetParentChild(oldthingy, thingy);
+		oldthingy = thingy;
+	}
+
+	input.Update();
+	std::cout << "Generating " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
+	input.Update();
+
+
+	for (int i = 0 ; i < Controller::GetList().Size() ; i++) {
+		if (Controller::GetList().Exists(i)) {
+			Controller* herp = &Controller::GetList().Get(i);
+			Controller::GetList().Get(i).Update();
+		}
+	}
+
+	for (int i = 0 ; i < Transformation::GetList().Size() ; i++) {
+		if (Transformation::GetList().Exists(i)) {
+			Transformation::GetList().Get(i).GetTransformation();
+		}
+	}
+
+	input.Update();
+	std::cout << "Updating " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
+	input.Update();
+
+
+	return;
+}
 
 void Addition();
 void LUTAddition();
@@ -24,8 +104,7 @@ void Interpolate();
 void TestResults();
 void MatrixVsQuaternion();
 
-
-void main()
+void SPEEDTEST()
 {
 	std::cout << "Running" << std::endl;
 
@@ -70,7 +149,6 @@ void main()
 
 	MatrixVsQuaternion();
 
-	return;
 }
 
 void Addition()

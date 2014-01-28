@@ -83,7 +83,7 @@ public:
 			ObjectID compID = components[type];
 			return T::Get(compID);
 		} else {
-			Warning("No Component of type, creating new Component in place");
+			//Warning("No Component of type, creating new Component in place");
 			ObjectID compID = AddComponent<T>();
 			return T::Get(compID);
 		}

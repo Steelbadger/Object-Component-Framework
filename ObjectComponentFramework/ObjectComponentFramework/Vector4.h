@@ -2,9 +2,11 @@
 
 #include <math.h>
 #include <iostream>
-
+;;;;;;;
 class Vector3;
+
 class Quaternion;
+
 namespace SIMD {
 	class Quaternion;
 }

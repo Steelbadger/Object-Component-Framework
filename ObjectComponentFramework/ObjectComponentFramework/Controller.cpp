@@ -9,6 +9,7 @@ Controller::Controller(): update(nullptr)
 
 Controller::Controller(const Controller& copy)
 {
+	update = nullptr;
 	if (copy.update != nullptr) {
 		update = copy.update->Copy();
 	}
@@ -30,11 +31,12 @@ void Controller::Update()
 Controller& Controller::operator=(const Controller& rhs)
 {
 	if (update != nullptr) {
-		delete update;
+//		delete update;
 	}
 	if (rhs.update != nullptr) {
 		update = rhs.update->Copy();
 	}
+	return (*this);
 }
 
 

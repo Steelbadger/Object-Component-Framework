@@ -8,7 +8,7 @@
 
 
 Transformation::Transformation():
-	localChanged(true)
+	localChanged(true), globalChanged(true), viewChanged(true)
 {
 
 }
@@ -22,6 +22,7 @@ D3DXMATRIX Transformation::GetTransformation()
 {
 	if (globalChanged) {
 		CalculateGlobalTransformation();
+		viewChanged = true;
 	}
 	return globalTransform;
 }

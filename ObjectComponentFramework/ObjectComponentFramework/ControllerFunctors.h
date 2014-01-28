@@ -25,3 +25,20 @@ private:
 	float sensitivity;
 	bool autorun;
 };
+
+class SpinController : public ControlFunctor
+{
+public:
+	SpinController();
+	virtual ~SpinController();
+	virtual void operator()(ObjectID affectedObject);
+	virtual ControlFunctor* Copy() const;
+
+	void SetSpinSpeed(float x, float y, float z);
+
+private:
+	float spinSpeedy;
+	float spinSpeedz;
+	float spinSpeedx;
+};
+

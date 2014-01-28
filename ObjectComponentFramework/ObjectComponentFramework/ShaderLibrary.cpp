@@ -31,11 +31,11 @@ void ShaderLibrary::Initialise(ID3D11Device* dev, HWND handle)
 }
 
 
-ShaderInterface* ShaderLibrary::GetShader(Shaders s)
-{
-	if (shaders.count(s) > 0) {
-		return shaders[s];
-	} else {
-		return nullptr;
-	}
-}
+//ShaderInterface* ShaderLibrary::GetShader(Shaders s)
+//{
+//	if (shaders.count(s) > 0) {
+//		return shaders[s];
+//	} else {
+//		return nullptr;
+//	}
+//}

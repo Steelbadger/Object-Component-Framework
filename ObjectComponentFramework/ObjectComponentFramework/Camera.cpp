@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Position.h"
 #include "Orientation.h"
+#include "Transformation.h"
 
 
 
@@ -50,7 +51,7 @@ void Camera::SetFieldOfView(float degrees)
 
 D3DXMATRIX Camera::GetViewMatrix()
 {
-	if (GameObject::Get(GetParentID()).Modified()) {
+	if (GameObject::GetComponent<Transformation>(GetParentID()).ViewHasChanged()) {
 		D3DXVECTOR3 up(0,1,0);
 		D3DXVECTOR3 forward(0,0,1);
 		D3DXVECTOR3 position = GameObject::GetComponent<Position>(GetParentID()).GetPosition();
@@ -61,11 +62,11 @@ D3DXMATRIX Camera::GetViewMatrix()
 
 		D3DXVECTOR3 lookAt = position + forward;
 
-		//GameObject::Get(GetParentID()).GetLocalMatrix();
-
 		// Finally create the view matrix from the three updated vectors.
 		D3DXMatrixLookAtLH(&viewMatrix, &position, &lookAt, &up);
+		GameObject::GetComponent<Transformation>(GetParentID()).SetViewUnchanged();
 	}
+
 	return viewMatrix;
 }
 

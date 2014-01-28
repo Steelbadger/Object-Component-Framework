@@ -87,9 +87,6 @@
     <ClCompile Include="UtilityFunctions.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="FirstPersonController.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -153,9 +150,6 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="FirstPersonController.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="TextureTypes.h">
