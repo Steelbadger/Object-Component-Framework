@@ -10,6 +10,96 @@
 
 #include <functional>
 
+
+void TESTFUNCTION()
+{
+	D3DXVECTOR3 point(20, -12.3, -400);
+
+	D3DXVECTOR3 light(1,0,0);
+
+	D3DXVECTOR3 eye(0,0,0);
+	D3DXVECTOR3 up(0,1,0);
+	D3DXVECTOR3 look(0,0,1);
+
+	D3DXVECTOR3 topLeft(-1, 1, 1);
+	D3DXVECTOR3 topRight(1, 1, 1);
+	D3DXVECTOR3 bottomLeft(-1, -1, 1);
+	D3DXVECTOR3 bottomRight(1, -1, 1);
+
+	D3DXVECTOR4 result;
+	D3DXMATRIX persp;
+	D3DXMATRIX invPersp;
+	D3DXMATRIX view;
+	D3DXMATRIX invView;
+
+	float fovy = (45 * (float)D3DX_PI)/180.0f;
+	float maxDepth = 1000.0f;
+	float det;
+	D3DXMatrixPerspectiveFovLH(&persp, fovy, 720.0f/450.0f, 0.01, maxDepth);
+	D3DXMatrixLookAtLH(&view, &eye, &look, &up);
+	D3DXMatrixInverse(&invView, &det, &view);
+	D3DXMatrixInverse(&invPersp, &det, &persp);
+	D3DXVec3Transform(&result, &point, &view);
+	result /= result.w;
+	D3DXVECTOR3 jeeze = D3DXVECTOR3(result);
+	float depth = result.z / maxDepth;
+	D3DXVec3Transform(&result, &jeeze, &persp);
+
+	D3DXVECTOR4 resLight;
+	D3DXVec3Transform(&resLight, &light, &view);
+
+	result /= result.w;
+	result.z = depth;
+
+	//  Into the reconstruction phase
+
+	float u, v;
+	u = (result.x+1)/2.0f;
+	v = (result.y+1)/2.0f;
+	
+	D3DXVECTOR4 tL;
+	D3DXVECTOR4 tR;
+	D3DXVECTOR4 bL;
+	D3DXVECTOR4 bR;
+
+	D3DXVec3Transform(&tL, &topLeft, &invPersp);
+	D3DXVec3Transform(&tR, &topRight, &invPersp);
+	D3DXVec3Transform(&bL, &bottomLeft, &invPersp);
+	D3DXVec3Transform(&bR, &bottomRight, &invPersp);
+
+	tL /= tL.w;
+	tR /= tR.w;
+	bL /= bL.w;
+	bR /= bR.w;
+
+	topLeft = D3DXVECTOR3(tL);
+	topRight = D3DXVECTOR3(tR);
+	bottomLeft = D3DXVECTOR3(bL);
+	bottomRight = D3DXVECTOR3(bR);
+
+	D3DXVec3Normalize(&topLeft, &topLeft);
+	D3DXVec3Normalize(&topRight, &topRight);
+	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
+	D3DXVec3Normalize(&bottomRight, &bottomRight);
+
+	D3DXVECTOR3 u1;
+	D3DXVECTOR3 u2;
+	D3DXVECTOR3 dir;
+
+	D3DXVec3Lerp(&u1, &topLeft, &topRight, u);
+	D3DXVec3Lerp(&u2, &bottomLeft, &bottomRight, u);
+	D3DXVec3Lerp(&dir, &u2, &u1, v);
+	
+	D3DXVec3Normalize(&dir, &dir);
+
+	float distance = result.z * maxDepth;
+
+	D3DXVECTOR3 final = dir * distance;
+
+	D3DXVECTOR4 back;
+	D3DXVec3Transform(&back, &final, &invView);
+}
+
 Application::Application(): window(this)
 {
 	m_Input = 0;
@@ -28,6 +118,8 @@ bool Application::Initialize()
 {
 	bool result;
 	running = true;
+
+	TESTFUNCTION();
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();

@@ -57,6 +57,9 @@ PixelOutputType AmbientNormalShader(PixelInputType input) : SV_TARGET
     // Normalize the resulting bump normal.
     bumpNormal = normalize(bumpNormal);
 
+	//  Reduce to range 0-1 for saving in texture
+	bumpNormal = (bumpNormal + 1.0f)/2.0f;
+
 	output.normal = float4(bumpNormal, specularity);
 
     return output;

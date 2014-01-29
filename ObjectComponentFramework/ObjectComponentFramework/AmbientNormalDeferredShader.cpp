@@ -376,7 +376,6 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	// Now set the matrix constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-
 	ID3D11ShaderResourceView* ambientTexture;
 	ID3D11ShaderResourceView* normalTexture;
 	ID3D11ShaderResourceView* specularTexture;

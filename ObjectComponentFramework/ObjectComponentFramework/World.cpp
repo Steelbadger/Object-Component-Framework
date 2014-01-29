@@ -33,7 +33,7 @@ void World::CreateScene()
 	ObjectID light = GameObject::New();
 	GameObject::AddComponent<DirectionalLight>(light);
 	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-1.0f, 0.0f, 0.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
 	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
 	AddToScene(light);
 
@@ -45,7 +45,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Controller>(quad);
 
 	SpinController spinny;
-	spinny.SetSpinSpeed(0.0f, 12.0f, 0.0f);
+	spinny.SetSpinSpeed(0.0f, 0.1f, 0.0f);
 
 	GameObject::GetComponent<Position>(quad).SetPosition(0,0,5);
 	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
@@ -78,7 +78,7 @@ void World::CreateScene()
 	AddToScene(quad);
 	//AddToScene(test);
 
-	for (int i = 0 ; i < 1000; i++) {
+	for (int i = 0 ; i < 20; i++) {
 		ObjectID test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);
@@ -93,7 +93,7 @@ void World::CreateScene()
 		GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
 		AddToScene(test);
 
-		if (i%500 == 0) {
+		if (i%10 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);
@@ -120,32 +120,32 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(ground).SetShader(ShaderLibrary::Shaders::NORMAL);
 	AddToScene(ground);
 
-	ObjectID light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(-10,0.5,0);
-	AddToScene(light2);
+	//ObjectID light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(-10,0.5,0);
+	//AddToScene(light2);
 
-	light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 0.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(8,0.5,-12);
-	AddToScene(light2);
+	//light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 0.0f, 1.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(8,0.5,-12);
+	//AddToScene(light2);
 
-	light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(0,0.5,21);
-	AddToScene(light2);
+	//light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 1.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(0,0.5,21);
+	//AddToScene(light2);
 }
 
 void World::SetCameraObject(ObjectID id)

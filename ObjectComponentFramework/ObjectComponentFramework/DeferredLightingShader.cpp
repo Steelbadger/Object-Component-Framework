@@ -9,6 +9,8 @@
 
 #include <D3DX11.h>
 
+#include "ShaderInterface.h"
+
 DeferredLightingShader::DeferredLightingShader()
 {
 	m_vertexShader = 0;
@@ -28,8 +30,15 @@ bool DeferredLightingShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
+	std::string vFilename = "deferredLightVertexShader.fx";
+	std::string fFilename = "deferredLightPixelShader.fx";
+
+	std::string vertexFile = SHADERDIR + vFilename;
+	std::string fragmentFile = SHADERDIR + fFilename;
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "deferredLightVertexShader.fx", "deferredLightPixelShader.fx");
+	result = InitializeShader(device, hwnd, vertexFile.c_str(), fragmentFile.c_str());
+
 	if(!result)
 	{
 		return false;
@@ -63,7 +72,7 @@ bool DeferredLightingShader::Render(ID3D11DeviceContext* deviceContext, RenderTa
 	return true;
 }
 
-bool DeferredLightingShader::InitializeShader(ID3D11Device* device, HWND hwnd, char* vsFilename, char* psFilename)
+bool DeferredLightingShader::InitializeShader(ID3D11Device* device, HWND hwnd, const char* vsFilename, const char* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -269,7 +278,7 @@ void DeferredLightingShader::ShutdownShader()
 }
 
 
-void DeferredLightingShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, char* shaderFilename)
+void DeferredLightingShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -313,50 +322,50 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Get a pointer to the data in the constant buffer.
 	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
-//	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
-
 	D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
-	D3DXMATRIX thingy;
-	D3DXMatrixPerspectiveFovLH(&thingy, (45.0f * (float)D3DX_PI)/180.0f, 724.0f/454.0f, 1.0f, 100.0f);
-
-	D3DXVECTOR4 frustumCorners[8] = {	D3DXVECTOR4(-1, 1, 0, 1), D3DXVECTOR4(1, 1, 0, 1), D3DXVECTOR4(1, -1, 0, 1), D3DXVECTOR4(-1, -1, 0, 1),
-										D3DXVECTOR4(-1, 1, 1, 1), D3DXVECTOR4(1, 1, 1, 1), D3DXVECTOR4(1, -1, 1, 1), D3DXVECTOR4(-1, -1, 1, 1)};
 
 
 
 	D3DXMATRIX view = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
-	D3DXMATRIX invProjection;
+	D3DXMATRIX invPersp;
 	float det;
-	D3DXMatrixInverse(&invProjection, &det, &projection);
-	invProjection = invProjection/det;
-//	D3DXMatrixTranspose(&invProjection, &invProjection);
+	D3DXMatrixInverse(&invPersp, &det, &projection);
 
-	D3DXVECTOR4 test1(0, 0, 10, 1);
+	D3DXVECTOR3 topLeft(-1, 1, 1);
+	D3DXVECTOR3 topRight(1, 1, 1);
+	D3DXVECTOR3 bottomLeft(-1, -1, 1);
+	D3DXVECTOR3 bottomRight(1, -1, 1);
 
-	D3DXVec4Transform(&test1, &test1, &projection);
-	test1 = test1/test1.w;
-	D3DXVec4Transform(&test1, &test1, &invProjection);
-	test1 = test1/test1.w;
+	D3DXVECTOR4 tL;
+	D3DXVECTOR4 tR;
+	D3DXVECTOR4 bL;
+	D3DXVECTOR4 bR;
 
+	D3DXVec3Transform(&tL, &topLeft, &invPersp);
+	D3DXVec3Transform(&tR, &topRight, &invPersp);
+	D3DXVec3Transform(&bL, &bottomLeft, &invPersp);
+	D3DXVec3Transform(&bR, &bottomRight, &invPersp);
 
-//  This is bizarre, 4 float4s apparently get treated as a matrix and thus need to be transposed for use in the shader?  Wat?
-	D3DXVec4TransformArray(frustumCorners, 16, frustumCorners, 16, &invProjection, 8);
-	dataPtr3->topLeft = (frustumCorners[4]/frustumCorners[4].w) - (frustumCorners[0]/frustumCorners[0].w);
-	dataPtr3->topRight = (frustumCorners[5]/frustumCorners[5].w) - (frustumCorners[1]/frustumCorners[1].w);
-	dataPtr3->bottomLeft = (frustumCorners[7]/frustumCorners[7].w) - (frustumCorners[3]/frustumCorners[3].w);
-	dataPtr3->bottomRight = (frustumCorners[6]/frustumCorners[6].w) - (frustumCorners[2]/frustumCorners[2].w);
+	tL /= tL.w;
+	tR /= tR.w;
+	bL /= bL.w;
+	bR /= bR.w;
 
-	dataPtr3->topLeft.w = 1.0f;
-	dataPtr3->topRight.w = 1.0f;
-	dataPtr3->bottomLeft.w = 1.0f;
-	dataPtr3->bottomRight.w = 1.0f;
+	topLeft = D3DXVECTOR3(tL);
+	topRight = D3DXVECTOR3(tR);
+	bottomLeft = D3DXVECTOR3(bL);
+	bottomRight = D3DXVECTOR3(bR);
 
-//	dataPtr3->topLeft = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	D3DXVec3Normalize(&topLeft, &topLeft);
+	D3DXVec3Normalize(&topRight, &topRight);
+	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
+	D3DXVec3Normalize(&bottomRight, &bottomLeft);
 
-	D3DXMatrixTranspose(&invProjection, &invProjection);
+	dataPtr3->topLeft = topLeft;
+	dataPtr3->topRight = topRight;
+	dataPtr3->bottomLeft = bottomLeft;
+	dataPtr3->bottomRight = bottomRight;
 
-	// Copy the camera position into the constant buffer.
-//	dataPtr3->invProj = invProjection;
 
 	// Unlock the camera constant buffer.
 	deviceContext->Unmap(m_cameraBuffer, 0);
@@ -386,28 +395,11 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Copy the lighting variables into the constant buffer.
 
 	D3DXVECTOR4 position;
-	Position* lightPos = &GameObject::GetComponent<Position>(lightObject);
 	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
-		D3DXVECTOR4 direction = D3DXVECTOR4(GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection(), 1.0f);
-		float det;
-		view._14 = 0;
-		view._24 = 0;
-		view._34 = 0;
-		view._41 = 0;
-		view._42 = 0;
-		view._43 = 0;
-		view._44 = 1;
+		D3DXVECTOR3 direction = GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection();
+		D3DXVec3TransformNormal(&direction, &direction, &view);
 
-		D3DXMatrixTranspose(&view, &view);
-		D3DXMatrixInverse(&view, &det, &view);
-		view = view/det;
-
-		D3DXVec4Transform(&direction, &direction, &view);
-		direction = direction/direction.w;
-		direction.w = 0;
-		D3DXVec4Normalize(&direction, &direction);
-
-		dataPtr2->lightDirection = direction;
+		dataPtr2->lightDirection = D3DXVECTOR4(direction, 0.0f);
 		dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(lightObject).GetColour();
 		dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
 	} else if (GameObject::HasComponent<PointLight>(lightObject)){

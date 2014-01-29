@@ -18,10 +18,10 @@ private:
 
 	struct CameraBufferType
 	{
-		D3DXVECTOR4 topLeft;
-		D3DXVECTOR4 topRight;
-		D3DXVECTOR4 bottomLeft;
-		D3DXVECTOR4 bottomRight;
+		D3DXVECTOR3 topLeft;
+		D3DXVECTOR3 topRight;
+		D3DXVECTOR3 bottomLeft;
+		D3DXVECTOR3 bottomRight;
 	};
 public:
 	DeferredLightingShader();
@@ -32,9 +32,9 @@ public:
 	bool Render(ID3D11DeviceContext* dc, RenderTarget& renderTarget, ObjectID cameraObject, ObjectID light);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, char*, char*);
+	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, char*);
+	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
 	bool SetShaderParameters(ID3D11DeviceContext* dc, RenderTarget& renderTarget, ObjectID cameraObject, ObjectID light);
 	void RenderShader(ID3D11DeviceContext*, int);
