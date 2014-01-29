@@ -270,7 +270,7 @@ std::ostream& operator<<(std::ostream& out, Matrix4x4& object)
 		for (int j = 0; j < 3; j++) {
 			out << object(i,j) << ", ";
 		}
-		out << object(i,4) << "|" << std::endl;
+		out << object(i,3) << "|" << std::endl;
 	}
 	return out;
 }

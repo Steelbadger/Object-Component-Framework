@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,24 +88,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AmbientNormalDeferredShader.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerFunctors.cpp" />
+    <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="DeferredLightingShader.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="graphicsclass.cpp" />
+    <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="NormalMapShaderClass.cpp" />
     <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="ShaderLibrary.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
+    <ClCompile Include="simdUtility.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -114,30 +125,42 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AmbientNormalDeferredShader.h" />
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerFunctors.h" />
+    <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="DeferredLightingShader.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="graphicsclass.h" />
+    <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
     <ClInclude Include="LookupTable.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="MeshFactory.h" />
+    <ClInclude Include="MessagePasser.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="NormalMapShaderClass.h" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Scale.h" />
     <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="simd.h" />
     <ClInclude Include="simdMatrix.h" />
     <ClInclude Include="simdQuaternion.h" />
+    <ClInclude Include="simdUtility.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureToScreenShader.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="UtilityFunctions.h" />

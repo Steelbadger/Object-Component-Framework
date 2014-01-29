@@ -16,6 +16,7 @@
 #include "simd.h"
 #include "Quaternion.h"
 #include "simdQuaternion.h"
+#include "simdUtility.h"
 
 
 
@@ -30,12 +31,118 @@ Vector4 MYLUT[lutSize];
 SIMD::Floats SIMDLUT[lutSize];
 
 void SPEEDTEST();
+void SIMDMatrixMulp();
+void ObjectTest();
 
 
 void main()
 {
 //	SPEEDTEST();
+//	ObjectTest();
 
+//	SIMDMatrixMulp();
+
+//	std::string in;
+//	std::cin >> in;
+
+
+
+	return;
+}
+
+void SIMDMatrixMulp()
+{
+	D3DXMATRIX herp;
+	D3DXMATRIX derp;
+	D3DXMATRIX result;
+	Matrix4x4 otherResult2;
+	D3DXMATRIX testResult;
+	D3DXMATRIX otherResult;
+	Matrix4x4 myHerp;
+	Matrix4x4 myDerp;
+	float det;
+	double gentime = 0;
+
+	D3DXMATRIX matArray[10][10];
+	D3DXMATRIX answerArray[1000];
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			float x = (float(rand()%10000)/1000.0f) - 5.0f;
+			float y = (float(rand()%10000)/1000.0f) - 5.0f;
+			float z = (float(rand()%10000)/1000.0f) - 5.0f;
+
+			D3DXMatrixRotationYawPitchRoll(&matArray[i][j], x, y, z);	
+		}
+	}
+		
+	D3DXMatrixRotationYawPitchRoll(&herp, 1.32f, 0.21f, -0.03f);
+	D3DXMatrixScaling(&derp, 2.0f, 0.5f, 3.2f);
+
+	input.Update();
+	std::cout << "DirectX Maths Matrix Multiplication:" << std::endl;
+	input.Update();
+
+	for (int i = 0; i < NumIterations; i++) {
+		float val1 = (rand()%1000)/100.0f;
+		float val2 = (rand()%1000)/100.0f;
+		float val3 = (rand()%1000)/100.0f;
+
+		D3DXMatrixRotationYawPitchRoll(&herp, val1, val2, val3);
+		D3DXMatrixScaling(&derp, val2, val1, val3);
+	}
+
+	input.Update();
+	gentime = input.GetTimeForLastFrameHighResolution();
+	input.Update();
+	
+	for (int i = 0; i < NumIterations; i++) {
+		float val1 = (rand()%1000)/100.0f;
+		float val2 = (rand()%1000)/100.0f;
+		float val3 = (rand()%1000)/100.0f;
+
+		D3DXMatrixRotationYawPitchRoll(&herp, val1, val2, val3);
+		D3DXMatrixScaling(&derp, val2, val1, val3);
+		result = herp * derp;
+	}
+
+	input.Update();
+	std::cout << "Operator Overload: " << input.GetTimeForLastFrameHighResolution() - gentime << "s" << std::endl;
+	input.Update();
+	for (int i = 0; i < NumIterations; i++) {
+		float val1 = (rand()%1000)/100.0f;
+		float val2 = (rand()%1000)/100.0f;
+		float val3 = (rand()%1000)/100.0f;
+
+		D3DXMatrixRotationYawPitchRoll(&herp, val1, val2, val3);
+		D3DXMatrixScaling(&derp, val2, val1, val3);
+		D3DXMatrixMultiply(&testResult, &herp, &derp);
+	}
+
+	input.Update();
+	std::cout << "D3DXFunction: " << input.GetTimeForLastFrameHighResolution() - gentime << "s" << std::endl;
+	input.Update();
+
+	for (int i = 0; i < NumIterations; i++) {
+		float val1 = (rand()%1000)/100.0f;
+		float val2 = (rand()%1000)/100.0f;
+		float val3 = (rand()%1000)/100.0f;
+
+		D3DXMatrixRotationYawPitchRoll(&herp, val1, val2, val3);
+		D3DXMatrixScaling(&derp, val2, val1, val3);
+		otherResult2 = SIMD::Multiply(Matrix4x4(herp), Matrix4x4(derp));
+	}
+
+	input.Update();
+	std::cout << "SIMD Function: " << input.GetTimeForLastFrameHighResolution() - gentime << "s" << std::endl;
+	input.Update();
+
+	std::cout << otherResult2 << std::endl;
+
+}
+
+void ObjectTest()
+{
 	input.Update();
 	input.GetTimeForLastFrameHighResolution();
 	input.Update();
@@ -105,9 +212,6 @@ void main()
 	std::cout << "Fetching " << OBJECTS << " Objects: " << input.GetTimeForLastFrameHighResolution() << "s" << std::endl << std::endl;
 	input.Update();
 
-
-
-	return;
 }
 
 void Addition();
