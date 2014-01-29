@@ -18,7 +18,6 @@ private:
 
 	struct CameraBufferType
 	{
-//		D3DXMATRIX invProj;
 		D3DXVECTOR4 topLeft;
 		D3DXVECTOR4 topRight;
 		D3DXVECTOR4 bottomLeft;

@@ -6,7 +6,6 @@
 
 
 #include "d3dclass.h"
-#include "lightshaderclass.h"
 #include "ShaderLibrary.h"
 #include "LookupTable.h"
 #include "AmbientNormalDeferredShader.h"

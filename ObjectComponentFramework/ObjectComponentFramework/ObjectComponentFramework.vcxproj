@@ -143,6 +143,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="MessagePasser.h" />
     <ClInclude Include="Mouse.h" />
@@ -168,6 +169,16 @@
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\basicScreenPixelShader.fx" />
+    <None Include="Assets\Shaders\basicScreenVertexShader.fx" />
+    <None Include="Assets\Shaders\deferredLightPixelShader.fx" />
+    <None Include="Assets\Shaders\deferredLightVertexShader.fx" />
+    <None Include="Assets\Shaders\normalmappixelshader.fx" />
+    <None Include="Assets\Shaders\normalmapvertexshader.fx" />
+    <None Include="Assets\Shaders\rendertotexturespixelshader.fx" />
+    <None Include="Assets\Shaders\rendertotexturesvertexshader.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

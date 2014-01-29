@@ -1,8 +1,5 @@
 #include "TextureToScreenShader.h"
 
-
-
-#include "lightshaderclass.h"
 #include "Camera.h"
 #include "GameObject.h"
 #include "Position.h"
@@ -10,6 +7,8 @@
 #include "Texture.h"
 #include "TextureTypes.h"
 #include "DirectionalLight.h"
+
+#include <fstream>
 
 TextureToScreenShader::TextureToScreenShader()
 {
@@ -28,8 +27,14 @@ bool TextureToScreenShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
+	std::string vFilename = "basicScreenVertexShader.fx";
+	std::string fFilename = "basicScreenPixelShader.fx";
+
+	std::string vertexFile = SHADERDIR + vFilename;
+	std::string fragmentFile = SHADERDIR + fFilename;
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "basicScreenVertexShader.fx", "basicScreenPixelShader.fx");
+	result = InitializeShader(device, hwnd, vertexFile.c_str(), fragmentFile.c_str());
 	if(!result)
 	{
 		return false;
@@ -63,7 +68,7 @@ bool TextureToScreenShader::Render(ID3D11DeviceContext* deviceContext, RenderTar
 	return true;
 }
 
-bool TextureToScreenShader::InitializeShader(ID3D11Device* device, HWND hwnd, char* vsFilename, char* psFilename)
+bool TextureToScreenShader::InitializeShader(ID3D11Device* device, HWND hwnd, const char* vsFilename, const char* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -230,11 +235,11 @@ void TextureToScreenShader::ShutdownShader()
 }
 
 
-void TextureToScreenShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, char* shaderFilename)
+void TextureToScreenShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
-	ofstream fout;
+	std::ofstream fout;
 
 
 	// Get a pointer to the error message text buffer.

@@ -269,5 +269,34 @@
     <ClInclude Include="TextureToScreenShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\basicScreenPixelShader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\basicScreenVertexShader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\deferredLightPixelShader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\deferredLightVertexShader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\normalmappixelshader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\normalmapvertexshader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\rendertotexturespixelshader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Assets\Shaders\rendertotexturesvertexshader.fx">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

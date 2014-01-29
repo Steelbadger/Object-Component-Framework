@@ -200,7 +200,7 @@ bool GraphicsClass::RenderDeferred(World& world)
 	bool result;
 
 	std::list<ObjectID> drawList = world.GetDrawList();
-	ForwardShaderInterface* currentShader;
+	ShaderInterface* currentShader;
 
 	renderTarget.SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
 	renderTarget.ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
@@ -208,7 +208,7 @@ bool GraphicsClass::RenderDeferred(World& world)
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-		result = m_deferred.Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), 0);
+		result = m_deferred.Render(m_D3D->GetDeviceContext(), current, world);
 		if(!result)
 		{
 			return false;
@@ -258,7 +258,7 @@ bool GraphicsClass::RenderDeferred(World& world)
 bool GraphicsClass::Render(World& world)
 {
 	bool result;
-	ForwardShaderInterface* currentShader;
+	ShaderInterface* currentShader;
 
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -268,13 +268,9 @@ bool GraphicsClass::Render(World& world)
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-		GameObject herp = GameObject::Get(current);
-		if (current == 2) {
-			Material derp = GameObject::GetComponent<Material>(current);
-		}
-		
+
 		currentShader = shaderLibrary.GetShader(GameObject::GetComponent<Material>(current).GetShader());
-		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
+		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world);
 		if(!result)
 		{
 			return false;

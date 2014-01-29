@@ -37,6 +37,7 @@ void Transformation::SetChanged()
 void Transformation::SetGlobalChanged()
 {
 	globalChanged = true;
+	viewChanged = true;
 	std::vector<ObjectID> children = GameObject::Get(GetParentID()).GetChildren();
 	for (int i = 0; i < children.size(); i++) {
 		GameObject::GetComponent<Transformation>(children[i]).SetGlobalChanged();

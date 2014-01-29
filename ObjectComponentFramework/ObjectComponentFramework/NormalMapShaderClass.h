@@ -7,7 +7,7 @@
 
 #include "ShaderInterface.h"
 
-class NormalMapShaderClass : public ForwardShaderInterface
+class NormalMapShaderClass : public ShaderInterface
 {
 private:
 	struct MatrixBufferType
@@ -36,12 +36,12 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID cameraObject, ObjectID light);
+	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, World & world);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, char*, char*);
+	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, char*);
+	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
 	bool SetShaderParameters(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID cameraObject, ObjectID light);
 	void RenderShader(ID3D11DeviceContext*, int);

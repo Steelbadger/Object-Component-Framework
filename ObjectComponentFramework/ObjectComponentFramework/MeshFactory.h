@@ -7,6 +7,8 @@
 #include <map>
 
 
+#define MODELDIR "Assets/Models/"
+
 class MeshFactory
 {
 private:

@@ -6,6 +6,7 @@
 #include <D3DX11tex.h>
 
 typedef unsigned char TextureType;
+#define TEXTUREDIR "Assets/Textures/"
 
 class TextureBase
 {
@@ -62,9 +63,11 @@ protected:
 		if (resourceLookup.count(filename) == 0) {
 			HRESULT result;
 			// Load the texture in.
-			result = D3DX11CreateShaderResourceViewFromFile(device, filename.c_str(), NULL, NULL, &texture, NULL);
+			std::string longName = TEXTUREDIR + filename;
+			result = D3DX11CreateShaderResourceViewFromFile(device, longName.c_str(), NULL, NULL, &texture, NULL);
 			if(FAILED(result))
 			{
+				std::cout << "Texture: " << filename << "Failed!" << std::endl;
 				return false;
 			}
 			resourceLookup[filename] = texture;

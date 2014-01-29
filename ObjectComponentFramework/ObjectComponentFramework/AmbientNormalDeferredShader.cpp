@@ -29,9 +29,14 @@ bool AmbientNormalDeferredShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
+	std::string vFilename = "rendertotexturesvertexshader.fx";
+	std::string fFilename = "rendertotexturespixelshader.fx";
+
+	std::string vertexFile = SHADERDIR + vFilename;
+	std::string fragmentFile = SHADERDIR + fFilename;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "rendertotexturesvertexshader.fx", "rendertotexturespixelshader.fx");
+	result = InitializeShader(device, hwnd, vertexFile.c_str(), fragmentFile.c_str());
 	if(!result)
 	{
 		return false;
@@ -48,12 +53,13 @@ void AmbientNormalDeferredShader::Shutdown()
 	return;
 }
 
-bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, ObjectID cameraObject, ObjectID light)
+bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, World &world)
 {
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
 	MeshData data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
+	ObjectID cameraObject = world.GetCameraObject();
 
 	stride = data.stride;
 	offset = 0;
@@ -80,7 +86,7 @@ bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, Obj
 	return true;
 }
 
-bool AmbientNormalDeferredShader::InitializeShader(ID3D11Device* device, HWND hwnd, char* vsFilename, char* psFilename)
+bool AmbientNormalDeferredShader::InitializeShader(ID3D11Device* device, HWND hwnd, const char* vsFilename, const char* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -295,7 +301,7 @@ void AmbientNormalDeferredShader::ShutdownShader()
 	return;
 }
 
-void AmbientNormalDeferredShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, char* shaderFilename)
+void AmbientNormalDeferredShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -339,7 +345,7 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 
 	D3DXMATRIX viewMatrix = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
 	D3DXMATRIX projectionMatrix = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
-	D3DXMATRIX worldMatrix = GameObject::Get(drawObject).GetLocalMatrix();
+	D3DXMATRIX worldMatrix = GameObject::GetComponent<Transformation>(drawObject).GetTransformation();
 
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);

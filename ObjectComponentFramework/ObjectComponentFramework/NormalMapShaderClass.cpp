@@ -27,9 +27,14 @@ bool NormalMapShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
+	std::string vFilename = "normalmapvertexshader.fx";
+	std::string fFilename = "normalmappixelshader.fx";
+
+	std::string vertexFile = SHADERDIR + vFilename;
+	std::string fragmentFile = SHADERDIR + fFilename;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "normalmapvertexshader.fx", "normalmappixelshader.fx");
+	result = InitializeShader(device, hwnd, vertexFile.c_str(), fragmentFile.c_str());
 	if(!result)
 	{
 		return false;
@@ -46,12 +51,14 @@ void NormalMapShaderClass::Shutdown()
 	return;
 }
 
-bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, ObjectID cameraObject, ObjectID light)
+bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, World & world)
 {
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
 	MeshData data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
+	ObjectID cameraObject = world.GetCameraObject();
+	ObjectID light = world.GetLightList().front();
 
 	stride = data.stride;
 	offset = 0;
@@ -78,7 +85,7 @@ bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID d
 	return true;
 }
 
-bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, char* vsFilename, char* psFilename)
+bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const char* vsFilename, const char* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -331,7 +338,7 @@ void NormalMapShaderClass::ShutdownShader()
 	return;
 }
 
-void NormalMapShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, char* shaderFilename)
+void NormalMapShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const char* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -377,8 +384,7 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 
 	D3DXMATRIX viewMatrix = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
 	D3DXMATRIX projectionMatrix = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
-	D3DXMATRIX worldMatrix = GameObject::Get(drawObject).GetLocalMatrix();
-
+	D3DXMATRIX worldMatrix = GameObject::GetComponent<Transformation>(drawObject).GetTransformation();
 
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);

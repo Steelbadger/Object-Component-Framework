@@ -14,9 +14,9 @@ public:
 	bool Render(ID3D11DeviceContext* dc, RenderTarget& renderTarget);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, char*, char*);
+	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, char*);
+	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
 	bool SetShaderParameters(ID3D11DeviceContext* dc, RenderTarget& renderTarget);
 

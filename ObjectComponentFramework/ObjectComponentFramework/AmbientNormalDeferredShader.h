@@ -1,7 +1,7 @@
 #pragma once
 #include "ShaderInterface.h"
 
-class AmbientNormalDeferredShader : public ForwardShaderInterface
+class AmbientNormalDeferredShader : public ShaderInterface
 {
 private:
 	struct MatrixBufferType
@@ -17,14 +17,14 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID cameraObject, ObjectID light = 0);
+	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, World& world);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, char*, char*);
+	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, char*);
+	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
-	bool SetShaderParameters(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID cameraObject);
+	bool SetShaderParameters(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID camera);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:

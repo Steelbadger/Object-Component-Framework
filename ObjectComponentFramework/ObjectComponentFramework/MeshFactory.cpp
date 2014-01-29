@@ -409,7 +409,9 @@ void MeshFactory::LoadObj(std::string filename, std::vector<LitVertexType>& outv
 	std::vector<unsigned int> index;
 	std::vector<LitVertexType> vertexs;
 
-	const char* path = filename.c_str();
+	std::string longName = MODELDIR + filename;
+
+	const char* path = longName.c_str();
 
 	FILE * file = fopen(path, "r");
 	if( file == NULL ){
@@ -1015,23 +1017,23 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 //	std::vector<D3DXVECTOR2> uvs = m.GetUVs();
 //
 //	for(indexIt = index.begin(); indexIt != index.end(); indexIt++) {
-//		Point temp;
-//		temp.p = verts[*indexIt];
-//		temp.n = normals[*indexIt];
-//		temp.u = uvs[*indexIt];
+//		LitVertexType temp;
+//		temp.position = verts[*indexIt];
+//		temp.normal = normals[*indexIt];
+//		temp.texture = uvs[*indexIt];
 //		points.push_back(temp);
 //	}
 //
 //	//  Now create a bunch of new faces (non indexed)
-//	std::vector<Point> newPoints;
+//	std::vector<LitVertexType> newPoints;
 //
 //	for(int i = 0; i < points.size(); i+=3) {
-//		Point p1 = points[i];
-//		Point p2 = points[i+1];
-//		Point p3 = points[i+2];
-//		Point p12 = AveragePoints(p1, p2);
-//		Point p13 = AveragePoints(p1, p3);
-//		Point p23 = AveragePoints(p2, p3);
+//		LitVertexType p1 = points[i];
+//		LitVertexType p2 = points[i+1];
+//		LitVertexType p3 = points[i+2];
+//		LitVertexType p12 = AveragePoints(p1, p2);
+//		LitVertexType p13 = AveragePoints(p1, p3);
+//		LitVertexType p23 = AveragePoints(p2, p3);
 //
 //		//  Push four new triangles to the newPoints array
 //
@@ -1054,7 +1056,7 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 //
 //	//  Now pull the data out into the 3 arrays needed for the mesh constructor
 //
-//	std::vector<Point>::iterator pointIt;
+//	std::vector<LitVertexType>::iterator pointIt;
 //
 //	verts.clear();
 //	normals.clear();
@@ -1078,12 +1080,12 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 //	}
 //}
 //
-//Point MeshFactory::AveragePoints(Point p1, Point p2)
+//Point MeshFactory::AveragePoints(LitVertexType p1, LitVertexType p2)
 //{
 //	Point out;
-//	out.p = (p1.p+p2.p)/2;
-//	out.n = (p1.n+p2.n)/2;
-//	out.u = (p1.u+p2.u)/2;
+//	out.position = (p1.position+p2.position)/2;
+//	out.normal = (p1.normal+p2.normal)/2;
+//	out.texture = (p1.texture+p2.texture)/2;
 //
 //	return out;
 //}
@@ -1091,7 +1093,7 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 //Mesh MeshFactory::Spherize(Mesh m)
 //{
 //	//  First turn into a non indexed vertex array
-//	std::vector<Point> points;
+//	std::vector<LitVertexType> points;
 //
 //	std::vector<unsigned int>::iterator indexIt;
 //	std::vector<unsigned int> index = m.GetIndex();
@@ -1101,14 +1103,14 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 //	std::vector<D3DXVECTOR2> uvs = m.GetUVs();
 //
 //	for(indexIt = index.begin(); indexIt != index.end(); indexIt++) {
-//		Point temp;
+//		LitVertexType temp;
 //		temp.p = verts[*indexIt];
 //		temp.n = normals[*indexIt];
 //		temp.u = uvs[*indexIt];
 //		points.push_back(temp);
 //	}
 //
-//	std::vector<Point>::iterator pointIt;
+//	std::vector<LitVertexType>::iterator pointIt;
 //
 //	verts.clear();
 //	normals.clear();

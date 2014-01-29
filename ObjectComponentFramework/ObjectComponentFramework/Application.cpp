@@ -3,9 +3,9 @@
 #include "Orientation.h"
 #include "GameObject.h"
 #include "Camera.h"
-#include "FirstPersonController.h"
+#include "Controller.h"
 #include "Material.h"
-#include "SpinController.h"
+#include "ControllerFunctors.h"
 #include "PointLight.h"
 
 #include <functional>
@@ -72,14 +72,13 @@ bool Application::Initialize()
 	GameObject::AddComponent<Position>(camera);
 	GameObject::AddComponent<Orientation>(camera);
 	GameObject::AddComponent<Camera>(camera);
-	GameObject::AddComponent<FirstPersonController>(camera);
-//	GameObject::AddComponent<PointLight>(camera);
+	GameObject::AddComponent<Controller>(camera);
+
+	FirstPersonController cont;
 
 	GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
-	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 1.0f, 100.0f);
-	GameObject::GetComponent<FirstPersonController>(camera).SetSensitivity(5.0f);
-//	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 0.0f, 0.0f, 1.0f);
-//	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100);
+	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
+	GameObject::GetComponent<Controller>(camera).SetControlFunction(cont);
 
 	world.SetCameraObject(camera);
 	return true;
@@ -140,15 +139,10 @@ void Application::TestUpdate()
 	m_Input->Update();
 
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
-	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
-		if (FirstPersonController::GetList().Exists(i)) {
-			FirstPersonController::GetList().Get(i).Update();
-		}
-	}
 
-	for (int i = 0; i < SpinController::GetList().Size(); i++) {
-		if (SpinController::GetList().Exists(i)) {
-			SpinController::GetList().Get(i).Update(timestep);
+	for (int i = 0; i < Controller::GetList().Size(); i++) {
+		if (Controller::GetList().Exists(i)) {
+			Controller::GetList().Get(i).Update();
 		}
 	}
 
@@ -164,10 +158,6 @@ void Application::TestUpdate()
 		} else {
 			std::cout << "Now Rendering Using Forward Shading" << std::endl;
 		}
-	}
-
-	if (m_Input->Pressed('N')) {
-		world.TESTDELETE();
 	}
 
 
