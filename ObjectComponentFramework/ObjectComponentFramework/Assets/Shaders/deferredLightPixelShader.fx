@@ -10,21 +10,13 @@
 Texture2D shaderTextures[3];
 SamplerState SampleType;
 
-cbuffer LightBuffer : register(b0)
+cbuffer LightBuffer
 {
     float4 diffuseColor;
     float4 lightDirection;
     float specularPower;
-	float3 lightPadding;
-};
-
-cbuffer CameraBuffer
-{
-	float3 topLeft;
 	float3 topRight;
-	float3 bottomLeft;
-	float3 bottomRight;
-}
+};
 
 //////////////
 // TYPEDEFS //
@@ -47,6 +39,10 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	float4 color;
 	float fac = 0.3;
 
+	float3 topLeft = topRight * float3(-1, 1, 1);
+	float3 bottomLeft = topRight * float3(-1, -1, 1);
+	float3 bottomRight = topRight * float3(1, -1, 1);
+
 	float4 diffuse = float4(0.0, 0.0, 0.0, 0.0);
 	float4 ambient = float4(0.0, 0.0, 0.0, 0.0);
 	float4 specular = float4(0.0, 0.0, 0.0, 0.0);
@@ -58,7 +54,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	normal = normalize(normal);
 
 	float cdepth = shaderTextures[2].Sample(SampleType, input.tex).x;
-	float depth = cdepth*1000.0f;
+	float depth = cdepth*100.0f;
 
 	float3 horiz1 = lerp(topLeft, topRight, input.tex.x);
 	float3 horiz2 = lerp(bottomLeft, bottomRight, input.tex.x);
@@ -66,6 +62,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	float3 vect = lerp(horiz1, horiz2, input.tex.y);
 
 	vect = normalize(vect);
+	float vectL = length(vect);
 
 	pixelPosition = float4((vect*depth), 1);
 
@@ -100,7 +97,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	color = col * (ambient + diffuse + specular);
 //	color = float4(normalMap.x, normalMap.y, normalMap.z, 1.0f);
 //	color = float4(diffuseContribution, diffuseContribution, diffuseContribution, 1.0f);
-//	color = float4((lightDirection.x+1)/2, (lightDirection.y+1)/2, (lightDirection.z+1)/2, 1.0f);
+//	color = float4((lightDirection.xyz+1)/2, 1.0f);
 //	color = pixelPosition/10.0f;
 //	color = float4(vect, 1.0f);
 //	color = float4(specularContribution, specularContribution, specularContribution, 1.0f);
@@ -111,10 +108,13 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 //	color = float4(topLeft, 1.0f);
 //	color = float4(topRight, 1.0f);
 //	color = float4(bottomLeft, 1.0f);
-//	color = float(bottomRight, 1.0f);
+//	color = float4(bottomRight, 1.0f);
 //	color = float4(cdepth, cdepth, cdepth, 1.0f);
 //	color = float4(input.tex.x, input.tex.y, 0.0f, 1.0f);
 //	color = float4(horiz1, 1.0f);
-	
+//	color = float4(vectL, vectL, vectL, 1.0f);
+//	color = float4(dist, dist, dist, 1.0f);
+//	color = float4(attenuation, attenuation, attenuation, 1.0f);
+
     return color;
 }

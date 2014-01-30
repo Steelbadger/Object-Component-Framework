@@ -201,21 +201,6 @@ bool DeferredLightingShader::InitializeShader(ID3D11Device* device, HWND hwnd, c
 		return false;
 	}
 
-	// Setup the description of the camera dynamic constant buffer that is in the vertex shader.
-	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cameraBufferDesc.ByteWidth = sizeof(CameraBufferType);
-	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cameraBufferDesc.MiscFlags = 0;
-	cameraBufferDesc.StructureByteStride = 0;
-
-	// Create the camera constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&cameraBufferDesc, NULL, &m_cameraBuffer);
-	if(FAILED(result))
-	{
-		return false;
-	}
-
 	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
 	// Note that ByteWidth always needs to be a multiple of 16 if using D3D11_BIND_CONSTANT_BUFFER or CreateBuffer will fail.
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -310,17 +295,6 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	LightBufferType* dataPtr2;
-	CameraBufferType* dataPtr3;
-
-	// Lock the camera constant buffer so it can be written to.
-	result = deviceContext->Map(m_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if(FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
 	D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
 
@@ -330,57 +304,13 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	D3DXMATRIX invPersp;
 	float det;
 	D3DXMatrixInverse(&invPersp, &det, &projection);
-
-	D3DXVECTOR3 topLeft(-1, 1, 1);
 	D3DXVECTOR3 topRight(1, 1, 1);
-	D3DXVECTOR3 bottomLeft(-1, -1, 1);
-	D3DXVECTOR3 bottomRight(1, -1, 1);
-
-	D3DXVECTOR4 tL;
 	D3DXVECTOR4 tR;
-	D3DXVECTOR4 bL;
-	D3DXVECTOR4 bR;
-
-	D3DXVec3Transform(&tL, &topLeft, &invPersp);
 	D3DXVec3Transform(&tR, &topRight, &invPersp);
-	D3DXVec3Transform(&bL, &bottomLeft, &invPersp);
-	D3DXVec3Transform(&bR, &bottomRight, &invPersp);
-
-	tL /= tL.w;
 	tR /= tR.w;
-	bL /= bL.w;
-	bR /= bR.w;
-
-	topLeft = D3DXVECTOR3(tL);
 	topRight = D3DXVECTOR3(tR);
-	bottomLeft = D3DXVECTOR3(bL);
-	bottomRight = D3DXVECTOR3(bR);
-
-	D3DXVec3Normalize(&topLeft, &topLeft);
 	D3DXVec3Normalize(&topRight, &topRight);
-	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
-	D3DXVec3Normalize(&bottomRight, &bottomLeft);
 
-	dataPtr3->topLeft = topLeft;
-	dataPtr3->topRight = topRight;
-	dataPtr3->bottomLeft = bottomLeft;
-	dataPtr3->bottomRight = bottomRight;
-
-
-	// Unlock the camera constant buffer.
-	deviceContext->Unmap(m_cameraBuffer, 0);
-
-	// Set the position of the camera constant buffer in the vertex shader.
-	bufferNumber = 1;
-
-	// Now set the camera constant buffer in the vertex shader with the updated values.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
-
-	//  Get the render target and map it as input.
-	std::vector<ID3D11ShaderResourceView*> textures = renderTarget.GetShaderResourceViews();
-
-	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, textures.size(), textures.data());
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -395,6 +325,11 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Copy the lighting variables into the constant buffer.
 
 	D3DXVECTOR4 position;
+	ComponentType direct = DirectionalLight::GetComponentTypeID();
+	ComponentType point = PointLight::GetComponentTypeID();
+
+	GameObject* thingy = &GameObject::Get(lightObject);
+
 	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
 		D3DXVECTOR3 direction = GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection();
 		D3DXVec3TransformNormal(&direction, &direction, &view);
@@ -404,14 +339,16 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 		dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
 	} else if (GameObject::HasComponent<PointLight>(lightObject)){
 
-		position = D3DXVECTOR4(GameObject::GetComponent<PointLight>(lightObject).GetPosition(), 1.0f);
-		D3DXVec4Transform(&position, &position, &view);
+		D3DXVECTOR3 pos = GameObject::GetComponent<PointLight>(lightObject).GetPosition();
+		D3DXVec3Transform(&position, &pos, &view);
 		position = position/position.w;
 
 		dataPtr2->lightDirection = position;
 		dataPtr2->lightColor = GameObject::GetComponent<PointLight>(lightObject).GetColour();
 		dataPtr2->specularPower = GameObject::GetComponent<PointLight>(lightObject).GetSpecularPower();
 	}
+
+	dataPtr2->topRight = topRight;
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);
@@ -421,6 +358,12 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 
 	// Finally set the light constant buffer in the pixel shader with the updated values.
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
+
+	//  Get the render target and map it as input.
+	std::vector<ID3D11ShaderResourceView*> textures = renderTarget.GetShaderResourceViews();
+
+	// Set shader texture resource in the pixel shader.
+	deviceContext->PSSetShaderResources(0, textures.size(), textures.data());
 
 	return true;
 }

@@ -13,15 +13,7 @@ private:
 		D3DXVECTOR4 lightColor;
 		D3DXVECTOR4 lightDirection;
 		float specularPower; 
-		D3DXVECTOR3 padding;
-	};
-
-	struct CameraBufferType
-	{
-		D3DXVECTOR3 topLeft;
 		D3DXVECTOR3 topRight;
-		D3DXVECTOR3 bottomLeft;
-		D3DXVECTOR3 bottomRight;
 	};
 public:
 	DeferredLightingShader();
