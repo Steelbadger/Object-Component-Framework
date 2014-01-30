@@ -72,6 +72,11 @@ void TESTFUNCTION()
 	bL /= bL.w;
 	bR /= bR.w;
 
+	tL /= tL.z;
+	tR /= tR.z;
+	bL /= bL.z;
+	bR /= bR.z;
+
 	topLeft = D3DXVECTOR3(tL);
 	topRight = D3DXVECTOR3(tR);
 	bottomLeft = D3DXVECTOR3(bL);
@@ -90,7 +95,7 @@ void TESTFUNCTION()
 	D3DXVec3Lerp(&u2, &bottomLeft, &bottomRight, u);
 	D3DXVec3Lerp(&dir, &u2, &u1, v);
 	
-	D3DXVec3Normalize(&dir, &dir);
+//	D3DXVec3Normalize(&dir, &dir);
 
 	float distance = result.z * maxDepth;
 

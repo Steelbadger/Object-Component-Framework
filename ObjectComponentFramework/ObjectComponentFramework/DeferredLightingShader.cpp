@@ -308,8 +308,9 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	D3DXVECTOR4 tR;
 	D3DXVec3Transform(&tR, &topRight, &invPersp);
 	tR /= tR.w;
+	tR /= tR.z;
 	topRight = D3DXVECTOR3(tR);
-	D3DXVec3Normalize(&topRight, &topRight);
+//	D3DXVec3Normalize(&topRight, &topRight);
 
 
 	// Lock the light constant buffer so it can be written to.

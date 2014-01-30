@@ -61,8 +61,8 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	float3 vect = lerp(horiz1, horiz2, input.tex.y);
 
-	vect = normalize(vect);
-	float vectL = length(vect);
+//	vect = normalize(vect);
+//	float vectL = length(vect);
 
 	pixelPosition = float4((vect*depth), 1);
 
