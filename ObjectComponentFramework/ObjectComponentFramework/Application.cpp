@@ -124,7 +124,7 @@ bool Application::Initialize()
 	bool result;
 	running = true;
 
-	TESTFUNCTION();
+//	TESTFUNCTION();
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();

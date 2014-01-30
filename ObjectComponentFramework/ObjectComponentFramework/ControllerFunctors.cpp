@@ -88,7 +88,7 @@ void FirstPersonController::operator()(ObjectID affectedObject)
 
 ControlFunctor* FirstPersonController::Copy() const
 {
-	return static_cast<ControlFunctor*>(new FirstPersonController());
+	return static_cast<ControlFunctor*>(new FirstPersonController((*this)));
 }
 
 void FirstPersonController::SetSensitivity(float s)
@@ -125,6 +125,6 @@ void SpinController::SetSpinSpeed(float x, float y, float z)
 
 ControlFunctor* SpinController::Copy() const
 {
-	return static_cast<ControlFunctor*>(new SpinController());
+	return static_cast<ControlFunctor*>(new SpinController((*this)));
 }
 

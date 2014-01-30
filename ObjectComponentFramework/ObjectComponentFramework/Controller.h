@@ -2,6 +2,8 @@
 
 #include "Component.h"
 
+#include <memory>
+
 
 class ControlFunctor;
 
@@ -15,13 +17,10 @@ public:
 	void Update();
 	template<class T>
 	void SetControlFunction(const T &updateFunctor) {
-		if (update != nullptr) {
-			delete update;
-			update = nullptr;
-		}
-		update = updateFunctor.Copy();
+		Controller* thing = this;
+		update.reset((ControlFunctor*)updateFunctor.Copy());
 	}
 	Controller& operator=(const Controller& rhs);
 private:
-	ControlFunctor* update;
+	std::unique_ptr<ControlFunctor> update;
 };

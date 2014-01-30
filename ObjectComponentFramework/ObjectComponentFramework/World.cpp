@@ -30,12 +30,17 @@ World::~World()
 
 void World::CreateScene()
 {
-	//ObjectID light = GameObject::New();
-	//GameObject::AddComponent<DirectionalLight>(light);
-	//GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
-	//GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
-	//GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
-	//AddToScene(light);
+	SpinController spinny;
+	spinny.SetSpinSpeed(0.0f, 0.0f, 0.2f);
+
+	ObjectID light = GameObject::New();
+	GameObject::AddComponent<DirectionalLight>(light);
+	GameObject::AddComponent<Controller>(light);
+	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
+	GameObject::GetComponent<Controller>(light).SetControlFunction(spinny);
+	AddToScene(light);
 
 	ObjectID quad = GameObject::New();
 	GameObject::AddComponent<Position>(quad);
@@ -44,7 +49,6 @@ void World::CreateScene()
 	GameObject::AddComponent<Material>(quad);
 	GameObject::AddComponent<Controller>(quad);
 
-	SpinController spinny;
 	spinny.SetSpinSpeed(0.0f, 0.1f, 0.0f);
 
 	GameObject::GetComponent<Position>(quad).SetPosition(0,0,5);
@@ -55,35 +59,36 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
 	GameObject::GetComponent<Controller>(quad).SetControlFunction(spinny);
 
-//	AmbientTexture* thing = &AmbientTexture::Get(0);
+	ObjectID test= GameObject::New();
+	GameObject::AddComponent<Position>(test);
+	GameObject::AddComponent<Orientation>(test);
+	GameObject::AddComponent<Mesh>(test);
+	GameObject::AddComponent<Material>(test);
+	GameObject::AddComponent<Controller>(test);
 
-	//ObjectID test= GameObject::New();
-	//GameObject::AddComponent<Position>(test);
-	//GameObject::AddComponent<Orientation>(test);
-	//GameObject::AddComponent<Mesh>(test);
-	//GameObject::AddComponent<Material>(test);
-	//GameObject::AddComponent<Controller>(test);
+	spinny.SetSpinSpeed(0.0f, 1.0f, 0.0f);
 
-	//spinny.SetSpinSpeed(0.0f, 1.0f, 0.0f);
-
-	//GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
-	//GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-	//GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
-	//GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
-	//GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
-	//GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
-	//GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
-	//GameObject::SetParentChild(quad, test);
+	GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
+	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
+	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
+	GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
+	GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+	GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
+	GameObject::SetParentChild(quad, test);
 
 	AddToScene(quad);
-	//AddToScene(test);
+	AddToScene(test);
 
-	for (int i = 0 ; i < 20; i++) {
+	for (int i = 0 ; i < 500; i++) {
 		ObjectID test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);
 		GameObject::AddComponent<Mesh>(test);
 		GameObject::AddComponent<Material>(test);
+		GameObject::AddComponent<Controller>(test);
+
+		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
 		GameObject::GetComponent<Position>(test).SetPosition(rand()%80-20,0,rand()%80-20);
 		GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
@@ -91,9 +96,10 @@ void World::CreateScene()
 		GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
 		GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
 		GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
 		AddToScene(test);
 
-		if (i%10 == 0) {
+		if (i%20 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);

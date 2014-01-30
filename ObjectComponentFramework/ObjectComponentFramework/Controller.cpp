@@ -9,32 +9,27 @@ Controller::Controller(): update(nullptr)
 
 Controller::Controller(const Controller& copy)
 {
-	update = nullptr;
-	if (copy.update != nullptr) {
-		update = copy.update->Copy();
+	if (copy.update) {
+		update.reset((ControlFunctor*)copy.update->Copy());
 	}
 }
 
 Controller::~Controller()
 {
-	if (update != nullptr) {
-		delete update;
-	}
 }
 
 
 void Controller::Update()
 {
-	(*update)(GetParentID());
+	if (update) {
+		(*update)(GetParentID());
+	}
 }
 
 Controller& Controller::operator=(const Controller& rhs)
 {
-	if (update != nullptr) {
-//		delete update;
-	}
-	if (rhs.update != nullptr) {
-		update = rhs.update->Copy();
+	if (rhs.update) {
+		update.reset((ControlFunctor*)rhs.update->Copy());
 	}
 	return (*this);
 }
