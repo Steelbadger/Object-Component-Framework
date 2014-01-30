@@ -30,12 +30,12 @@ World::~World()
 
 void World::CreateScene()
 {
-	ObjectID light = GameObject::New();
-	GameObject::AddComponent<DirectionalLight>(light);
-	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
-	AddToScene(light);
+	//ObjectID light = GameObject::New();
+	//GameObject::AddComponent<DirectionalLight>(light);
+	//GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
+	//GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
+	//GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
+	//AddToScene(light);
 
 	ObjectID quad = GameObject::New();
 	GameObject::AddComponent<Position>(quad);
@@ -121,14 +121,14 @@ void World::CreateScene()
 	AddToScene(ground);
 
 	ObjectID light2;
-	//light2 = GameObject::New();
-	//GameObject::AddComponent<Position>(light2);
-	//GameObject::AddComponent<Orientation>(light2);
-	//GameObject::AddComponent<PointLight>(light2);
-	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
-	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	//GameObject::GetComponent<Position>(light2).SetPosition(0,1,0);
-	//AddToScene(light2);
+	light2 = GameObject::New();
+	GameObject::AddComponent<Position>(light2);
+	GameObject::AddComponent<Orientation>(light2);
+	GameObject::AddComponent<PointLight>(light2);
+	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
+	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	GameObject::GetComponent<Position>(light2).SetPosition(0,1,0);
+	AddToScene(light2);
 
 	//light2 = GameObject::New();
 	//GameObject::AddComponent<Position>(light2);

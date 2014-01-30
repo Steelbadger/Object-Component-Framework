@@ -343,6 +343,7 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 		D3DXVec3Transform(&position, &pos, &view);
 		position = position/position.w;
 
+
 		dataPtr2->lightDirection = position;
 		dataPtr2->lightColor = GameObject::GetComponent<PointLight>(lightObject).GetColour();
 		dataPtr2->specularPower = GameObject::GetComponent<PointLight>(lightObject).GetSpecularPower();

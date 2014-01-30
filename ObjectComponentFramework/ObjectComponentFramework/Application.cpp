@@ -13,7 +13,7 @@
 
 void TESTFUNCTION()
 {
-	D3DXVECTOR3 point(20, -12.3, -400);
+	D3DXVECTOR3 point(300, -12.3, 400);
 
 	D3DXVECTOR3 light(1,0,0);
 
@@ -133,7 +133,7 @@ bool Application::Initialize()
 
 
 	// Initialize the Direct3D object.
-	result = m_D3D.Initialize(window.GetWidth(), window.GetHeight(), vSyncEnabled, window.GetHandleToWindow(), fullscreen, 100.0f, 0.1f);
+	result = m_D3D.Initialize(window.GetWidth(), window.GetHeight(), vSyncEnabled, window.GetHandleToWindow(), fullscreen, 1000.0f, 0.1f);
 	if(!result)
 	{
 		MessageBox(window.GetHandleToWindow(), "Could not initialize Direct3D", "Error", MB_OK);
@@ -169,7 +169,7 @@ bool Application::Initialize()
 	FirstPersonController cont;
 
 	GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
-	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 100.0f);
+	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	GameObject::GetComponent<Controller>(camera).SetControlFunction(cont);
 
 	world.SetCameraObject(camera);

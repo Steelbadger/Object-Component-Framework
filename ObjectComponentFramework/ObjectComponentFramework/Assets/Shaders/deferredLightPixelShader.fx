@@ -51,10 +51,10 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	normalMap = shaderTextures[1].Sample(SampleType, input.tex);
 	float specularity = normalMap.w;
 	normal = normalize((normalMap.xyz*2.0f)-1.0f);
-	normal = normalize(normal);
+//	normal = normalize(normal);
 
 	float cdepth = shaderTextures[2].Sample(SampleType, input.tex).x;
-	float depth = cdepth*100.0f;
+	float depth = cdepth*1000.0f;
 
 	float3 horiz1 = lerp(topLeft, topRight, input.tex.x);
 	float3 horiz2 = lerp(bottomLeft, bottomRight, input.tex.x);
@@ -115,6 +115,8 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 //	color = float4(vectL, vectL, vectL, 1.0f);
 //	color = float4(dist, dist, dist, 1.0f);
 //	color = float4(attenuation, attenuation, attenuation, 1.0f);
+//	color = float4(lightDirection.www, 1.0f);
+	color = floar(vect.xy, cdepth, 1.0f);
 
     return color;
 }

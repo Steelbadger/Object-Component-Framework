@@ -51,7 +51,7 @@ PixelInputType AmbientNormalShader(VertexInputType input)
     output.position = mul(input.position, worldMatrix);
     output.position = mul(output.position, viewMatrix);
 	dist = output.position.z/output.position.w;
-	dist = dist/100.0f;
+	dist = dist/1000.0f;
     output.position = mul(output.position, projectionMatrix);
 
 	dist = dist * output.position.w;

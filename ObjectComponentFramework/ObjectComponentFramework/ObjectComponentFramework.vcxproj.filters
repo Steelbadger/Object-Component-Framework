@@ -274,29 +274,29 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\basicScreenPixelShader.fx">
+    <CustomBuild Include="Assets\Shaders\deferredLightPixelShader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\basicScreenVertexShader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\rendertotexturespixelshader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\deferredLightPixelShader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\normalmapvertexshader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\deferredLightVertexShader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\normalmappixelshader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\normalmappixelshader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\deferredLightVertexShader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\normalmapvertexshader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\basicScreenVertexShader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\rendertotexturespixelshader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\rendertotexturesvertexshader.fx">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Assets\Shaders\rendertotexturesvertexshader.fx">
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\basicScreenPixelShader.fx">
       <Filter>Resource Files</Filter>
-    </None>
+    </CustomBuild>
   </ItemGroup>
 </Project>
