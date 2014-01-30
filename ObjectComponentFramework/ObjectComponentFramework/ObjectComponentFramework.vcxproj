@@ -175,41 +175,49 @@
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\basicScreenVertexShader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\deferredLightPixelShader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\deferredLightVertexShader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\normalmappixelshader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\normalmapvertexshader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\rendertotexturespixelshader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\rendertotexturesvertexshader.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(DXSDK_DIR)Utilities\bin\x86\"fxc.exe  /T fx_4_0 /Fo "%(Filename).fxo" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(filename).fxo</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

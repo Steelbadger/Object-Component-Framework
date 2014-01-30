@@ -77,10 +77,10 @@ void TESTFUNCTION()
 	bottomLeft = D3DXVECTOR3(bL);
 	bottomRight = D3DXVECTOR3(bR);
 
-	D3DXVec3Normalize(&topLeft, &topLeft);
-	D3DXVec3Normalize(&topRight, &topRight);
-	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
-	D3DXVec3Normalize(&bottomRight, &bottomRight);
+//	D3DXVec3Normalize(&topLeft, &topLeft);
+//	D3DXVec3Normalize(&topRight, &topRight);
+//	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
+//	D3DXVec3Normalize(&bottomRight, &bottomRight);
 
 	D3DXVECTOR3 u1;
 	D3DXVECTOR3 u2;
