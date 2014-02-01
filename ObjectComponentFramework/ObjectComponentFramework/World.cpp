@@ -99,7 +99,7 @@ void World::CreateScene()
 		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
 		AddToScene(test);
 
-		if (i%5 == 0) {
+		if (i%50 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);

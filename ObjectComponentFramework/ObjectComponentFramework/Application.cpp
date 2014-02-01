@@ -254,6 +254,18 @@ void Application::TestUpdate()
 		std::cout << "Current Lights in Scene: " << world.GetLightList().size() << std::endl;
 	}
 
+	if (m_Input->Pressed('K')) {
+		ObjectID light3 = GameObject::New();
+		GameObject::AddComponent<Position>(light3);
+		GameObject::AddComponent<Orientation>(light3);
+		GameObject::AddComponent<PointLight>(light3);
+		GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
+		GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
+		GameObject::GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);
+		world.AddToScene(light3);
+		std::cout << "Current Lights in Scene: " << world.GetLightList().size() << std::endl;
+	}
+
 	if (m_Input->Pressed('P')) {
 		deferred = !deferred;
 		if (deferred == true) {
