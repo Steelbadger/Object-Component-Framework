@@ -1,6 +1,6 @@
 #include "MeshFactory.h"
 #include "UtilityFunctions.h"
-
+#include <memory>
 
 MeshFactory::MeshFactory()
 {
@@ -16,90 +16,95 @@ void MeshFactory::SetDevice(ID3D11Device* dev)
 	device = dev;
 }
 
-MeshData MeshFactory::CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel features)
+std::shared_ptr<MeshData>& MeshFactory::CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel features)
 {
-	MeshData output;
-//	if (loadedMeshMap.count(filename) != 0) {
-//		output = loadedMeshMap[filename];
-//	} else {
+//	MeshData output;
+	std::shared_ptr<MeshData> output;
+	std::string lookup = filename + std::to_string(unsigned long long(features));
 
+	if (loadedMeshMap.count(lookup) == 0) {
 		switch (features) {
 		case Mesh::FeatureLevel::TEXTURED:
-			output = CreateBasicMeshBuffersFromFile(filename);
+			output = std::shared_ptr<MeshData>(new MeshData(CreateBasicMeshBuffersFromFile(filename)));
 			break;
 		case Mesh::FeatureLevel::LIT:
-			output = CreateLitMeshBuffersFromFile(filename);
+			output = std::shared_ptr<MeshData>(new MeshData(CreateLitMeshBuffersFromFile(filename)));
 			break;
 		case Mesh::FeatureLevel::NORMALMAPPED:
-			output = CreateMappedMeshBuffersFromFile(filename);
+			output = std::shared_ptr<MeshData>(new MeshData(CreateMappedMeshBuffersFromFile(filename)));
 			break;
 		}
-//		loadedMeshMap[filename] = output;
-//	}
-	return output;
+		loadedMeshMap[lookup] = output;
+	}
+	return loadedMeshMap[lookup];
 }
 
-MeshData MeshFactory::CreatePrimitive(Primitive prim)
+std::shared_ptr<MeshData>& MeshFactory::CreatePrimitive(Primitive prim)
 {
 	std::vector<LitVertexType> vertsLoad;
 	std::vector<MappedVertexType> verts;
 	std::vector<unsigned int> index;
-	Plane(vertsLoad, index, 200.0f, 200.0f, 40, 40);
+	std::string lookup = std::to_string(unsigned long long(prim));
 
-	verts = ComputeTangentSpace(vertsLoad, index);
+	if (loadedMeshMap.count(lookup) == 0) {
+		Plane(vertsLoad, index, 200.0f, 200.0f, 40, 40);
 
-	MeshData output;
+		verts = ComputeTangentSpace(vertsLoad, index);
 
-	output.m_vertexCount = verts.size();
-	output.m_indexCount = index.size();
-	output.stride = sizeof(MappedVertexType);
-	output.topology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		MeshData output;
 
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-	HRESULT result;
+		output.m_vertexCount = verts.size();
+		output.m_indexCount = index.size();
+		output.stride = sizeof(MappedVertexType);
+		output.topology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	// Set up the description of the static vertex buffer.
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(MappedVertexType) * output.m_vertexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
+		D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+		D3D11_SUBRESOURCE_DATA vertexData, indexData;
+		HRESULT result;
 
-	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = &verts[0];
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
+		// Set up the description of the static vertex buffer.
+		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDesc.ByteWidth = sizeof(MappedVertexType) * output.m_vertexCount;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = 0;
+		vertexBufferDesc.MiscFlags = 0;
+		vertexBufferDesc.StructureByteStride = 0;
 
-	// Now create the vertex buffer.
-	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &output.m_vertexBuffer);
-	if(FAILED(result))
-	{
-		Error("Failed to Create Vertex Buffer for file: Primitive Plane");
+		// Give the subresource structure a pointer to the vertex data.
+		vertexData.pSysMem = &verts[0];
+		vertexData.SysMemPitch = 0;
+		vertexData.SysMemSlicePitch = 0;
+
+		// Now create the vertex buffer.
+		result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &output.m_vertexBuffer);
+		if(FAILED(result))
+		{
+			Error("Failed to Create Vertex Buffer for file: Primitive Plane");
+		}
+
+		// Set up the description of the static index buffer.
+		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		indexBufferDesc.ByteWidth = sizeof(unsigned int) * output.m_indexCount;
+		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		indexBufferDesc.CPUAccessFlags = 0;
+		indexBufferDesc.MiscFlags = 0;
+		indexBufferDesc.StructureByteStride = 0;
+
+		// Give the subresource structure a pointer to the index data.
+		indexData.pSysMem = &index[0];
+		indexData.SysMemPitch = 0;
+		indexData.SysMemSlicePitch = 0;
+
+		// Create the index buffer.
+		result = device->CreateBuffer(&indexBufferDesc, &indexData, &output.m_indexBuffer);
+		if(FAILED(result))
+		{
+			Error("Failed to Create Index Buffer for file: Primitive Plane");
+		}
+
+		loadedMeshMap[lookup] = std::shared_ptr<MeshData>(new MeshData(output));
 	}
-
-	// Set up the description of the static index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned int) * output.m_indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-
-	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = &index[0];
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	// Create the index buffer.
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &output.m_indexBuffer);
-	if(FAILED(result))
-	{
-		Error("Failed to Create Index Buffer for file: Primitive Plane");
-	}
-
-	return output;
+	return loadedMeshMap[lookup];
 }
 
 MeshData MeshFactory::CreateBasicMeshBuffersFromFile(std::string filename)

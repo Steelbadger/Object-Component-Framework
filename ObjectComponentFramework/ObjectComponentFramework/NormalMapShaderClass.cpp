@@ -56,21 +56,21 @@ bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID d
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
-	MeshData data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
+	std::shared_ptr<MeshData> data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
 	ObjectID cameraObject = world.GetCameraObject();
 	ObjectID light = world.GetLightList().front();
 
-	stride = data.stride;
+	stride = data->stride;
 	offset = 0;
     
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetVertexBuffers(0, 1, &data.m_vertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &data->m_vertexBuffer, &stride, &offset);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetIndexBuffer(data.m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(data->m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(data.topology);
+	deviceContext->IASetPrimitiveTopology(data->topology);
 
 	// Set the shader parameters that it will use for rendering.
 	result = SetShaderParameters(deviceContext, drawObject, cameraObject, light);
@@ -80,7 +80,7 @@ bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID d
 	}
 
 	// Now render the prepared buffers with the shader.
-	RenderShader(deviceContext, data.m_indexCount);
+	RenderShader(deviceContext, data->m_indexCount);
 
 	return true;
 }

@@ -3,6 +3,7 @@
 #include "Component.h"
 #include <D3D11.h>
 #include <string>
+#include <memory>
 
 struct MeshData {
 	MeshData(){
@@ -23,8 +24,9 @@ public:
 	Mesh(){};
 	~Mesh(){};
 
-	MeshData GetGeometry(){return geometry;}
-	void SetMeshData(MeshData data){geometry = data;}
+	std::shared_ptr<MeshData>& GetGeometry(){return geom;}
+	void SetMeshData(std::shared_ptr<MeshData>& data){geom = data;}
+
 private:
-	MeshData geometry;
+	std::shared_ptr<MeshData> geom;
 };

@@ -6,6 +6,7 @@
 #include <map>
 #include "Vector2.h"
 #include "Vector3.h"
+#include <memory>
 
 
 #define MODELDIR "Assets/Models/"
@@ -41,8 +42,8 @@ public:
 	MeshFactory();
 	~MeshFactory();
 
-	MeshData CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel featurelevel);
-	MeshData CreatePrimitive(Primitive prim = Primitive::PLANE);
+	std::shared_ptr<MeshData>& CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel featurelevel);
+	std::shared_ptr<MeshData>& CreatePrimitive(Primitive prim = Primitive::PLANE);
 	void SetDevice(ID3D11Device* device);
 private:
 
@@ -61,5 +62,5 @@ private:
 
 	ID3D11Device* device;
 
-	std::map<std::string, MeshData> loadedMeshMap;
+	std::map<std::string, std::shared_ptr<MeshData> > loadedMeshMap;
 };

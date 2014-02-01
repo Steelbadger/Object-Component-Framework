@@ -99,7 +99,7 @@ void World::CreateScene()
 		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
 		AddToScene(test);
 
-		if (i%50 == 0) {
+		if (i%5 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);
@@ -111,6 +111,17 @@ void World::CreateScene()
 			GameObject::SetParentChild(test, light3);
 		}
 	}
+
+	//for (int i = 0 ; i < 50; i++) {
+	//	ObjectID light3 = GameObject::New();
+	//	GameObject::AddComponent<Position>(light3);
+	//	GameObject::AddComponent<Orientation>(light3);
+	//	GameObject::AddComponent<PointLight>(light3);
+	//	GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
+	//	GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
+	//	GameObject::GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);
+	//	AddToScene(light3);
+	//}
 
 	ObjectID ground = GameObject::New();
 	GameObject::AddComponent<Position>(ground);

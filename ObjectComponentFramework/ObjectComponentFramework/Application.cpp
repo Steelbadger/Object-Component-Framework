@@ -240,9 +240,9 @@ void Application::TestUpdate()
 	std::list<ObjectID>::iterator it;
 
 
-	//for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
-	//	Controller::Get((*it)).Update();		
-	//}
+	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
+		Controller::Get((*it)).Update();		
+	}
 
 
 	if (m_Input->Pressed(VK_RETURN)) {

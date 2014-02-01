@@ -27,8 +27,8 @@ private:
 
 public:
     DynamicLookupTable() {
-		storage.reserve(100000);
-		spacesStack.reserve(100000);
+		storage.reserve(2000000);
+		spacesStack.reserve(2000000);
         for (int i = 0; i < InitialSize; i++) {
 			spacesStack.push_back((InitialSize-1)-i);
 			storage.push_back(Storage());

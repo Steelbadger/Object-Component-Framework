@@ -58,20 +58,20 @@ bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, Obj
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
-	MeshData data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
+	std::shared_ptr<MeshData> data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
 	ObjectID cameraObject = world.GetCameraObject();
 
-	stride = data.stride;
+	stride = data->stride;
 	offset = 0;
     
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetVertexBuffers(0, 1, &data.m_vertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &data->m_vertexBuffer, &stride, &offset);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetIndexBuffer(data.m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(data->m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(data.topology);
+	deviceContext->IASetPrimitiveTopology(data->topology);
 
 	// Set the shader parameters that it will use for rendering.
 	result = SetShaderParameters(deviceContext, drawObject, cameraObject);
@@ -81,7 +81,7 @@ bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, Obj
 	}
 
 	// Now render the prepared buffers with the shader.
-	RenderShader(deviceContext, data.m_indexCount);
+	RenderShader(deviceContext, data->m_indexCount);
 
 	return true;
 }
@@ -367,14 +367,6 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 
 	// Now set the matrix constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-
-	//ID3D11ShaderResourceView* ambientTexture;
-	//ID3D11ShaderResourceView* normalTexture;
-	//ID3D11ShaderResourceView* specularTexture;
-
-	//ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
-	//normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
-	//specularTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>();
 
 	std::vector<ID3D11ShaderResourceView*> textures;
 	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
