@@ -49,7 +49,7 @@ void Camera::SetFieldOfView(float degrees)
 	projectionChange = true;
 }
 
-D3DXMATRIX Camera::GetViewMatrix()
+const D3DXMATRIX& Camera::GetViewMatrix()
 {
 	if (GameObject::GetComponent<Transformation>(GetParentID()).ViewHasChanged()) {
 		D3DXVECTOR3 up(0,1,0);
@@ -71,7 +71,7 @@ D3DXMATRIX Camera::GetViewMatrix()
 }
 
 
-D3DXMATRIX Camera::GetProjectionMatrix()
+const D3DXMATRIX& Camera::GetProjectionMatrix()
 {
 	if (projectionChange == true) {
 		if (perspective) {

@@ -310,8 +310,6 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	tR /= tR.w;
 	tR /= tR.z;
 	topRight = D3DXVECTOR3(tR);
-//	D3DXVec3Normalize(&topRight, &topRight);
-
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -326,11 +324,6 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Copy the lighting variables into the constant buffer.
 
 	D3DXVECTOR4 position;
-	ComponentType direct = DirectionalLight::GetComponentTypeID();
-	ComponentType point = PointLight::GetComponentTypeID();
-
-	GameObject* thingy = &GameObject::Get(lightObject);
-
 	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
 		D3DXVECTOR3 direction = GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection();
 		D3DXVec3TransformNormal(&direction, &direction, &view);

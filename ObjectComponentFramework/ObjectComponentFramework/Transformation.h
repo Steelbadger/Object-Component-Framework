@@ -11,7 +11,7 @@ public:
 	Transformation();
 	~Transformation();
 
-	D3DXMATRIX GetTransformation();
+	const D3DXMATRIX& GetTransformation();
 	void SetChanged();
 	inline bool ViewHasChanged(){return viewChanged;}
 	inline void SetViewUnchanged(){viewChanged = false;}

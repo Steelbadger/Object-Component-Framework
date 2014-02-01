@@ -237,15 +237,21 @@ void Application::TestUpdate()
 
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
 
-	for (int i = 0; i < Controller::GetList().Size(); i++) {
-		if (Controller::GetList().Exists(i)) {
-			Controller::GetList().Get(i).Update();
-		}
-	}
+	std::list<ObjectID>::iterator it;
+
+
+	//for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
+	//	Controller::Get((*it)).Update();		
+	//}
+
 
 	if (m_Input->Pressed(VK_RETURN)) {
 		std::cout << "FrameRate: " << (1/m_Input->GetTimeForLastFrameHighResolution()) << std::endl;
 		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
+	}
+
+	if (m_Input->Pressed('L')) {
+		std::cout << "Current Lights in Scene: " << world.GetLightList().size() << std::endl;
 	}
 
 	if (m_Input->Pressed('P')) {

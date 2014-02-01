@@ -13,7 +13,7 @@ public:
 	void SetCameraObject(ObjectID id);
 	ObjectID GetCameraObject();
 	std::list<ObjectID> GetDrawList();
-	std::list<ObjectID> GetUpdateList();
+	std::list<ObjectID>& GetUpdateList();
 	std::list<ObjectID> GetLightList();
 	void AddToScene(ObjectID id);
 	void PassMeshFactory(MeshFactory* factory);

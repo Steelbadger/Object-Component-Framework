@@ -343,14 +343,6 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	MatrixBufferType* dataPtr;
 	unsigned int bufferNumber;
 
-	D3DXMATRIX viewMatrix = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
-	D3DXMATRIX projectionMatrix = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
-	D3DXMATRIX worldMatrix = GameObject::GetComponent<Transformation>(drawObject).GetTransformation();
-
-	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
-	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
-	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
 
 	// Lock the matrix constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -362,10 +354,10 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	// Get a pointer to the data in the constant buffer.
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	// Copy the matrices into the constant buffer.
-	dataPtr->worldMatrix = worldMatrix;
-	dataPtr->viewMatrix = viewMatrix;
-	dataPtr->projectionMatrix = projectionMatrix;
+	// Transpose the matrices to prepare them for the shader.
+	D3DXMatrixTranspose(&dataPtr->worldMatrix, &GameObject::GetComponent<Transformation>(drawObject).GetTransformation());
+	D3DXMatrixTranspose(&dataPtr->viewMatrix, &GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix());
+	D3DXMatrixTranspose(&dataPtr->projectionMatrix, &GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix());
 
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -376,18 +368,18 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	// Now set the matrix constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	ID3D11ShaderResourceView* ambientTexture;
-	ID3D11ShaderResourceView* normalTexture;
-	ID3D11ShaderResourceView* specularTexture;
+	//ID3D11ShaderResourceView* ambientTexture;
+	//ID3D11ShaderResourceView* normalTexture;
+	//ID3D11ShaderResourceView* specularTexture;
 
-	ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
-	normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
-	specularTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>();
+	//ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
+	//normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
+	//specularTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>();
 
 	std::vector<ID3D11ShaderResourceView*> textures;
-	textures.push_back(ambientTexture);
-	textures.push_back(normalTexture);
-	textures.push_back(specularTexture);
+	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
+	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>());
+	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>());
 
 	// Set shader texture array resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 3, textures.data());

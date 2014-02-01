@@ -19,7 +19,7 @@ Transformation::~Transformation()
 
 }
 
-D3DXMATRIX Transformation::GetTransformation()
+const D3DXMATRIX& Transformation::GetTransformation()
 {
 	if (globalChanged) {
 		CalculateGlobalTransformation();

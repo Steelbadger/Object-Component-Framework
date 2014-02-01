@@ -90,7 +90,7 @@ void World::CreateScene()
 
 		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
-		GameObject::GetComponent<Position>(test).SetPosition(rand()%80-20,0,rand()%80-20);
+		GameObject::GetComponent<Position>(test).SetPosition(rand()%200-100,0,rand()%200-100);
 		GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
 		GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
 		GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
@@ -99,7 +99,7 @@ void World::CreateScene()
 		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
 		AddToScene(test);
 
-		if (i%20 == 0) {
+		if (i%50 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);
@@ -118,7 +118,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Mesh>(ground);
 	GameObject::AddComponent<Material>(ground);
 
-	GameObject::GetComponent<Position>(ground).SetPosition(-25,-0.5,-25);
+	GameObject::GetComponent<Position>(ground).SetPosition(-100,-0.5,-100);
 	GameObject::GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive());
 	GameObject::GetComponent<Material>(ground).AddTexture<AmbientTexture>("stone01.dds");
 	GameObject::GetComponent<Material>(ground).AddTexture<NormalMap>("bump01.dds");
@@ -186,7 +186,7 @@ std::list<ObjectID> World::GetDrawList()
 	return drawList;
 }
 
-std::list<ObjectID> World::GetUpdateList()
+std::list<ObjectID>& World::GetUpdateList()
 {
 	return updateList;
 }

@@ -44,7 +44,7 @@ MeshData MeshFactory::CreatePrimitive(Primitive prim)
 	std::vector<LitVertexType> vertsLoad;
 	std::vector<MappedVertexType> verts;
 	std::vector<unsigned int> index;
-	Plane(vertsLoad, index, 500.0f, 500.0f, 100, 100);
+	Plane(vertsLoad, index, 200.0f, 200.0f, 40, 40);
 
 	verts = ComputeTangentSpace(vertsLoad, index);
 
@@ -319,8 +319,8 @@ std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(cons
 		vertex1 = data[index[i]];
 		vertex2 = data[index[i+1]];
 		vertex3 = data[index[i+2]];
-		D3DXVECTOR3 tangent;
-		D3DXVECTOR3 binormal;
+		Vector3 tangent;
+		Vector3 binormal;
 
 		float vector1[3], vector2[3];
 		float tuVector[2], tvVector[2];
@@ -402,9 +402,9 @@ std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(cons
 void MeshFactory::LoadObj(std::string filename, std::vector<LitVertexType>& outverts, std::vector<unsigned int>& outindex)
 {
 	std::vector<unsigned int> vertIndices, uvIndices, normalIndices;
-	std::vector<D3DXVECTOR3> tempVerts;
-	std::vector<D3DXVECTOR3> tempNormals;
-	std::vector<D3DXVECTOR2> tempUVs;
+	std::vector<Vector3> tempVerts;
+	std::vector<Vector3> tempNormals;
+	std::vector<Vector2> tempUVs;
 
 	std::vector<unsigned int> index;
 	std::vector<LitVertexType> vertexs;
@@ -430,15 +430,15 @@ void MeshFactory::LoadObj(std::string filename, std::vector<LitVertexType>& outv
 		// else : parse lineHeader
 		
 		if ( strcmp( lineHeader, "v" ) == 0 ){
-			D3DXVECTOR3 vertex;
+			Vector3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
 			tempVerts.push_back(vertex);
 		} else if ( strcmp( lineHeader, "vt" ) == 0 ){
-			D3DXVECTOR2 uv;
+			Vector2 uv;
 			fscanf(file, "%f %f\n", &uv.x, &uv.y );
 			tempUVs.push_back(uv);
 		} else if ( strcmp( lineHeader, "vn" ) == 0 ){
-			D3DXVECTOR3 normal;
+			Vector3 normal;
 			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
 			tempNormals.push_back(normal);
 		} else if ( strcmp( lineHeader, "f" ) == 0 ){
@@ -493,9 +493,9 @@ void MeshFactory::LoadObj(std::string filename, std::vector<LitVertexType>& outv
 
 void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned int>& index, float width, float height, int widthSubDivs, int heightSubDivs)
 {
-	std::vector<D3DXVECTOR3> verts;
-	std::vector<D3DXVECTOR3> normals;
-	std::vector<D3DXVECTOR2> texCoords;
+	std::vector<Vector3> verts;
+	std::vector<Vector3> normals;
+	std::vector<Vector2> texCoords;
 
 	index.clear();
 
@@ -505,23 +505,23 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 	int indexcount = 0;
 	for (int i = 0; i < heightSubDivs-1; i++) {
 		for (int j = 0; j < widthSubDivs-1; j++) {
-			verts.push_back(D3DXVECTOR3(i*widthStep,0, j*heightStep));
-			texCoords.push_back(D3DXVECTOR2(0,0));
-			verts.push_back(D3DXVECTOR3(i*widthStep,0, (j+1)*heightStep));
-			texCoords.push_back(D3DXVECTOR2(0,1));
-			verts.push_back(D3DXVECTOR3((i+1)*widthStep,0, (j+1)*heightStep));
-			texCoords.push_back(D3DXVECTOR2(1,1));
+			verts.push_back(Vector3(i*widthStep,0, j*heightStep));
+			texCoords.push_back(Vector2(0,0));
+			verts.push_back(Vector3(i*widthStep,0, (j+1)*heightStep));
+			texCoords.push_back(Vector2(0,1));
+			verts.push_back(Vector3((i+1)*widthStep,0, (j+1)*heightStep));
+			texCoords.push_back(Vector2(1,1));
 
-			verts.push_back(D3DXVECTOR3(i*widthStep,0, j*heightStep));
-			texCoords.push_back(D3DXVECTOR2(0,0));
-			verts.push_back(D3DXVECTOR3((i+1)*widthStep,0, (j+1)*heightStep));
-			texCoords.push_back(D3DXVECTOR2(1,1));
-			verts.push_back(D3DXVECTOR3((i+1)*widthStep,0, j*heightStep));
-			texCoords.push_back(D3DXVECTOR2(1,0));
+			verts.push_back(Vector3(i*widthStep,0, j*heightStep));
+			texCoords.push_back(Vector2(0,0));
+			verts.push_back(Vector3((i+1)*widthStep,0, (j+1)*heightStep));
+			texCoords.push_back(Vector2(1,1));
+			verts.push_back(Vector3((i+1)*widthStep,0, j*heightStep));
+			texCoords.push_back(Vector2(1,0));
 
 			for (int k = 0; k < 6; k++) {
 				index.push_back(indexcount++);
-				normals.push_back(D3DXVECTOR3(0,1,0));
+				normals.push_back(Vector3(0,1,0));
 			}
 		}
 	}
@@ -529,10 +529,10 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 
 	//for (int i = 0; i < heightSubDivs; i++) {
 	//	for (int j = 0; j < widthSubDivs; j++) {
-	//		verts.push_back(D3DXVECTOR3(i*widthStep-width/2, 0, j*heightStep-height/2));
-	//		D3DXVECTOR3 normalA = D3DXVECTOR3(0,1,0);
+	//		verts.push_back(Vector3(i*widthStep-width/2, 0, j*heightStep-height/2));
+	//		Vector3 normalA = Vector3(0,1,0);
 	//		normals.push_back(normalA);
-	//		texCoords.push_back(D3DXVECTOR2(i*widthStep/width, j*heightStep/height));
+	//		texCoords.push_back(Vector2(i*widthStep/width, j*heightStep/height));
 	//	}
 	//}
 

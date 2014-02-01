@@ -2,9 +2,10 @@
 
 #include "Mesh.h"
 #include <D3D11.h>
-#include <D3DX10math.h>
 #include <vector>
 #include <map>
+#include "Vector2.h"
+#include "Vector3.h"
 
 
 #define MODELDIR "Assets/Models/"
@@ -14,24 +15,24 @@ class MeshFactory
 private:
 	struct BasicVertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;
+		Vector3 position;
+		Vector2 texture;
 	};
 
 	struct LitVertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;
-		D3DXVECTOR3 normal;
+		Vector3 position;
+		Vector2 texture;
+		Vector3 normal;
 	};
 
 	struct MappedVertexType
 	{
-		D3DXVECTOR3 position;
-		D3DXVECTOR2 texture;
-		D3DXVECTOR3 normal;
-		D3DXVECTOR3 tangent;
-		D3DXVECTOR3 bitangent;
+		Vector3 position;
+		Vector2 texture;
+		Vector3 normal;
+		Vector3 tangent;
+		Vector3 bitangent;
 	};
 
 public:

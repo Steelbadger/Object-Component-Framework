@@ -17,8 +17,8 @@ public:
 	float GetNearClipPlane();
 	float GetFarClipPlane();
 	void Zoom(float zoom);
-	D3DXMATRIX GetViewMatrix();
-	D3DXMATRIX GetProjectionMatrix();
+	const D3DXMATRIX& GetViewMatrix();
+	const D3DXMATRIX& GetProjectionMatrix();
 
 private:
 	bool perspective;
