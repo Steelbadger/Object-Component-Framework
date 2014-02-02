@@ -262,17 +262,16 @@ bool GraphicsClass::Render(World& world)
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	std::list<ObjectID> drawList = world.GetDrawList();
-
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-
 		currentShader = shaderLibrary.GetShader(GameObject::GetComponent<Material>(current).GetShader());
 		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world);
 		if(!result)
 		{
 			return false;
 		}
+
 	}
 	//Present the rendered scene to the screen.
 	m_D3D->EndScene();

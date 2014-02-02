@@ -7,7 +7,6 @@ public:
 	ControlFunctor(){};
 	virtual ~ControlFunctor(){};
 	virtual void operator()(ObjectID affectedObject) = 0;
-	virtual ControlFunctor* Copy() const = 0;
 };
 
 
@@ -17,7 +16,6 @@ public:
 	FirstPersonController();
 	virtual ~FirstPersonController();
 	virtual void operator()(ObjectID affectedObject);
-	virtual ControlFunctor* Copy() const;
 
 	void SetSensitivity(float s);
 
@@ -32,7 +30,6 @@ public:
 	SpinController();
 	virtual ~SpinController();
 	virtual void operator()(ObjectID affectedObject);
-	virtual ControlFunctor* Copy() const;
 
 	void SetSpinSpeed(float x, float y, float z);
 

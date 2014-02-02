@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <list>
+#include <map>
 
 typedef int ObjectID;
 
@@ -9,30 +11,23 @@ public:
 	LookupTableInterface(){;}
 	virtual ~LookupTableInterface(){;}
 	virtual void Remove(ObjectID object) = 0;
-	virtual bool Exists(ObjectID object) = 0;
-	virtual int Size() = 0;
+	virtual bool Exists(ObjectID object) const = 0;
+	virtual int Size() const = 0;
+	virtual int Capacity() const = 0;
+	virtual int Count() const = 0;
 };
  
 
-template<class T, int InitialSize = 1>
-class DynamicLookupTable : public LookupTableInterface {
-private:
-	struct Storage {
-        Storage():used(false){}
-        Storage(T& data):element(data), used(true){}
-        T element;
-        bool used;        
-    };
-
+template<class T>
+class DynamicLookupTable : public LookupTableInterface
+{
+private: 
+    std::vector<T> storage;
+	std::list<ObjectID> spacesStack;
+	std::map<ObjectID, T*> usedMap;
 
 public:
     DynamicLookupTable() {
-		storage.reserve(1000);
-		spacesStack.reserve(1000);
-        for (int i = 0; i < InitialSize; i++) {
-			spacesStack.push_back((InitialSize-1)-i);
-			storage.push_back(Storage());
-        }
     }
 
 	virtual ~DynamicLookupTable() {;}
@@ -41,43 +36,44 @@ public:
 		ObjectID outID;
 		if (spacesStack.size() > 0) {
 			outID = spacesStack.back();
-			storage[outID] = Storage(object);
+			storage[outID] = std::move(object);
 			spacesStack.pop_back();
 		} else {
 			outID = storage.size();
-			storage.push_back(Storage(object));
+			storage.push_back(std::move(object));
 		}
+		usedMap[outID] = &storage[outID];
 		return outID;
     }
     
     virtual void Remove(ObjectID object) {
 		if (Exists(object)) {
 			spacesStack.push_back(object);
-			storage[object].used = false;
+			usedMap.erase(object);
 		}
     }
     
-    virtual bool Exists(ObjectID object){
-		if (object >= 0 && object < storage.size()) {
-			return storage[object].used;
-		} else {
-			return false;
-		}
+    virtual bool Exists(ObjectID object) const {
+		return (usedMap.count(object) > 0);
     }
 
 	T& Get(ObjectID object) {
 		if (Exists(object)) {
-			return storage[object].element;
+			return storage[object];
 		} else {
 			return T();
 		}
 	}
 
-	virtual int Size() {
+	virtual int Size() const {
 		return storage.size();
 	}
 
-private:
-    std::vector<Storage> storage;
-    std::vector<ObjectID> spacesStack; 
+	virtual int Capacity() const {
+		return storage.capacity();
+	}
+
+	virtual int Count() const {
+		return usedMap.size();
+	}
 };

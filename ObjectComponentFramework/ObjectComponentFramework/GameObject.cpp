@@ -63,7 +63,7 @@ void GameObject::RemoveChild(ObjectID id)
 	//panic
 }
 
-std::vector<ObjectID> GameObject::GetChildren()
+const std::vector<ObjectID>& GameObject::GetChildren()
 {
 	return childGameObjects;
 }

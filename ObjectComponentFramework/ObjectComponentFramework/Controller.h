@@ -11,16 +11,15 @@ class Controller : public Component<Controller>
 {
 public:
 	Controller();
-	Controller(const Controller& copy);
+	Controller(Controller&& orig);
 	~Controller();
 
 	void Update();
 	template<class T>
-	void SetControlFunction(const T &updateFunctor) {
-		Controller* thing = this;
-		update.reset((ControlFunctor*)updateFunctor.Copy());
+	void SetControlFunction(T &updateFunctor) {
+		update = std::unique_ptr<ControlFunctor>(new T(updateFunctor));
 	}
-	Controller& operator=(const Controller& rhs);
+	Controller& operator=(Controller&& orig);
 private:
 	std::unique_ptr<ControlFunctor> update;
 };

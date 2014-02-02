@@ -38,6 +38,10 @@ class Component : protected ComponentBase
 {
 public:
 	~Component(){;}
+	Component(Component&& move) {
+		parent = move.parent;
+		lookup = move.lookup;
+	}
 
 	ObjectID GetID(){return lookup;}
 
@@ -60,6 +64,11 @@ public:
 	}
 	static DynamicLookupTable<T>& GetList(){
 		return componentStorage;
+	}
+
+	void operator=(Component&& move) {
+		parent = move.parent;
+		lookup = move.lookup;
 	}
 protected:
 	Component(): lookup(-1), parent(-1){

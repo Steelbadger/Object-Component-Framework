@@ -7,11 +7,11 @@ Controller::Controller(): update(nullptr)
 {
 }
 
-Controller::Controller(const Controller& copy)
+Controller::Controller(Controller&& orig)
 {
-	if (copy.update) {
-		update.reset((ControlFunctor*)copy.update->Copy());
-	}
+	update = std::move(orig.update);
+	SetParentID(orig.GetParentID());
+	SetLookup(orig.GetID());
 }
 
 Controller::~Controller()
@@ -26,12 +26,10 @@ void Controller::Update()
 	}
 }
 
-Controller& Controller::operator=(const Controller& rhs)
+Controller& Controller::operator=(Controller&& orig)
 {
-	if (rhs.update) {
-		update.reset((ControlFunctor*)rhs.update->Copy());
-	}
-	return (*this);
+	update = std::unique_ptr<ControlFunctor>(std::move(orig.update));
+	SetParentID(orig.GetParentID());
+	SetLookup(orig.GetID());
+		return (*this);
 }
-
-

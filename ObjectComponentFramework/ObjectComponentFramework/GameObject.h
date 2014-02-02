@@ -33,7 +33,7 @@ public:
 	void RemoveChild(ObjectID id);
 
 	//  Return the list of all GameObjects that are children of this GameObject
-	std::vector<ObjectID> GetChildren();
+	const std::vector<ObjectID>& GetChildren();
 
 	//  Make a pre-existing component a child of this GameObject
 	//  uses the Component type unique ID to specify component type

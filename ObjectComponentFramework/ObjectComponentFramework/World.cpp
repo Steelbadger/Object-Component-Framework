@@ -15,6 +15,7 @@
 #include "ShaderLibrary.h"
 #include "PointLight.h"
 #include "ControllerFunctors.h"
+#include "Transformation.h"
 
 
 World::World()
@@ -36,6 +37,7 @@ void World::CreateScene()
 	ObjectID light = GameObject::New();
 	GameObject::AddComponent<DirectionalLight>(light);
 	GameObject::AddComponent<Controller>(light);
+	GameObject::AddComponent<Transformation>(light);
 	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-0.0f, -1.0f, 0.0f);
 	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
@@ -48,6 +50,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Mesh>(quad);
 	GameObject::AddComponent<Material>(quad);
 	GameObject::AddComponent<Controller>(quad);
+	GameObject::AddComponent<Transformation>(quad);
 
 	spinny.SetSpinSpeed(0.0f, 0.1f, 0.0f);
 
@@ -65,6 +68,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Mesh>(test);
 	GameObject::AddComponent<Material>(test);
 	GameObject::AddComponent<Controller>(test);
+	GameObject::AddComponent<Transformation>(test);
 
 	spinny.SetSpinSpeed(0.0f, 1.0f, 0.0f);
 
@@ -79,14 +83,15 @@ void World::CreateScene()
 
 	AddToScene(quad);
 	AddToScene(test);
-
-	for (int i = 0 ; i < 500; i++) {
+	int num = 3000;
+	for (int i = 0 ; i < num; i++) {
 		ObjectID test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);
 		GameObject::AddComponent<Mesh>(test);
 		GameObject::AddComponent<Material>(test);
 		GameObject::AddComponent<Controller>(test);
+		GameObject::AddComponent<Transformation>(test);
 
 		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
@@ -99,11 +104,12 @@ void World::CreateScene()
 		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
 		AddToScene(test);
 
-		if (i%50 == 0) {
+		if (i%(num/35) == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);
 			GameObject::AddComponent<PointLight>(light3);
+			GameObject::AddComponent<Transformation>(light3);
 			GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
 			GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
 			GameObject::GetComponent<Position>(light3).SetPosition(rand()%20-10,0.5,0);
@@ -112,11 +118,12 @@ void World::CreateScene()
 		}
 	}
 
-	//for (int i = 0 ; i < 50; i++) {
+	//for (int i = 0 ; i < 40; i++) {
 	//	ObjectID light3 = GameObject::New();
 	//	GameObject::AddComponent<Position>(light3);
 	//	GameObject::AddComponent<Orientation>(light3);
 	//	GameObject::AddComponent<PointLight>(light3);
+	//	GameObject::AddComponent<Transformation>(light3);
 	//	GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
 	//	GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
 	//	GameObject::GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);
@@ -128,6 +135,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Orientation>(ground);
 	GameObject::AddComponent<Mesh>(ground);
 	GameObject::AddComponent<Material>(ground);
+	GameObject::AddComponent<Transformation>(ground);
 
 	GameObject::GetComponent<Position>(ground).SetPosition(-100,-0.5,-100);
 	GameObject::GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive());
@@ -142,6 +150,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Position>(light2);
 	GameObject::AddComponent<Orientation>(light2);
 	GameObject::AddComponent<PointLight>(light2);
+	GameObject::AddComponent<Transformation>(light2);
 	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
 	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
 	GameObject::GetComponent<Position>(light2).SetPosition(0,1,0);
@@ -151,6 +160,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Position>(light2);
 	GameObject::AddComponent<Orientation>(light2);
 	GameObject::AddComponent<PointLight>(light2);
+	GameObject::AddComponent<Transformation>(light2);
 	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 0.0f, 1.0f, 1.0f);
 	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
 	GameObject::GetComponent<Position>(light2).SetPosition(8,0.5,-12);
@@ -160,6 +170,7 @@ void World::CreateScene()
 	GameObject::AddComponent<Position>(light2);
 	GameObject::AddComponent<Orientation>(light2);
 	GameObject::AddComponent<PointLight>(light2);
+	GameObject::AddComponent<Transformation>(light2);
 	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 1.0f, 1.0f);
 	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
 	GameObject::GetComponent<Position>(light2).SetPosition(0,0.5,21);

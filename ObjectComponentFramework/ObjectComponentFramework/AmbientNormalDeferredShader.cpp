@@ -58,6 +58,8 @@ bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, Obj
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
+	Mesh* thingy = &GameObject::GetComponent<Mesh>(drawObject);
+
 	std::shared_ptr<MeshData> data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
 	ObjectID cameraObject = world.GetCameraObject();
 

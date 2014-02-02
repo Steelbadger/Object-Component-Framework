@@ -121,6 +121,12 @@ Application::~Application()
 
 bool Application::Initialize()
 {
+	Mesh m;
+	Controller c;
+	Material ma;
+
+
+
 	bool result;
 	running = true;
 
@@ -176,6 +182,8 @@ bool Application::Initialize()
 	GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
 	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	GameObject::GetComponent<Controller>(camera).SetControlFunction(cont);
+
+
 
 	world.SetCameraObject(camera);
 	return true;
@@ -236,12 +244,11 @@ void Application::TestUpdate()
 	m_Input->Update();
 
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
-
 	std::list<ObjectID>::iterator it;
-
-
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
-		Controller::Get((*it)).Update();		
+		if (Controller::GetList().Exists(*it)) {
+			Controller::Get((*it)).Update();
+		}
 	}
 
 
