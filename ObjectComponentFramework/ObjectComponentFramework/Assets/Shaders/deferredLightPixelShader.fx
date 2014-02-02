@@ -81,7 +81,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	float diffuseContribution = max(0.0, dot(normal.xyz, fragToLight));
 
-	float attenuation = (1/(1 + 0.1*dist + 0.01 * dist * dist));
+	float attenuation = (1/(1 + 0.01*dist + 0.001 * dist * dist));
 
 	diffuse = diffuseContribution * attenuation;
 

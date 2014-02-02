@@ -1,6 +1,7 @@
 #include "MeshFactory.h"
 #include "UtilityFunctions.h"
 #include <memory>
+#include "noisegenerator.h"
 
 MeshFactory::MeshFactory()
 {
@@ -47,8 +48,8 @@ std::shared_ptr<MeshData>& MeshFactory::CreatePrimitive(Primitive prim)
 	std::string lookup = std::to_string(unsigned long long(prim));
 
 	if (loadedMeshMap.count(lookup) == 0) {
-		Plane(vertsLoad, index, 200.0f, 200.0f, 40, 40);
-
+		Plane(vertsLoad, index, 1000.0f, 1000.0f, 400, 400);
+		ApplyDisplacement(vertsLoad, index);
 		verts = ComputeTangentSpace(vertsLoad, index);
 
 		MeshData output;
@@ -558,6 +559,25 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 		temp.normal = normals[i];
 		temp.texture = texCoords[i];
 		output.push_back(temp);
+	}
+}
+
+void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
+{
+	NoiseGenerator noise;
+	NoiseObject n(16, 200.0f, 0.43f, 80.0f, 1.155f);
+	noise.Seed(13.4f);
+//	noise.GeneratePermutationTable();
+
+	for (int i = 0; i < inoutIndex.size(); i++) {
+		float x, y;
+		x = inoutV[inoutIndex[i]].position.x;
+		y = inoutV[inoutIndex[i]].position.z;
+
+		float disp = noise.FractalSimplex(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n);
+		Vector3 displacementV = disp * Vector3(0, 1, 0);
+		inoutV[inoutIndex[i]].position.y = disp;
+		inoutV[inoutIndex[i]].normal = noise.FractalSimplexNormal(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n, 0.5f);
 	}
 }
 

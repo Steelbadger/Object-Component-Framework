@@ -176,12 +176,16 @@ bool Application::Initialize()
 	GameObject::AddComponent<Orientation>(camera);
 	GameObject::AddComponent<Camera>(camera);
 	GameObject::AddComponent<Controller>(camera);
+	GameObject::AddComponent<PointLight>(camera);
 
 	FirstPersonController cont;
+	cont.SetSensitivity(50.0f);
 
-	GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
+	GameObject::GetComponent<Position>(camera).SetPosition(0,80,-100);
 	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	GameObject::GetComponent<Controller>(camera).SetControlFunction(cont);
+	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
+	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
 
 
 

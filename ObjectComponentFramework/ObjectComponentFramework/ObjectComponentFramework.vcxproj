@@ -105,6 +105,7 @@
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="noisegenerator.cpp" />
     <ClCompile Include="NormalMapShaderClass.cpp" />
     <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Position.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="MessagePasser.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="noisegenerator.h" />
     <ClInclude Include="NormalMapShaderClass.h" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="PointLight.h" />
