@@ -58,82 +58,79 @@ void World::CreateScene()
 	GameObject::GetComponent<Controller>(light).SetControlFunction(spinny);
 	AddToScene(light);
 
-	GameObject* dirLight = &GameObject::Get(light);
+	//ObjectID quad = GameObject::New();
+	//GameObject::AddComponent<Position>(quad);
+	//GameObject::AddComponent<Orientation>(quad);
+	//GameObject::AddComponent<Mesh>(quad);
+	//GameObject::AddComponent<Material>(quad);
+	//GameObject::AddComponent<Controller>(quad);
+	//GameObject::AddComponent<Transformation>(quad);
 
-	ObjectID quad = GameObject::New();
-	dirLight = &GameObject::Get(light);
-	GameObject::AddComponent<Position>(quad);
-	GameObject::AddComponent<Orientation>(quad);
-	GameObject::AddComponent<Mesh>(quad);
-	GameObject::AddComponent<Material>(quad);
-	GameObject::AddComponent<Controller>(quad);
-	GameObject::AddComponent<Transformation>(quad);
+	//spinny.SetSpinSpeed(0.0f, 0.1f, 0.0f);
 
-	spinny.SetSpinSpeed(0.0f, 0.1f, 0.0f);
+	//GameObject::GetComponent<Position>(quad).SetPosition(0,0,5);
+	//GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
+	//GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
+	//GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
+	//GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
+	//GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
+	//GameObject::GetComponent<Controller>(quad).SetControlFunction(spinny);
 
-	GameObject::GetComponent<Position>(quad).SetPosition(0,0,5);
-	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
-	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
-	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
-	GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
-	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
-	GameObject::GetComponent<Controller>(quad).SetControlFunction(spinny);
+	//ObjectID test= GameObject::New();
+	//GameObject::AddComponent<Position>(test);
+	//GameObject::AddComponent<Orientation>(test);
+	//GameObject::AddComponent<Mesh>(test);
+	//GameObject::AddComponent<Material>(test);
+	//GameObject::AddComponent<Controller>(test);
+	//GameObject::AddComponent<Transformation>(test);
 
-	ObjectID test= GameObject::New();
-	GameObject::AddComponent<Position>(test);
-	GameObject::AddComponent<Orientation>(test);
-	GameObject::AddComponent<Mesh>(test);
-	GameObject::AddComponent<Material>(test);
-	GameObject::AddComponent<Controller>(test);
-	GameObject::AddComponent<Transformation>(test);
+	//spinny.SetSpinSpeed(0.0f, 1.0f, 0.0f);
 
-	spinny.SetSpinSpeed(0.0f, 1.0f, 0.0f);
+	//GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
+	//GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
+	//GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
+	//GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
+	//GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+	//GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+	//GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
+	//GameObject::SetParentChild(quad, test);
 
-	GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
-	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
-	GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
-	GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
-	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
-	GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
-	GameObject::SetParentChild(quad, test);
+	//AddToScene(quad);
+	//AddToScene(test);
+	int num = 500;
+	//for (int i = 0 ; i < num; i++) {
+	//	ObjectID test= GameObject::New();
+	//	GameObject::AddComponent<Position>(test);
+	//	GameObject::AddComponent<Orientation>(test);
+	//	GameObject::AddComponent<Mesh>(test);
+	//	GameObject::AddComponent<Material>(test);
+	//	GameObject::AddComponent<Controller>(test);
+	//	GameObject::AddComponent<Transformation>(test);
 
-	AddToScene(quad);
-	AddToScene(test);
-	int num = 2500;
-	for (int i = 0 ; i < num; i++) {
-		ObjectID test= GameObject::New();
-		GameObject::AddComponent<Position>(test);
-		GameObject::AddComponent<Orientation>(test);
-		GameObject::AddComponent<Mesh>(test);
-		GameObject::AddComponent<Material>(test);
-		GameObject::AddComponent<Controller>(test);
-		GameObject::AddComponent<Transformation>(test);
+	//	spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
-		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
+	//	GameObject::GetComponent<Position>(test).SetPosition(rand()%200-100,0,rand()%200-100);
+	//	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
+	//	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
+	//	GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
+	//	GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+	//	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+	//	GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
+	//	AddToScene(test);
 
-		GameObject::GetComponent<Position>(test).SetPosition(rand()%200-100,0,rand()%200-100);
-		GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-		GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
-		GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
-		GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
-		GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
-		GameObject::GetComponent<Controller>(test).SetControlFunction(spinny);
-		AddToScene(test);
-
-		if (i%(num/35) == 0) {
-			ObjectID light3 = GameObject::New();
-			GameObject::AddComponent<Position>(light3);
-			GameObject::AddComponent<Orientation>(light3);
-			GameObject::AddComponent<PointLight>(light3);
-			GameObject::AddComponent<Transformation>(light3);
-			GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
-			GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
-			GameObject::GetComponent<Position>(light3).SetPosition(rand()%20-10,0.5,0);
-			AddToScene(light3);
-			GameObject::SetParentChild(test, light3);
-		}
-	}
+	//	//if (i%(num/35) == 0) {
+	//	//	ObjectID light3 = GameObject::New();
+	//	//	GameObject::AddComponent<Position>(light3);
+	//	//	GameObject::AddComponent<Orientation>(light3);
+	//	//	GameObject::AddComponent<PointLight>(light3);
+	//	//	GameObject::AddComponent<Transformation>(light3);
+	//	//	GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
+	//	//	GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
+	//	//	GameObject::GetComponent<Position>(light3).SetPosition(rand()%20-10,0.5,0);
+	//	//	AddToScene(light3);
+	//	//	GameObject::SetParentChild(test, light3);
+	//	//}
+	//}
 
 	//for (int i = 0 ; i < 40; i++) {
 	//	ObjectID light3 = GameObject::New();
@@ -162,36 +159,36 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(ground).SetShader(ShaderLibrary::Shaders::NORMAL);
 	AddToScene(ground);
 
-	ObjectID light2;
-	light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::AddComponent<Transformation>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(0,1,0);
-	AddToScene(light2);
+	//ObjectID light2;
+	//light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::AddComponent<Transformation>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(0,1,0);
+	//AddToScene(light2);
 
-	light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::AddComponent<Transformation>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 0.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(8,0.5,-12);
-	AddToScene(light2);
+	//light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::AddComponent<Transformation>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 0.0f, 1.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(8,0.5,-12);
+	//AddToScene(light2);
 
-	light2 = GameObject::New();
-	GameObject::AddComponent<Position>(light2);
-	GameObject::AddComponent<Orientation>(light2);
-	GameObject::AddComponent<PointLight>(light2);
-	GameObject::AddComponent<Transformation>(light2);
-	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
-	GameObject::GetComponent<Position>(light2).SetPosition(0,0.5,21);
-	AddToScene(light2);
+	//light2 = GameObject::New();
+	//GameObject::AddComponent<Position>(light2);
+	//GameObject::AddComponent<Orientation>(light2);
+	//GameObject::AddComponent<PointLight>(light2);
+	//GameObject::AddComponent<Transformation>(light2);
+	//GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 1.0f, 1.0f);
+	//GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
+	//GameObject::GetComponent<Position>(light2).SetPosition(0,0.5,21);
+	//AddToScene(light2);
 }
 
 void World::SetCameraObject(ObjectID id)

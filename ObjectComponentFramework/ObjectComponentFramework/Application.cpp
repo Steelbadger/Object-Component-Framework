@@ -246,9 +246,8 @@ void Application::TestUpdate()
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
 	std::list<ObjectID>::iterator it;
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
-		if (Controller::GetList().Exists(*it)) {
-			Controller::Get((*it)).Update();
-		}
+		GameObject::GetComponent<Controller>(*it).Update();
+
 	}
 
 
