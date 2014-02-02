@@ -13,6 +13,7 @@ class GameObject : public Component<GameObject>
 {
 public:
 	GameObject();
+//	GameObject(GameObject&& move);
 	~GameObject();
 
 	//  Return the lookup for a component of type specified by the unique id of
@@ -127,6 +128,8 @@ public:
 	}
 
 	static void SetParentChild(ObjectID parent, ObjectID child);
+
+//	void operator=(GameObject&& move);
 
 private:
 	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse

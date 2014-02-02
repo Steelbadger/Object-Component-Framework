@@ -16,7 +16,7 @@
 #include "PointLight.h"
 #include "ControllerFunctors.h"
 #include "Transformation.h"
-
+#include "Scale.h"
 
 World::World()
 {
@@ -31,6 +31,20 @@ World::~World()
 
 void World::CreateScene()
 {
+	GameObject test1;
+	DirectionalLight test2;
+	Controller test3;
+	Transformation test4;
+	PointLight test5;
+	Mesh test6;
+	Material test7;
+	Position test8;
+	Orientation test9;
+	Camera test10;
+	Scale test11;
+
+
+
 	SpinController spinny;
 	spinny.SetSpinSpeed(0.0f, 0.0f, 0.2f);
 
@@ -44,7 +58,10 @@ void World::CreateScene()
 	GameObject::GetComponent<Controller>(light).SetControlFunction(spinny);
 	AddToScene(light);
 
+	GameObject* dirLight = &GameObject::Get(light);
+
 	ObjectID quad = GameObject::New();
+	dirLight = &GameObject::Get(light);
 	GameObject::AddComponent<Position>(quad);
 	GameObject::AddComponent<Orientation>(quad);
 	GameObject::AddComponent<Mesh>(quad);
@@ -83,7 +100,7 @@ void World::CreateScene()
 
 	AddToScene(quad);
 	AddToScene(test);
-	int num = 3000;
+	int num = 2500;
 	for (int i = 0 ; i < num; i++) {
 		ObjectID test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
@@ -182,13 +199,13 @@ void World::SetCameraObject(ObjectID id)
 	if (GameObject::HasComponent<Camera>(id)) {
 		currentCamera = id;
 	} else {
-		Warning("Object has no camera component and was not added to world");
+		Warning("Supposed Camera has no camera component and was not added to world");
 	}
 
 	if (GameObject::HasComponent<Controller>(id)) {
 		updateList.push_back(id);
 	} else {
-		Warning("Object has no controller component and was not added to the update list");
+		Warning("Camera has no controller component and was not added to the update list");
 	}
 
 	if (GameObject::HasComponent<PointLight>(id)) {

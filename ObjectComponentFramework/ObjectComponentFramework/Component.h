@@ -53,7 +53,9 @@ public:
 		parent = id;
 	}
 
-	static ComponentType GetComponentTypeID(){return componentTypeID;}
+	static ComponentType GetComponentTypeID(){
+		return componentTypeID;
+	}
 	static T& Get(ObjectID id){return componentStorage.Get(id);}
 	static void DeleteFromStorage(ObjectID id){componentStorage.Remove(id);}
 	static ObjectID New(){return T().CopyToStorage();}
@@ -99,4 +101,4 @@ private:
 
 template<class T> DynamicLookupTable<T> Component<T>::componentStorage;
 template<class T> bool Component<T>::componentClassCreated = false;
-template<class T> ComponentType Component<T>::componentTypeID;
+template<class T> ComponentType Component<T>::componentTypeID = 255;
