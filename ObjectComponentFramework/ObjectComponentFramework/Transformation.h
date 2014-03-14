@@ -5,7 +5,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 
-class Transformation : public Component<Transformation>
+class Transformation : public rabd::Component<Transformation>
 {
 public:
 	Transformation();

@@ -33,8 +33,8 @@ bool DeferredLightingShader::Initialize(ID3D11Device* device, HWND hwnd)
 	std::string vFilename = "deferredLightVertexShader.fx";
 	std::string fFilename = "deferredLightPixelShader.fx";
 
-	std::string vertexFile = SHADERDIR + vFilename;
-	std::string fragmentFile = SHADERDIR + fFilename;
+	std::string vertexFile = std::string(SHADERDIR).append(vFilename);
+	std::string fragmentFile = std::string(SHADERDIR).append(fFilename);
 
 	// Initialize the vertex and pixel shaders.
 	result = InitializeShader(device, hwnd, vertexFile.c_str(), fragmentFile.c_str());
@@ -56,11 +56,11 @@ void DeferredLightingShader::Shutdown()
 	return;
 }
 
-bool DeferredLightingShader::Render(ID3D11DeviceContext* deviceContext, RenderTarget& inputData, ObjectID cameraObject, ObjectID lightObject)
+bool DeferredLightingShader::Render(ID3D11DeviceContext* deviceContext, RenderTarget& inputData, rabd::ObjectID cameraObject, rabd::ObjectID lightObject, rabd::ObjectManager* manager)
 {
 	bool result;
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, inputData, cameraObject, lightObject);
+	result = SetShaderParameters(deviceContext, inputData, cameraObject, lightObject, manager);
 	if(!result)
 	{
 		return false;
@@ -289,18 +289,18 @@ void DeferredLightingShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, 
 	return;
 }
 
-bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, RenderTarget& renderTarget, ObjectID cameraObject, ObjectID lightObject)
+bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, RenderTarget& renderTarget, rabd::ObjectID cameraObject, rabd::ObjectID lightObject, rabd::ObjectManager* manager)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	LightBufferType* dataPtr2;
 
-	D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+	D3DXMATRIX projection = manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix();
 
 
 
-	D3DXMATRIX view = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
+	D3DXMATRIX view = manager->GetComponent<Camera>(cameraObject).GetViewMatrix();
 	D3DXMATRIX invPersp;
 	float det;
 	D3DXMatrixInverse(&invPersp, &det, &projection);
@@ -324,23 +324,23 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Copy the lighting variables into the constant buffer.
 
 	D3DXVECTOR4 position;
-	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
-		D3DXVECTOR3 direction = GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection();
+	if (manager->HasComponent<DirectionalLight>(lightObject)) {
+		D3DXVECTOR3 direction = manager->GetComponent<DirectionalLight>(lightObject).GetDirection();
 		D3DXVec3TransformNormal(&direction, &direction, &view);
 
 		dataPtr2->lightDirection = D3DXVECTOR4(direction, 0.0f);
-		dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(lightObject).GetColour();
-		dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
-	} else if (GameObject::HasComponent<PointLight>(lightObject)){
+		dataPtr2->lightColor = manager->GetComponent<DirectionalLight>(lightObject).GetColour();
+		dataPtr2->specularPower = manager->GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
+	} else if (manager->HasComponent<PointLight>(lightObject)){
 
-		D3DXVECTOR3 pos = GameObject::GetComponent<PointLight>(lightObject).GetPosition();
+		D3DXVECTOR3 pos = manager->GetComponent<PointLight>(lightObject).GetPosition();
 		D3DXVec3Transform(&position, &pos, &view);
 		position = position/position.w;
 
 
 		dataPtr2->lightDirection = position;
-		dataPtr2->lightColor = GameObject::GetComponent<PointLight>(lightObject).GetColour();
-		dataPtr2->specularPower = GameObject::GetComponent<PointLight>(lightObject).GetSpecularPower();
+		dataPtr2->lightColor = manager->GetComponent<PointLight>(lightObject).GetColour();
+		dataPtr2->specularPower = manager->GetComponent<PointLight>(lightObject).GetSpecularPower();
 	}
 
 	dataPtr2->topRight = topRight;

@@ -3,6 +3,7 @@
 #include "Position.h"
 #include "Orientation.h"
 #include "Transformation.h"
+#include "ObjectManager.h"
 
 
 
@@ -51,11 +52,11 @@ void Camera::SetFieldOfView(float degrees)
 
 const D3DXMATRIX& Camera::GetViewMatrix()
 {
-	if (GameObject::GetComponent<Transformation>(GetParentID()).ViewHasChanged()) {
+	if (manager->GetComponent<Transformation>(GetParentID()).ViewHasChanged()) {
 		D3DXVECTOR3 up(0,1,0);
 		D3DXVECTOR3 forward(0,0,1);
-		D3DXVECTOR3 position = GameObject::GetComponent<Position>(GetParentID()).GetPosition();
-		D3DXMATRIX orientationMatrix = GameObject::GetComponent<Orientation>(GetParentID()).GetMatrix();
+		D3DXVECTOR3 position = manager->GetComponent<Position>(GetParentID()).GetPosition();
+		D3DXMATRIX orientationMatrix = manager->GetComponent<Orientation>(GetParentID()).GetMatrix();
 
 		D3DXVec3TransformCoord(&forward, &forward, &orientationMatrix);
 		D3DXVec3TransformCoord(&up, &up, &orientationMatrix);
@@ -64,7 +65,7 @@ const D3DXMATRIX& Camera::GetViewMatrix()
 
 		// Finally create the view matrix from the three updated vectors.
 		D3DXMatrixLookAtLH(&viewMatrix, &position, &lookAt, &up);
-		GameObject::GetComponent<Transformation>(GetParentID()).SetViewUnchanged();
+		manager->GetComponent<Transformation>(GetParentID()).SetViewUnchanged();
 	}
 
 	return viewMatrix;

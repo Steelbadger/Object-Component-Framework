@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Position.h"
 #include "Orientation.h"
+#include "ObjectManager.h"
 
 FirstPersonController::FirstPersonController():
 	sensitivity(5.0f), autorun(false)
@@ -15,13 +16,12 @@ FirstPersonController::~FirstPersonController()
 
 }
 
-void FirstPersonController::operator()(ObjectID affectedObject)
+void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* manager)
 {
 	HardwareState input = HardwareState::GetInstance();
-
-	Camera* camera = &GameObject::GetComponent<Camera>(affectedObject);
-	Position* position = &GameObject::GetComponent<Position>(affectedObject);
-	Orientation* orientation = &GameObject::GetComponent<Orientation>(affectedObject);
+	Camera* camera = &manager->GetComponent<Camera>(id);
+	Position* position = &manager->GetComponent<Position>(id);
+	Orientation* orientation = &manager->GetComponent<Orientation>(id);
 	float mulp = sensitivity*input.GetTimeForLastFrameHighResolution();
 
 	//  Zoom with mouse wheel
@@ -99,13 +99,13 @@ SpinController::~SpinController()
 {
 }
 
-void SpinController::operator()(ObjectID p) 
+void SpinController::operator()(rabd::ObjectID id, rabd::ObjectManager* manager) 
 {
 	HardwareState input = HardwareState::GetInstance();
 
 	float time = input.GetTimeForLastFrameHighResolution();
 
-	Orientation* orientation = &GameObject::GetComponent<Orientation>(p);
+	Orientation* orientation = &manager->GetComponent<Orientation>(id);
 	orientation->Rotate(spinSpeedx*time, D3DXVECTOR3(1,0,0));
 	orientation->Rotate(spinSpeedy*time, D3DXVECTOR3(0,1,0));
 	orientation->Rotate(spinSpeedz*time, D3DXVECTOR3(0,0,1));

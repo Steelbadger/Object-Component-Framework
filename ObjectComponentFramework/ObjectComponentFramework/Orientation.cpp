@@ -1,6 +1,7 @@
 #include "Orientation.h"
 #include "GameObject.h"
 #include "Transformation.h"
+#include "ObjectManager.h"
 #include <memory>
 
 Orientation::Orientation()
@@ -15,13 +16,13 @@ Orientation::~Orientation()
 void Orientation::SetOrientation(D3DXQUATERNION in)
 {
 	orientation = in;
-	GameObject::GetComponent<Transformation>(GetParentID()).SetChanged();
+	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
 void Orientation::SetOrientation(D3DXMATRIX in)
 {
 	D3DXQuaternionRotationMatrix(&orientation, &in);
-	GameObject::GetComponent<Transformation>(GetParentID()).SetChanged();
+	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
 void Orientation::Rotate(float angle, D3DXVECTOR3 axis)
@@ -29,7 +30,7 @@ void Orientation::Rotate(float angle, D3DXVECTOR3 axis)
 	D3DXQUATERNION modifier;
 	D3DXQuaternionRotationAxis(&modifier, &axis, angle);
 	D3DXQuaternionMultiply(&orientation, &orientation, &modifier);
-	GameObject::GetComponent<Transformation>(GetParentID()).SetChanged();
+	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
 void Orientation::RotateLocal(float angle, D3DXVECTOR3 axis)
@@ -38,7 +39,7 @@ void Orientation::RotateLocal(float angle, D3DXVECTOR3 axis)
 	D3DXQUATERNION modifier;
 	D3DXQuaternionRotationAxis(&modifier, &axis, angle);
 	D3DXQuaternionMultiply(&orientation, &orientation, &modifier);
-	GameObject::GetComponent<Transformation>(GetParentID()).SetChanged();
+	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
 D3DXMATRIX Orientation::GetMatrix()

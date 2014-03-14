@@ -10,101 +10,6 @@
 
 #include <functional>
 
-
-void TESTFUNCTION()
-{
-	D3DXVECTOR3 point(300, -12.3, 400);
-
-	D3DXVECTOR3 light(1,0,0);
-
-	D3DXVECTOR3 eye(0,0,0);
-	D3DXVECTOR3 up(0,1,0);
-	D3DXVECTOR3 look(0,0,1);
-
-	D3DXVECTOR3 topLeft(-1, 1, 1);
-	D3DXVECTOR3 topRight(1, 1, 1);
-	D3DXVECTOR3 bottomLeft(-1, -1, 1);
-	D3DXVECTOR3 bottomRight(1, -1, 1);
-
-	D3DXVECTOR4 result;
-	D3DXMATRIX persp;
-	D3DXMATRIX invPersp;
-	D3DXMATRIX view;
-	D3DXMATRIX invView;
-
-	float fovy = (45 * (float)D3DX_PI)/180.0f;
-	float maxDepth = 1000.0f;
-	float det;
-	D3DXMatrixPerspectiveFovLH(&persp, fovy, 720.0f/450.0f, 0.01, maxDepth);
-	D3DXMatrixLookAtLH(&view, &eye, &look, &up);
-	D3DXMatrixInverse(&invView, &det, &view);
-	D3DXMatrixInverse(&invPersp, &det, &persp);
-	D3DXVec3Transform(&result, &point, &view);
-	result /= result.w;
-	D3DXVECTOR3 jeeze = D3DXVECTOR3(result);
-	float depth = result.z / maxDepth;
-	D3DXVec3Transform(&result, &jeeze, &persp);
-
-	D3DXVECTOR4 resLight;
-	D3DXVec3Transform(&resLight, &light, &view);
-
-	result /= result.w;
-	result.z = depth;
-
-	//  Into the reconstruction phase
-
-	float u, v;
-	u = (result.x+1)/2.0f;
-	v = (result.y+1)/2.0f;
-	
-	D3DXVECTOR4 tL;
-	D3DXVECTOR4 tR;
-	D3DXVECTOR4 bL;
-	D3DXVECTOR4 bR;
-
-	D3DXVec3Transform(&tL, &topLeft, &invPersp);
-	D3DXVec3Transform(&tR, &topRight, &invPersp);
-	D3DXVec3Transform(&bL, &bottomLeft, &invPersp);
-	D3DXVec3Transform(&bR, &bottomRight, &invPersp);
-
-	tL /= tL.w;
-	tR /= tR.w;
-	bL /= bL.w;
-	bR /= bR.w;
-
-	tL /= tL.z;
-	tR /= tR.z;
-	bL /= bL.z;
-	bR /= bR.z;
-
-	topLeft = D3DXVECTOR3(tL);
-	topRight = D3DXVECTOR3(tR);
-	bottomLeft = D3DXVECTOR3(bL);
-	bottomRight = D3DXVECTOR3(bR);
-
-//	D3DXVec3Normalize(&topLeft, &topLeft);
-//	D3DXVec3Normalize(&topRight, &topRight);
-//	D3DXVec3Normalize(&bottomLeft, &bottomLeft);
-//	D3DXVec3Normalize(&bottomRight, &bottomRight);
-
-	D3DXVECTOR3 u1;
-	D3DXVECTOR3 u2;
-	D3DXVECTOR3 dir;
-
-	D3DXVec3Lerp(&u1, &topLeft, &topRight, u);
-	D3DXVec3Lerp(&u2, &bottomLeft, &bottomRight, u);
-	D3DXVec3Lerp(&dir, &u2, &u1, v);
-	
-//	D3DXVec3Normalize(&dir, &dir);
-
-	float distance = result.z * maxDepth;
-
-	D3DXVECTOR3 final = dir * distance;
-
-	D3DXVECTOR4 back;
-	D3DXVec3Transform(&back, &final, &invView);
-}
-
 Application::Application(): window(this)
 {
 	m_Input = 0;
@@ -130,8 +35,6 @@ bool Application::Initialize()
 	bool result;
 	running = true;
 
-//	TESTFUNCTION();
-
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
 
@@ -152,6 +55,7 @@ bool Application::Initialize()
 	}
 	factory.SetDevice(m_D3D.GetDevice());
 	world.PassMeshFactory(&factory);
+	world.PassObjectManager(&manager);
 	//////////////////////////////IMPORTANT////////////////////////////////
 	TextureBase::SetDevice(m_D3D.GetDevice());
 	///////////////////////////////////////////////////////////////////////
@@ -169,24 +73,27 @@ bool Application::Initialize()
 	{
 		return false;
 	}
+
+	manager.RegisterType<rabd::GameObject>();
+	manager.RegisterType<Position>();
+	manager.RegisterType<Orientation>();
+	manager.RegisterType<Camera>();
+	manager.RegisterType<Controller>();
+	manager.RegisterType<PointLight>();
+	manager.RegisterType<Transformation>();
+
 	world.CreateScene();
 
-	ObjectID camera = GameObject::New();
-	GameObject::AddComponent<Position>(camera);
-	GameObject::AddComponent<Orientation>(camera);
-	GameObject::AddComponent<Camera>(camera);
-	GameObject::AddComponent<Controller>(camera);
-	GameObject::AddComponent<PointLight>(camera);
+	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller, PointLight, Transformation>();
 
 	FirstPersonController cont;
 	cont.SetSensitivity(50.0f);
 
-	GameObject::GetComponent<Position>(camera).SetPosition(0,80,-100);
-	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
-	GameObject::GetComponent<Controller>(camera).SetControlFunction(cont);
-	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
-
+	manager.GetComponent<Position>(camera).SetPosition(0,80,-100);
+	manager.GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
+	manager.GetComponent<Controller>(camera).SetControlFunction(cont);
+	manager.GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
+	manager.GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
 
 
 	world.SetCameraObject(camera);
@@ -248,9 +155,9 @@ void Application::TestUpdate()
 	m_Input->Update();
 
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
-	std::list<ObjectID>::iterator it;
+	std::list<rabd::ObjectID>::iterator it;
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
-		GameObject::GetComponent<Controller>(*it).Update();
+		manager.GetComponent<Controller>(*it).Update();
 
 	}
 
@@ -265,13 +172,10 @@ void Application::TestUpdate()
 	}
 
 	if (m_Input->Pressed('K')) {
-		ObjectID light3 = GameObject::New();
-		GameObject::AddComponent<Position>(light3);
-		GameObject::AddComponent<Orientation>(light3);
-		GameObject::AddComponent<PointLight>(light3);
-		GameObject::GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
-		GameObject::GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
-		GameObject::GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);
+		rabd::ObjectID light3 = manager.CreateObjectAndComponents<Position, Orientation, PointLight>();
+		manager.GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
+		manager.GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
+		manager.GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);
 		world.AddToScene(light3);
 		std::cout << "Current Lights in Scene: " << world.GetLightList().size() << std::endl;
 	}

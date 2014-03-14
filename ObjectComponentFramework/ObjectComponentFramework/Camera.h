@@ -4,7 +4,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 
-class Camera : public Component<Camera>
+class Camera : public rabd::Component<Camera>
 {
 public:
 	Camera();

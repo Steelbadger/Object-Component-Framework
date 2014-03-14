@@ -1,138 +1,126 @@
+/*
+	File:		GameObject.h
+	Version:	2.1
+	Date:		9th March 2014
+	Authors:	Ross Davies
+
+	Namespace:	rabd
+	Exposes:	GameObject
+	Requires:	rabd::Component
+
+	Description:
+	A GameObject is a special kind of component that can have multiple other components as children
+*/
+
+
 #pragma once
-#include "LookupTable.h"
 #include "Component.h"
+#include "LookupTable.h"
+
 #include <vector>
-#include <map>
-#include "UtilityFunctions.h"
+#include <iostream>
 
-
-//  A GameObject is both a component and an 'owner' of components
-//  A GameObject may act like a component (with a parent)
-//  Or it may act like a root node in the hierarchy with no parent
+namespace rabd
+{
 class GameObject : public Component<GameObject>
 {
 public:
-	GameObject();
-//	GameObject(GameObject&& move);
-	~GameObject();
+	//  Default Constructor
+	GameObject(){};
 
-	//  Return the lookup for a component of type specified by the unique id of
-	//  the component type of interest.  Largely ignored now
-	ObjectID GetComponentOfType(ComponentType type);
+	//  Default Destructor
+	~GameObject(){};
 
-	//  Make a pre-existing GameObject object a child of this object
-	//  This could be imporoved by simply making it a template specialisation
-	//  of the AddComponent functions
-	void AddChild(ObjectID id);
-
-	//  Unparent the component of type specified by it's unique id
-	//  (Does not delete the component from the component storage, JUST unparents)
-	//  Largely ignored now
-	void RemoveComponent(ComponentType type);
-
-	//  Unparent a prexisting GameObject from this GameObject
-	void RemoveChild(ObjectID id);
-
-	//  Return the list of all GameObjects that are children of this GameObject
-	const std::vector<ObjectID>& GetChildren();
-
-	//  Make a pre-existing component a child of this GameObject
-	//  uses the Component type unique ID to specify component type
-	//  Largely ignored now in favour of templated functions
-	void AddComponent(ObjectID id, ComponentType type);
-
-	//  This is the primary method of adding a component to a GameObject
-	//  It creates a new component of the type T and adds it to the gameObject
-	//  It then returns the ID of that component in the component lookup table
-	//  incase the user wishes to modify that component
-	template<class T> ObjectID AddComponent() {
-		ComponentType type = T::GetComponentTypeID();		
-		ObjectID newComp = T::New(GetID());
-		components[type] = newComp;
-		return newComp;
-	}
-
-	template<class T> bool HasComponent() {
-		ComponentType type = T::GetComponentTypeID();
-		if (components.count(type) != 0) {
-			return true;
+	//  Assign the GameObject a child of the templated type, object referenced by passed id
+	//  This function does not alter the component, so the new child should be modified separately
+	//  to reference this object as its parent.
+	template<class T>
+	void AssignChild(ObjectID id) {
+		int typeID = T::GetTypeID();
+		if (typeID != GetTypeID()) {
+			if (components.size() <= typeID) {
+				components.resize(typeID+1, -1);
+			}
+			components[typeID] = id;
 		} else {
-			return false;
+			std::cout << typeid(T).name() << " cannot be added as a component, must be a child" << std::endl;
 		}
 	}
 
-	//  This removes the Component of the type T from the GameObject
-	//  It COMPLETELY DELETES that component.
-	template<class T> void RemoveComponent() {
-		ComponentType type = T::GetComponentTypeID();
-		ObjectID comp = 0;
-		if (components.count(type) != 0) {
-			comp = components[type];
-			components.erase(type);
-			T::DeleteFromStorage(comp);
+	template<class T>
+	inline bool HasComponent() const {
+		return ((components.size() > T::GetTypeID()) && (components[T::GetTypeID()] >= 0));
+	}
+
+	//  Fetch the id of the component of the templated type
+	template<class T>
+	inline ObjectID GetComponent() const {
+		return components[T::GetTypeID()];
+	}
+
+	//  Get the list of child GameObjects
+	std::vector<ObjectID>& GetChildren() {
+		return children;
+	}
+
+	//  Get the list of child Components
+	std::vector<ObjectID>& GetComponents() {
+		return components;
+	}
+
+	//  Remove a child from either the Component or Child list (template specialization)
+	template<class T>
+	void DeassignChild(ObjectID id = 0) {
+		int typeID = T::GetTypeID();
+		if (typeID != GetTypeID() && typeID < components.size()) {
+			components[typeID] = -1;
 		} else {
-			Error("Cannot Delete, No Component of this Type");
-			//panic
+			std::cout << typeid(T).name() << " cannot be removed as a component" << std::endl;
 		}
 	}
 
-	//  Retrieve the component of the type T from the GameObject as a reference
-	//  NOTE:  if the Component does not exist then it CREATES ONE.
-	template<class T> T& GetComponent(){
-		ComponentType type = T::GetComponentTypeID();
-		if(components.count(type) != 0) {
-			ObjectID compID = components[type];
-			return T::Get(compID);
+	//  Remove a child using RTTI IDs
+	void DeassignChild(int typeID, ObjectID id) {
+		if (typeID != GetTypeID() && typeID < components.size()) {
+			components[typeID] = -1;
+		} else if (typeID == GetTypeID()) {
+			for (auto it = children.begin() ; it != children.end(); it++) {
+				if ((*it) == id) {
+					children.erase(it);
+					return;
+				}
+			}			
 		} else {
-			//Warning("No Component of type, creating new Component in place");
-			ObjectID compID = AddComponent<T>();
-			return T::Get(compID);
+			std::cout << typeID << " cannot be removed as a component" << std::endl;
 		}
 	}
 
-	//  Get the ID of the component of type T
-	//  NOTE:  If the Component of that type does not exist then it CREATES ONE.
-	template<class T> ObjectID GetComponentReference() {
-		ComponentType type = T::GetComponentTypeID();
-		ObjectID compID;
-		if(components.count(type) != 0) {
-			compID = components[type];
-		} else {
-			Warning("No Component of type, creating new Component in place and passing reference");
-			compID = AddComponent<T>();
-		}
-		return compID;
-	}
 
-
-	//  Static access to the templated GetComponent function
-	//  This is just for shortening/simplifying the code necessary to fetch a component
-	template<class T> static T& GetComponent(ObjectID id) {
-		return GameObject::Get(id).GetComponent<T>();
-	}
-
-	//  Static access to the templated GetComponentReference function
-	//  This is just for shortening/simplifying the code necessary to fetch a component reference
-	template<class T> static ObjectID GetComponentReference(ObjectID id) {
-		return GameObject::Get(id).GetComponentReference<T>();
-	}
-
-	//  Add a component of type T to the GameObject id
-	//  This is just for shortening/simplifying the code necessary to add a new component
-	template<class T> static ObjectID AddComponent(ObjectID id){
-		return GameObject::Get(id).AddComponent<T>();
-	}
-
-	template<class T> static bool HasComponent(ObjectID id){
-		return GameObject::Get(id).HasComponent<T>();
-	}
-
-	static void SetParentChild(ObjectID parent, ObjectID child);
-
-//	void operator=(GameObject&& move);
 
 private:
-	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse
-	std::vector<ObjectID> childGameObjects;		//  array lookup means nothing, just storage
-	bool modified;
+	std::vector<ObjectID> components;
+	std::vector<ObjectID> children;
 };
+
+
+//  A specialization of the AssignChild function specific to GameObjects as these are stored separately
+template<>
+inline void GameObject::AssignChild<GameObject>(ObjectID id) {
+	children.push_back(id);
+}
+
+template<>
+inline void GameObject::DeassignChild<GameObject>(ObjectID id) {
+	int typeID = GetTypeID();
+	if (typeID == GetTypeID() && typeID < children.size() && id != 0) {
+		for (auto it = children.begin() ; it != children.end(); it++) {
+			if ((*it) == id) {
+				children.erase(it);
+				return;
+			}
+		}
+	} else {
+		std::cout << typeid(GameObject).name() << " cannot be removed as a child" << std::endl;
+	}
+}
+}

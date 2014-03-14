@@ -16,19 +16,19 @@ struct MeshData {
 };
 
 
-class Mesh : public Component<Mesh>
+class Mesh : public rabd::Component<Mesh>
 {
 public:
 	enum FeatureLevel {TEXTURED, LIT, NORMALMAPPED};
 
 	Mesh(){};
-	Mesh(Mesh&& move){geom = move.geom;}
+//	Mesh(Mesh&& move){geom = move.geom;}
 	~Mesh(){};
 
 	std::shared_ptr<MeshData>& GetGeometry(){return geom;}
 	void SetMeshData(std::shared_ptr<MeshData>& data){geom = data;}
 
-	Mesh& operator=(Mesh&& move){geom = move.geom; return (*this);}
+//	Mesh& operator=(Mesh&& move){geom = move.geom; return (*this);}
 
 private:
 	std::shared_ptr<MeshData> geom;

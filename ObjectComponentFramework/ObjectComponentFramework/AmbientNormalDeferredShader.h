@@ -17,14 +17,14 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, World& world);
+	virtual bool Render(ID3D11DeviceContext* dc, rabd::ObjectID drawObject, World& world);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
-	bool SetShaderParameters(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID camera);
+	bool SetShaderParameters(ID3D11DeviceContext* dc, rabd::ObjectID drawObject, rabd::ObjectID camera, rabd::ObjectManager* manager);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:

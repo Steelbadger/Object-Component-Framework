@@ -21,14 +21,14 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* dc, RenderTarget& renderTarget, ObjectID cameraObject, ObjectID light);
+	bool Render(ID3D11DeviceContext* dc, RenderTarget& renderTarget, rabd::ObjectID cameraObject, rabd::ObjectID light, rabd::ObjectManager* manager);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, const char*, const char*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const char*);
 
-	bool SetShaderParameters(ID3D11DeviceContext* dc, RenderTarget& renderTarget, ObjectID cameraObject, ObjectID light);
+	bool SetShaderParameters(ID3D11DeviceContext* dc, RenderTarget& renderTarget, rabd::ObjectID cameraObject, rabd::ObjectID light, rabd::ObjectManager* manager);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:

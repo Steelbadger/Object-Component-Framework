@@ -4,7 +4,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 
-class Scale : public Component<Scale>
+class Scale : public rabd::Component<Scale>
 {
 public:
 	Scale();

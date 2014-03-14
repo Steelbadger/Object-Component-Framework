@@ -4,7 +4,7 @@
 
 #include "Component.h"
 
-class Position : public Component<Position>
+class Position : public rabd::Component<Position>
 {
 public:
 	Position();

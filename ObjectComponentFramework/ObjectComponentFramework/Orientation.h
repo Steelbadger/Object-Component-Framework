@@ -3,7 +3,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 
-class Orientation : public Component<Orientation>
+class Orientation : public rabd::Component<Orientation>
 {
 public:
 	Orientation();

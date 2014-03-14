@@ -4,8 +4,9 @@
 #include <D3DX10math.h>
 #include "GameObject.h"
 #include "Transformation.h"
+#include "ObjectManager.h"
 
-class PointLight : public Component<PointLight>
+class PointLight : public rabd::Component<PointLight>
 {
 public:
 	PointLight(){specularPower = 40;};
@@ -16,7 +17,7 @@ public:
 	D3DXVECTOR4 GetColour(){return m_Colour;}
 	D3DXVECTOR3 GetPosition(){
 		D3DXVECTOR4 pos(0,0,0, 1);
-		D3DXMATRIX trans = GameObject::GetComponent<Transformation>(GetParentID()).GetTransformation();
+		D3DXMATRIX trans = manager->GetComponent<Transformation>(GetParentID()).GetTransformation();
 		D3DXVec4Transform(&pos, &pos, &trans);
 		pos = pos/pos.w;
 		return D3DXVECTOR3(pos.x, pos.y, pos.z);	

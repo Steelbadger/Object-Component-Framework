@@ -51,14 +51,14 @@ void NormalMapShaderClass::Shutdown()
 	return;
 }
 
-bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, World & world)
+bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, rabd::ObjectID drawObject, World & world)
 {
 	bool result;
 	unsigned int stride, offset;
 	// Set vertex buffer stride and offset.
-	std::shared_ptr<MeshData> data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
-	ObjectID cameraObject = world.GetCameraObject();
-	ObjectID light = world.GetLightList().front();
+	std::shared_ptr<MeshData> data = world.GetManager()->GetComponent<Mesh>(drawObject).GetGeometry();
+	rabd::ObjectID cameraObject = world.GetCameraObject();
+	rabd::ObjectID light = world.GetLightList().front();
 
 	stride = data->stride;
 	offset = 0;
@@ -73,7 +73,7 @@ bool NormalMapShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID d
 	deviceContext->IASetPrimitiveTopology(data->topology);
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, drawObject, cameraObject, light);
+	result = SetShaderParameters(deviceContext, drawObject, cameraObject, world);
 	if(!result)
 	{
 		return false;
@@ -373,7 +373,7 @@ void NormalMapShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HW
 	return;
 }
 
-bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, ObjectID drawObject, ObjectID cameraObject, ObjectID light)
+bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, rabd::ObjectID drawObject, rabd::ObjectID cameraObject, World& world)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -393,9 +393,9 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&dataPtr->world, &GameObject::GetComponent<Transformation>(drawObject).GetTransformation());
-	D3DXMatrixTranspose(&dataPtr->view, &GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix());
-	D3DXMatrixTranspose(&dataPtr->projection, &GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix());
+	D3DXMatrixTranspose(&dataPtr->world, &world.GetManager()->GetComponent<Transformation>(drawObject).GetTransformation());
+	D3DXMatrixTranspose(&dataPtr->view, &world.GetManager()->GetComponent<Camera>(cameraObject).GetViewMatrix());
+	D3DXMatrixTranspose(&dataPtr->projection, &world.GetManager()->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
 
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -407,9 +407,9 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	std::vector<ID3D11ShaderResourceView*> textures;
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>());
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>());
+	textures.push_back(world.GetManager()->GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
+	textures.push_back(world.GetManager()->GetComponent<Material>(drawObject).GetTextureResource<NormalMap>());
+	textures.push_back(world.GetManager()->GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>());
 	// Set shader texture array resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 3, textures.data());
 
@@ -425,9 +425,9 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(light).GetColour();
-	dataPtr2->lightDirection = GameObject::GetComponent<DirectionalLight>(light).GetDirection();
-	dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(light).GetSpecularPower();
+	dataPtr2->lightColor = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetColour();
+	dataPtr2->lightDirection = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetDirection();
+	dataPtr2->specularPower = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetSpecularPower();
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);
@@ -448,7 +448,7 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Get a pointer to the data in the constant buffer.
 	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
-	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
+	D3DXVECTOR3 cameraPosition = world.GetManager()->GetComponent<Position>(cameraObject).GetPosition();
 
 	// Copy the camera position into the constant buffer.
 	dataPtr3->position = cameraPosition;

@@ -6,6 +6,8 @@
 #include "Position.h"
 #include "Scale.h"
 #include "simdUtility.h"
+#include "ObjectManager.h"
+#include "LookupTable.h"
 
 
 Transformation::Transformation():
@@ -38,9 +40,9 @@ void Transformation::SetGlobalChanged()
 {
 	globalChanged = true;
 	viewChanged = true;
-	const std::vector<ObjectID> children = GameObject::Get(GetParentID()).GetChildren();
-	for (int i = 0; i < children.size(); i++) {
-		GameObject::GetComponent<Transformation>(children[i]).SetGlobalChanged();
+	std::vector<rabd::ObjectID>* children = &manager->Get(GetParentID()).GetChildren();
+	for (int i = 0; i < children->size(); i++) {
+		manager->GetComponent<Transformation>(children->at(i)).SetGlobalChanged();
 	}
 }
 
@@ -54,14 +56,14 @@ void Transformation::CalculateLocalTransformation()
 	D3DXMatrixIdentity(&scale);
 	D3DXMatrixIdentity(&translate);
 
-	if (GameObject::HasComponent<Orientation>(GetParentID())) {
-		rotation = GameObject::GetComponent<Orientation>(GetParentID()).GetMatrix();
+	if (manager->HasComponent<Orientation>(GetParentID())) {
+		rotation = manager->GetComponent<Orientation>(GetParentID()).GetMatrix();
 	}
-	if (GameObject::HasComponent<Scale>(GetParentID())) {
-		scale = GameObject::GetComponent<Scale>(GetParentID()).GetMatrix();
+	if (manager->HasComponent<Scale>(GetParentID())) {
+		scale = manager->GetComponent<Scale>(GetParentID()).GetMatrix();
 	}
-	if (GameObject::HasComponent<Position>(GetParentID())) {
-		D3DXVECTOR3 pos = GameObject::GetComponent<Position>(GetParentID()).GetPosition();
+	if (manager->HasComponent<Position>(GetParentID())) {
+		D3DXVECTOR3 pos = manager->GetComponent<Position>(GetParentID()).GetPosition();
 		D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
 	}
 
@@ -79,8 +81,8 @@ void Transformation::CalculateGlobalTransformation()
 	}
 	D3DXMATRIX parent;
 	D3DXMatrixIdentity(&parent);
-	if (GameObject::Get(GetParentID()).HasParent()) {
-		parent = GameObject::GetComponent<Transformation>(GameObject::Get(GetParentID()).GetParentID()).GetTransformation();
+	if (manager->Get(GetParentID()).HasParent()) {
+		parent = manager->GetComponent<Transformation>(manager->Get(GetParentID()).GetParentID()).GetTransformation();
 	}
 	//globalTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(localTransform), Matrix4x4(parent))(0,0));
 	globalTransform = localTransform * parent;

@@ -92,12 +92,11 @@
     <ClCompile Include="AmbientNormalDeferredShader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentBase.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerFunctors.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="DeferredLightingShader.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />
@@ -142,6 +141,7 @@
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
     <ClInclude Include="LookupTable.h" />
+    <ClInclude Include="Manager.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
@@ -151,6 +151,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="noisegenerator.h" />
     <ClInclude Include="NormalMapShaderClass.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Position.h" />

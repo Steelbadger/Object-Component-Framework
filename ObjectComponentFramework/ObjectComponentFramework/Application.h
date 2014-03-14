@@ -14,6 +14,7 @@
 #include "World.h"
 #include "MeshFactory.h"
 #include "d3dclass.h"
+#include "ObjectManager.h"
 
 // Class name: Application
 class Application
@@ -43,6 +44,7 @@ private:
 	Window window;
 	World world;
 	MeshFactory factory;
+	rabd::ObjectManager manager;
 
 	bool fullscreen, vSyncEnabled;
 	bool deferred;

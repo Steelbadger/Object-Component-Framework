@@ -1,8 +1,10 @@
 #pragma once
 #include "Component.h"
+#include "LookupTable.h"
 #include <list>
 
 class MeshFactory;
+class rabd::ObjectManager;
 class World
 {
 public:
@@ -10,19 +12,21 @@ public:
 	~World();
 
 	void CreateScene();
-	void SetCameraObject(ObjectID id);
-	ObjectID GetCameraObject();
-	std::list<ObjectID> GetDrawList();
-	std::list<ObjectID>& GetUpdateList();
-	std::list<ObjectID> GetLightList();
-	void AddToScene(ObjectID id);
+	void SetCameraObject(rabd::ObjectID id);
+	rabd::ObjectID GetCameraObject();
+	std::list<rabd::ObjectID> GetDrawList();
+	std::list<rabd::ObjectID>& GetUpdateList();
+	std::list<rabd::ObjectID> GetLightList();
+	void AddToScene(rabd::ObjectID id);
 	void PassMeshFactory(MeshFactory* factory);
-
+	void PassObjectManager(rabd::ObjectManager* manager);
+	rabd::ObjectManager* GetManager();
 private:
-	ObjectID currentCamera;
+	rabd::ObjectID currentCamera;
 
-	std::list<ObjectID> drawList;
-	std::list<ObjectID> updateList;
-	std::list<ObjectID> lightList;
+	std::list<rabd::ObjectID> drawList;
+	std::list<rabd::ObjectID> updateList;
+	std::list<rabd::ObjectID> lightList;
 	MeshFactory* meshFactory;
+	rabd::ObjectManager* manager;
 };

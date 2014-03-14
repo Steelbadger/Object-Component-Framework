@@ -32,13 +32,13 @@ public:
 	ID3D11ShaderResourceView* GetTexture() {return texture;}
 	void DeleteFromStorage(){textureStorage.Remove(lookup);}
 
-	static T& Get(ObjectID id){return textureStorage.Get(id);}
+	static T& Get(rabd::ObjectID id){return textureStorage.Get(id);}
 	static TextureType GetTextureTypeID(){return textureTypeID;}
-	static ID3D11ShaderResourceView* GetTexture(ObjectID id) {return Get(id).GetTexture();}
-	static void DeleteFromStorage(ObjectID id) {textureStorage.Remove(id);}
+	static ID3D11ShaderResourceView* GetTexture(rabd::ObjectID id) {return Get(id).GetTexture();}
+	static void DeleteFromStorage(rabd::ObjectID id) {textureStorage.Remove(id);}
 
-	static ObjectID New(std::string file) {
-		ObjectID newItem = T().CopyToStorage();
+	static rabd::ObjectID New(std::string file) {
+		rabd::ObjectID newItem = T().CopyToStorage();
 		Get(newItem).SetFile(file);
 		Get(newItem).Initialise();
 		return newItem;
@@ -52,7 +52,7 @@ protected:
 		}
 	}
 
-	ObjectID CopyToStorage(){
+	rabd::ObjectID CopyToStorage(){
 		lookup = textureStorage.Add(*(static_cast<T*>(this)));
 		textureStorage.Get(lookup).SetLookup(lookup);
 		return lookup;
@@ -77,19 +77,19 @@ protected:
 		return true;
 	}
 private:
-	void SetLookup(ObjectID id) {lookup = id;}
+	void SetLookup(rabd::ObjectID id) {lookup = id;}
 
-	ObjectID lookup;
+	rabd::ObjectID lookup;
 	std::string filename;
 	ID3D11ShaderResourceView* texture;
 private:
-	static DynamicLookupTable<T> textureStorage;
+	static rabd::DynamicLookupTable<T> textureStorage;
 	static std::map<std::string, ID3D11ShaderResourceView*> resourceLookup;
 	static bool textureClassCreated;
 	static TextureType textureTypeID;
 };
 
-template<class T> DynamicLookupTable<T> Texture<T>::textureStorage;
+template<class T> rabd::DynamicLookupTable<T> Texture<T>::textureStorage;
 template<class T> std::map<std::string, ID3D11ShaderResourceView*> Texture<T>::resourceLookup;
 template<class T> bool Texture<T>::textureClassCreated = false;
 template<class T> TextureType Texture<T>::textureTypeID;

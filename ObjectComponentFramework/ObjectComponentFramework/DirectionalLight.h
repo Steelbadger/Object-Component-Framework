@@ -4,8 +4,9 @@
 #include "GameObject.h"
 #include <D3D11.h>
 #include <D3DX10math.h>
+#include "ObjectManager.h"
 
-class DirectionalLight : public Component<DirectionalLight>
+class DirectionalLight : public rabd::Component<DirectionalLight>
 {
 public:
 	DirectionalLight(){specularPower = 40;};
@@ -17,7 +18,7 @@ public:
 	D3DXVECTOR4 GetColour(){return m_Colour;}
 	D3DXVECTOR3 GetDirection(){
 		D3DXVECTOR4 output(m_Direction);
-		D3DXVec3Transform(&output, &m_Direction, &GameObject::GetComponent<Transformation>(GetParentID()).GetTransformation());
+		D3DXVec3Transform(&output, &m_Direction, &manager->GetComponent<Transformation>(GetParentID()).GetTransformation());
 		return D3DXVECTOR3(output);	
 	}
 	float GetSpecularPower(){return specularPower;}

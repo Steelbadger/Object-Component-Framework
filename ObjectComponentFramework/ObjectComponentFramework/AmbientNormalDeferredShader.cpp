@@ -53,15 +53,16 @@ void AmbientNormalDeferredShader::Shutdown()
 	return;
 }
 
-bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, ObjectID drawObject, World &world)
+bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, rabd::ObjectID drawObject, World& world)
 {
 	bool result;
 	unsigned int stride, offset;
+	rabd::ObjectManager* manager = world.GetManager();
 	// Set vertex buffer stride and offset.
-	Mesh* thingy = &GameObject::GetComponent<Mesh>(drawObject);
+	Mesh* thingy = &manager->GetComponent<Mesh>(drawObject);
 
-	std::shared_ptr<MeshData> data = GameObject::GetComponent<Mesh>(drawObject).GetGeometry();
-	ObjectID cameraObject = world.GetCameraObject();
+	std::shared_ptr<MeshData> data = manager->GetComponent<Mesh>(drawObject).GetGeometry();
+	rabd::ObjectID cameraObject = world.GetCameraObject();
 
 	stride = data->stride;
 	offset = 0;
@@ -76,7 +77,7 @@ bool AmbientNormalDeferredShader::Render(ID3D11DeviceContext* deviceContext, Obj
 	deviceContext->IASetPrimitiveTopology(data->topology);
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, drawObject, cameraObject);
+	result = SetShaderParameters(deviceContext, drawObject, cameraObject, manager);
 	if(!result)
 	{
 		return false;
@@ -338,7 +339,7 @@ void AmbientNormalDeferredShader::OutputShaderErrorMessage(ID3D10Blob* errorMess
 	return;
 }
 
-bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, ObjectID drawObject, ObjectID cameraObject)
+bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, rabd::ObjectID drawObject, rabd::ObjectID cameraObject, rabd::ObjectManager* manager)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -357,9 +358,9 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&dataPtr->worldMatrix, &GameObject::GetComponent<Transformation>(drawObject).GetTransformation());
-	D3DXMatrixTranspose(&dataPtr->viewMatrix, &GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix());
-	D3DXMatrixTranspose(&dataPtr->projectionMatrix, &GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix());
+	D3DXMatrixTranspose(&dataPtr->worldMatrix, &manager->GetComponent<Transformation>(drawObject).GetTransformation());
+	D3DXMatrixTranspose(&dataPtr->viewMatrix, &manager->GetComponent<Camera>(cameraObject).GetViewMatrix());
+	D3DXMatrixTranspose(&dataPtr->projectionMatrix, &manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
 
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -371,9 +372,9 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	std::vector<ID3D11ShaderResourceView*> textures;
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>());
-	textures.push_back(GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>());
+	textures.push_back(manager->GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>());
+	textures.push_back(manager->GetComponent<Material>(drawObject).GetTextureResource<NormalMap>());
+	textures.push_back(manager->GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>());
 
 	// Set shader texture array resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 3, textures.data());

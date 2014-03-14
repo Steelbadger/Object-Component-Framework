@@ -14,6 +14,7 @@
 #include <D3DX10math.h>
 #include "Hardware.h"
 #include <initializer_list>
+#include "ObjectManager.h"
 
 GraphicsClass::GraphicsClass()
 {
@@ -197,14 +198,14 @@ bool GraphicsClass::RenderDeferred(World& world)
 {
 	bool result;
 
-	std::list<ObjectID> drawList = world.GetDrawList();
+	std::list<rabd::ObjectID> drawList = world.GetDrawList();
 	ShaderInterface* currentShader;
 
 	renderTarget.SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
 	renderTarget.ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
 
 	while (drawList.size() > 0) {
-		ObjectID current = drawList.back();
+		rabd::ObjectID current = drawList.back();
 		drawList.pop_back();
 		result = m_deferred.Render(m_D3D->GetDeviceContext(), current, world);
 		if(!result)
@@ -231,10 +232,10 @@ bool GraphicsClass::RenderDeferred(World& world)
 
 	m_D3D->EnableLightBlending();
 	m_D3D->DisableZBuffer();
-	std::list<ObjectID> light = world.GetLightList();
+	std::list<rabd::ObjectID> light = world.GetLightList();
 
-	for (std::list<ObjectID>::iterator it = light.begin(); it != light.end(); it++) {
-		m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), (*it));
+	for (std::list<rabd::ObjectID>::iterator it = light.begin(); it != light.end(); it++) {
+		m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), (*it), world.GetManager());
 	}
 	m_D3D->DisableLightBlending();
 	m_D3D->EnableZBuffer();
@@ -261,11 +262,11 @@ bool GraphicsClass::Render(World& world)
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 	
-	std::list<ObjectID> drawList = world.GetDrawList();
+	std::list<rabd::ObjectID> drawList = world.GetDrawList();
 	while (drawList.size() > 0) {
-		ObjectID current = drawList.back();
+		rabd::ObjectID current = drawList.back();
 		drawList.pop_back();
-		currentShader = shaderLibrary.GetShader(GameObject::GetComponent<Material>(current).GetShader());
+		currentShader = shaderLibrary.GetShader(world.GetManager()->GetComponent<Material>(current).GetShader());
 		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world);
 		if(!result)
 		{
