@@ -130,7 +130,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="ComponentBase.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerFunctors.h" />
     <ClInclude Include="d3dclass.h" />
@@ -165,6 +165,7 @@
     <ClInclude Include="simdQuaternion.h" />
     <ClInclude Include="simdUtility.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureBase.h" />
     <ClInclude Include="TextureToScreenShader.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Transformation.h" />

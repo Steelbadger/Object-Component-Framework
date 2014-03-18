@@ -45,6 +45,7 @@ private:
 	World world;
 	MeshFactory factory;
 	rabd::ObjectManager manager;
+	rabd::Manager textureManager;
 
 	bool fullscreen, vSyncEnabled;
 	bool deferred;

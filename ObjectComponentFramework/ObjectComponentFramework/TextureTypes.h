@@ -9,7 +9,7 @@
 
 
 //  The basic, unlit, colour map
-class AmbientTexture : public Texture<AmbientTexture>
+class AmbientTexture : public rabd::Texture<AmbientTexture>
 {
 public:
 	AmbientTexture(){};
@@ -17,7 +17,7 @@ public:
 };
 
 //  the 'shininess'
-class SpecularMap : public Texture<SpecularMap>
+class SpecularMap : public rabd::Texture<SpecularMap>
 {
 public:
 	SpecularMap(){};
@@ -31,7 +31,7 @@ private:
 
 //  For altering the light normals across a single poly
 //  to create illusion of high res geometry
-class NormalMap : public Texture<NormalMap>
+class NormalMap : public rabd::Texture<NormalMap>
 {
 public:
 	NormalMap(){};
@@ -42,7 +42,7 @@ public:
 //  except this uses tessellation to CREATE high res geometry then
 //  uses the displacement map to actually make the high res
 //  model the right shape
-class DisplacementMap : public Texture<DisplacementMap>
+class DisplacementMap : public rabd::Texture<DisplacementMap>
 {
 public:
 	DisplacementMap(){};
