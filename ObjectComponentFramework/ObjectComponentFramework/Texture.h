@@ -9,7 +9,6 @@ typedef signed int TextureType;
 
 #include "LookupTable.h"
 #include "TextureBase.h"
-#include "Manager.h"
 
 namespace rabd
 {
@@ -29,45 +28,26 @@ namespace rabd
 		}
 
 		static T& Get(ObjectID id) {
-			return manager->Get(id);
+			return manager->Get<T>(id);
 		}
 
-		static TextureType GetTextureTypeID() const {
+		static TextureType GetTextureTypeID() {
 			return uniqueID;
 		}
 
-		static ID3D11ShaderResourceView* GetTexture(ObjectID id) const {
+		static ID3D11ShaderResourceView* GetTexture(ObjectID id) {
 			return Get(id).GetTexture();
 		}
 
-		//  function to tell the component which GameObject is its parent
-		inline void SetParentID(int id) {
-			parentID = id;
-		}
-
-		inline bool HasParent() const {
-			return (parentID >= 0);
-		}
-
-		//  getter for the parent ID (always a GameObject)
-		inline int GetParentID() const {
-			return parentID;
-		}
-
 		//  getter for the derived component type ID
-		static int GetTypeID() const {
+		static int GetTypeID() {
 			return uniqueID;
-		}
-
-		//  Give the component a pointer to the object managing it
-		inline static void SetManager(Manager* m) {
-			manager = m;
 		}
 
 		static rabd::ObjectID New(std::string file) {
 			rabd::ObjectID newItem = manager->New<T>(T());
-			manager->Get(newItem).SetFile(file);
-			manager->Get(newItem).Initialise();
+			manager->Get<T>(newItem).SetFile(file);
+			manager->Get<T>(newItem).Initialise();
 			return newItem;
 		}
 
@@ -76,10 +56,8 @@ namespace rabd
 		}
 
 	protected:
-		static Manager* manager;
-
 		//  Default Constructor, hidden as all textures should be managed
-		Texture() : manager(nullptr), parentID(-1)
+		Texture()
 		{}
 
 		bool Initialise()
@@ -106,10 +84,9 @@ namespace rabd
 
 		std::string filename;
 		ID3D11ShaderResourceView* texture;
-		static std::map<signed int, ID3D11ShaderResourceView* > resourceLookup;
+		static std::map<std::string, ID3D11ShaderResourceView* > resourceLookup;
 	};
 
 	template<class T> const int Texture<T>::uniqueID = GetUniqueID<T>();
-	template<class T> std::map<signed int, ID3D11ShaderResourceView* > Texture<T>::resourceLookup;
-	template<class T> Manager* Texture<T>::manager;
+	template<class T> std::map<std::string, ID3D11ShaderResourceView* > Texture<T>::resourceLookup;
 }

@@ -116,7 +116,7 @@
     <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
     <ClCompile Include="simdUtility.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureBase.cpp" />
     <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />

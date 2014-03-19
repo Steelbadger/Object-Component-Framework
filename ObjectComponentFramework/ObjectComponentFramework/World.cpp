@@ -36,6 +36,9 @@ void World::CreateScene()
 	manager->RegisterType<Mesh>();
 	manager->RegisterType<Material>();
 
+	textureManager->RegisterType<AmbientTexture>();
+	textureManager->RegisterType<NormalMap>();
+	textureManager->RegisterType<SpecularMap>();
 
 	SpinController spinny;
 	spinny.SetSpinSpeed(0.0f, 0.0f, 0.2f);
@@ -155,6 +158,11 @@ void World::PassMeshFactory(MeshFactory* factory)
 void World::PassObjectManager(rabd::ObjectManager* m)
 {
 	manager = m;
+}
+
+void World::PassTextureManager(rabd::Manager* m)
+{
+	textureManager = m;
 }
 
 rabd::ObjectManager* World::GetManager()

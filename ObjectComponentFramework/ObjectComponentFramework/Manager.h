@@ -162,6 +162,11 @@ namespace rabd
 				std::cout << typeID << " is an unmanaged type, cannot remove objects of this type" << std::endl;
 			}		
 		}
+
+		template<class T>
+		bool IsManaged() const {
+			return (registeredClassLists[T::GetTypeID()] != nullptr);
+		}
 	private:
 		int registeredClasses;
 		std::vector<rabd::LookupTableInterface*> registeredClassLists;

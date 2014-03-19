@@ -16,6 +16,7 @@
 
 #pragma once
 #include <D3D11.h>
+#include "Manager.h"
 
 namespace rabd
 {
@@ -29,10 +30,13 @@ namespace rabd
 			return idCounter;
 		}
 
-		virtual void SetParentID(int parent) = 0;
-
 		static void SetDevice(ID3D11Device* dev) {
 			device = dev;
+		}
+
+		//  Give the component a pointer to the object managing it
+		inline static void SetManager(Manager* m) {
+			manager = m;
 		}
 
 	protected:
@@ -43,11 +47,11 @@ namespace rabd
 		}
 
 		static ID3D11Device* device;
+		static Manager* manager;
 	private:
 		static inline int GetNextID() {
 			return idCounter++;
 		}
 		static int idCounter;
 	};
-
 }

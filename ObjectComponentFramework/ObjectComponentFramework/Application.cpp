@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "ControllerFunctors.h"
 #include "PointLight.h"
+#include "Manager.h"
 
 #include <functional>
 
@@ -56,8 +57,10 @@ bool Application::Initialize()
 	factory.SetDevice(m_D3D.GetDevice());
 	world.PassMeshFactory(&factory);
 	world.PassObjectManager(&manager);
+	world.PassTextureManager(&textureManager);
 	//////////////////////////////IMPORTANT////////////////////////////////
-	TextureBase::SetDevice(m_D3D.GetDevice());
+	rabd::TextureBase::SetDevice(m_D3D.GetDevice());
+	rabd::TextureBase::SetManager(&textureManager);
 	///////////////////////////////////////////////////////////////////////
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
