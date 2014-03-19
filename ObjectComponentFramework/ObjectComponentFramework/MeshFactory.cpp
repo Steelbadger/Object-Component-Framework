@@ -565,7 +565,7 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
 {
 	NoiseGenerator noise;
-	NoiseObject n(16, 200.0f, 0.43f, 80.0f, 1.155f);
+	NoiseObject n(8, 200.0f, 0.43f, 80.0f, 1.155f);
 	noise.Seed(13.4f);
 //	noise.GeneratePermutationTable();
 
@@ -575,8 +575,10 @@ void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vec
 		y = inoutV[inoutIndex[i]].position.z;
 
 		float disp = noise.FractalSimplex(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n);
+		float disp2 = noise.SIMDPerlin2D(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n);
 		Vector3 displacementV = disp * Vector3(0, 1, 0);
 		inoutV[inoutIndex[i]].position.y = disp;
+	//	inoutV[inoutIndex[i]].normal = noise.SIMDPerlinNormal(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n, 0.5f);
 		inoutV[inoutIndex[i]].normal = noise.FractalSimplexNormal(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n, 0.5f);
 	}
 }
