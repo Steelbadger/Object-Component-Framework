@@ -2,6 +2,8 @@
 #include "UtilityFunctions.h"
 #include <memory>
 #include "noisegenerator.h"
+#include <ppl.h>
+#include <array>
 
 MeshFactory::MeshFactory()
 {
@@ -569,20 +571,24 @@ void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vec
 	noise.Seed(13.4f);
 //	noise.GeneratePermutationTable();
 
-	for (int i = 0; i < inoutIndex.size(); i++) {
+	using namespace Concurrency;
+
+	TimerMark();
+	
+	parallel_for(size_t(0), inoutIndex.size()-1, [&](int i) {
 		float x, y;
 		x = inoutV[inoutIndex[i]].position.x;
 		y = inoutV[inoutIndex[i]].position.z;
 
-		float disp = noise.FractalSimplex(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n);
-		float disp2 = noise.SIMDPerlin2D(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n);
+
+		float disp = (noise.SIMDPerlin2D(x, y, n)/noise.MaxAmplitude(n))*n.amplitude;
 		Vector3 displacementV = disp * Vector3(0, 1, 0);
 		inoutV[inoutIndex[i]].position.y = disp;
-	//	inoutV[inoutIndex[i]].normal = noise.SIMDPerlinNormal(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n, 0.5f);
-		inoutV[inoutIndex[i]].normal = noise.FractalSimplexNormal(inoutV[inoutIndex[i]].position.x, inoutV[inoutIndex[i]].position.z, n, 0.5f);
-	}
-}
+		inoutV[inoutIndex[i]].normal = noise.SIMDPerlinNormal(x, y, n, 0.5f);
+	});
 
+	TimerMark(true);
+}
 
 //
 //void MeshFactory::SimpleInnerBox(std::vector<LitVertexType>& output, std::vector<unsigned int>& index)

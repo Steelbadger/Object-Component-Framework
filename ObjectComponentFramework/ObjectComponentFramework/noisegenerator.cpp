@@ -175,8 +175,6 @@ float NoiseGenerator::SIMDPerlin2D(float x, float y, NoiseObject n)
 \*-------------------------------------------------------------------------*/
 {
 	float height = 0;
-	x += 15000;
-	y += 15000;
 
 	for (int k = 0; k < n.octaves; k+=4) {
 		height += Perlin2DFourPass(x, y, n.zoom, n.persistance, k);
