@@ -36,4 +36,5 @@ void TimerMark(bool output)
 		out << "Time between Marks: " << mark-oldMark << "ms";
 		Info(out.str());
 	}
+	mark = clock();
 }

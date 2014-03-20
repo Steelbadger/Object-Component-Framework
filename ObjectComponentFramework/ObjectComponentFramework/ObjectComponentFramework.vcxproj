@@ -140,6 +140,7 @@
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
+    <ClInclude Include="HeightmapBuilder.h" />
     <ClInclude Include="LookupTable.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Material.h" />

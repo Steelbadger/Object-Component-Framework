@@ -290,6 +290,9 @@
     <ClInclude Include="TextureBase.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="HeightmapBuilder.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Assets\Shaders\deferredLightPixelShader.fx">
