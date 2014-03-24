@@ -50,7 +50,7 @@ void World::CreateScene()
 	manager->GetComponent<Controller>(light).SetControlFunction(spinny);
 	AddToScene(light);
 
-	int num = 15;
+	int num = 0;
 	for (int i = 0 ; i < num; i++) {
 		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation>();
 
@@ -78,6 +78,7 @@ void World::CreateScene()
 	num = 1000;
 	for (int i = 0 ; i < num; i++) {
 		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
+		//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
 
 		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 

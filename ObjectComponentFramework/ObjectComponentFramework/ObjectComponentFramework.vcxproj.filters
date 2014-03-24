@@ -37,102 +37,81 @@
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{8e85b5a6-3dd3-48f6-8ede-61f62f9ba4de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components\Graphics">
+      <UniqueIdentifier>{e274cb6d-7f17-4c9f-94c7-4f36c7066783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\State">
+      <UniqueIdentifier>{87c6205e-faf5-4c68-a3a1-b2237f7e58ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\Lights">
+      <UniqueIdentifier>{09cc1992-4b0a-4789-8740-35874e2e7def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\Updatable">
+      <UniqueIdentifier>{eaa598fc-16d1-4578-b762-a4dda0544553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Maths\SIMD">
+      <UniqueIdentifier>{7bf5d981-07b6-4042-92b1-f3f452d807fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Maths\SISD">
+      <UniqueIdentifier>{4424df7f-ec3f-4c06-9782-cac7e48a1f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{2815ff84-0b0b-4f7d-be03-a985185aa2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hardware">
+      <UniqueIdentifier>{e61a2e82-770b-4939-ba26-1eb760a7f451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Graphics">
+      <UniqueIdentifier>{b534339f-8752-4938-905c-42c33a0803a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Updateable">
+      <UniqueIdentifier>{e7477804-a0a2-41f5-82b5-3feb208fc164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\State">
+      <UniqueIdentifier>{9d039073-4108-4b2d-81eb-b5eb19ce3f71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Lights">
+      <UniqueIdentifier>{adee3c1e-7d03-4849-aa8e-f2ea214814c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Maths\SISD">
+      <UniqueIdentifier>{16bcfc0a-1b46-4128-a9cd-f8619551daf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Maths\SIMD">
+      <UniqueIdentifier>{c99ab4ed-36b0-47a9-89a2-dff18d6f229a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hardware">
+      <UniqueIdentifier>{3abb5e01-5f79-4dbc-a768-b1ef165a6a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{60ee5233-56e8-4257-a9e9-34d77371ece9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{867b4307-b1df-4a3b-9da0-e705c5fc155e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components\Audio">
+      <UniqueIdentifier>{b7b2d0a2-7763-41b0-8b45-2aef98008419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Audio">
+      <UniqueIdentifier>{28137ee3-b31b-4cc8-b007-3362036aadb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AllanMilne">
+      <UniqueIdentifier>{7c732732-9ed1-4176-9bba-8aa2e4ebd57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AllanMilne">
+      <UniqueIdentifier>{4ecb4df2-0890-46e8-b48d-c5cd071c3be1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix4x4.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="simd.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector2.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector4.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Hardware.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="simdQuaternion.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="simdMatrix.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Orientation.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Scale.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="UtilityFunctions.cpp">
       <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ControllerFunctors.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Transformation.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Position.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="simdUtility.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
-    <ClCompile Include="AmbientNormalDeferredShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="d3dclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DeferredLightingShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphicsclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalMapShaderClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureToScreenShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="noisegenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsWindow.cpp">
@@ -141,42 +120,120 @@
     <ClCompile Include="ShaderLibrary.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="HeightmapBuilder.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Components\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="TextureBase.cpp">
+      <Filter>Source Files\Components\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\Components\Updateable</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerFunctors.cpp">
+      <Filter>Source Files\Components\Updateable</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformation.cpp">
+      <Filter>Source Files\Components\Updateable</Filter>
+    </ClCompile>
+    <ClCompile Include="Position.cpp">
+      <Filter>Source Files\Components\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Scale.cpp">
+      <Filter>Source Files\Components\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Orientation.cpp">
+      <Filter>Source Files\Components\State</Filter>
+    </ClCompile>
+    <ClCompile Include="simd.cpp">
+      <Filter>Source Files\Maths\SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="simdUtility.cpp">
+      <Filter>Source Files\Maths\SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="simdQuaternion.cpp">
+      <Filter>Source Files\Maths\SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="simdMatrix.cpp">
+      <Filter>Source Files\Maths\SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source Files\Maths\SISD</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>Source Files\Maths\SISD</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files\Maths\SISD</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files\Maths\SISD</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files\Maths\SISD</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentBase.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Hardware.cpp">
+      <Filter>Source Files\Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="AmbientNormalDeferredShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightingShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphicsclass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dclass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMapShaderClass.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureToScreenShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files\Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="noisegenerator.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFactory.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>Source Files\Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AllanMilne\PCMWave.cpp">
+      <Filter>Source Files\AllanMilne</Filter>
+    </ClCompile>
+    <ClCompile Include="AllanMilne\WaveFileManager.cpp">
+      <Filter>Source Files\AllanMilne</Filter>
+    </ClCompile>
+    <ClCompile Include="AllanMilne\XACore.cpp">
+      <Filter>Source Files\AllanMilne</Filter>
+    </ClCompile>
+    <ClCompile Include="AllanMilne\XASound.cpp">
+      <Filter>Source Files\AllanMilne</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>Source Files\Components\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathsClasses.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix4x4.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="simd.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="Hardware.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simdQuaternion.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="simdMatrix.h">
       <Filter>Header Files\Maths</Filter>
     </ClInclude>
     <ClInclude Include="LookupTable.h">
@@ -185,91 +242,16 @@
     <ClInclude Include="Component.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureTypes.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Position.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PointLight.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Orientation.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Scale.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="UtilityFunctions.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ControllerFunctors.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Transformation.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="simdUtility.h">
-      <Filter>Header Files\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AmbientNormalDeferredShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DeferredLightingShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphicsclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessagePasser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalMapShaderClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTarget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureToScreenShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="noisegenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsWindow.h">
@@ -287,37 +269,178 @@
     <ClInclude Include="ComponentBase.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="TextureBase.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="HeightmapBuilder.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureBase.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureTypes.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Orientation.h">
+      <Filter>Header Files\Components\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>Header Files\Components\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Scale.h">
+      <Filter>Header Files\Components\State</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\Components\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Components\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\Components\Updatable</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerFunctors.h">
+      <Filter>Header Files\Components\Updatable</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformation.h">
+      <Filter>Header Files\Components\Updatable</Filter>
+    </ClInclude>
+    <ClInclude Include="simd.h">
+      <Filter>Header Files\Maths\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="simdMatrix.h">
+      <Filter>Header Files\Maths\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="simdQuaternion.h">
+      <Filter>Header Files\Maths\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="simdUtility.h">
+      <Filter>Header Files\Maths\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>Header Files\Maths\SISD</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Header Files\Maths\SISD</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Header Files\Maths\SISD</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Maths\SISD</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files\Maths\SISD</Filter>
+    </ClInclude>
+    <ClInclude Include="AmbientNormalDeferredShader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dclass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightingShader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphicsclass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapShaderClass.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderInterface.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureToScreenShader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Hardware.h">
+      <Filter>Header Files\Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="noisegenerator.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Components\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MessagePasser.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFactory.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Header Files\Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\IPCMWave.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\ISound.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\IState.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\IXACore.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\PCMWave.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\WaveFileManager.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\WaveFmt.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\XACore.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="AllanMilne\XASound.hpp">
+      <Filter>Header Files\AllanMilne</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>Header Files\Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Assets\Shaders\deferredLightPixelShader.fx">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\rendertotexturespixelshader.fx">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\normalmapvertexshader.fx">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\normalmappixelshader.fx">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\deferredLightVertexShader.fx">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\basicScreenVertexShader.fx">
-      <Filter>Resource Files</Filter>
+    <CustomBuild Include="Assets\Shaders\basicScreenPixelShader.fx">
+      <Filter>Resource Files\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Assets\Shaders\rendertotexturesvertexshader.fx">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="Assets\Shaders\basicScreenPixelShader.fx">
-      <Filter>Resource Files</Filter>
+    <CustomBuild Include="Assets\Shaders\basicScreenVertexShader.fx">
+      <Filter>Resource Files\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\deferredLightPixelShader.fx">
+      <Filter>Resource Files\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\deferredLightVertexShader.fx">
+      <Filter>Resource Files\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\normalmappixelshader.fx">
+      <Filter>Resource Files\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\normalmapvertexshader.fx">
+      <Filter>Resource Files\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Assets\Shaders\rendertotexturespixelshader.fx">
+      <Filter>Resource Files\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

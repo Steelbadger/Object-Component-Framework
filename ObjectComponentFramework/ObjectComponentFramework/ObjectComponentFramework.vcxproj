@@ -89,6 +89,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AllanMilne\PCMWave.cpp" />
+    <ClCompile Include="AllanMilne\WaveFileManager.cpp" />
+    <ClCompile Include="AllanMilne\XACore.cpp" />
+    <ClCompile Include="AllanMilne\XASound.cpp" />
     <ClCompile Include="AmbientNormalDeferredShader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -97,9 +101,12 @@
     <ClCompile Include="ControllerFunctors.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="DeferredLightingShader.cpp" />
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />
+    <ClCompile Include="HeightmapBuilder.cpp" />
+    <ClCompile Include="Listener.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="MeshFactory.cpp" />
@@ -116,6 +123,7 @@
     <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
     <ClCompile Include="simdUtility.cpp" />
+    <ClCompile Include="TerrainManager.cpp" />
     <ClCompile Include="TextureBase.cpp" />
     <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="Transformation.cpp" />
@@ -126,6 +134,15 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllanMilne\IPCMWave.hpp" />
+    <ClInclude Include="AllanMilne\ISound.hpp" />
+    <ClInclude Include="AllanMilne\IState.hpp" />
+    <ClInclude Include="AllanMilne\IXACore.hpp" />
+    <ClInclude Include="AllanMilne\PCMWave.hpp" />
+    <ClInclude Include="AllanMilne\WaveFileManager.hpp" />
+    <ClInclude Include="AllanMilne\WaveFmt.hpp" />
+    <ClInclude Include="AllanMilne\XACore.hpp" />
+    <ClInclude Include="AllanMilne\XASound.hpp" />
     <ClInclude Include="AmbientNormalDeferredShader.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
@@ -136,11 +153,13 @@
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="DeferredLightingShader.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
     <ClInclude Include="HeightmapBuilder.h" />
+    <ClInclude Include="Listener.h" />
     <ClInclude Include="LookupTable.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Material.h" />
@@ -165,6 +184,7 @@
     <ClInclude Include="simdMatrix.h" />
     <ClInclude Include="simdQuaternion.h" />
     <ClInclude Include="simdUtility.h" />
+    <ClInclude Include="TerrainManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureBase.h" />
     <ClInclude Include="TextureToScreenShader.h" />

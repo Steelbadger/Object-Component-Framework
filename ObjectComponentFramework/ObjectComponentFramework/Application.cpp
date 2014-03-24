@@ -9,6 +9,9 @@
 #include "PointLight.h"
 #include "Manager.h"
 
+#include "HeightmapBuilder.h"
+#include "UtilityFunctions.h"
+
 #include <functional>
 
 Application::Application(): window(this)
@@ -27,12 +30,6 @@ Application::~Application()
 
 bool Application::Initialize()
 {
-	Mesh m;
-	Controller c;
-	Material ma;
-
-
-
 	bool result;
 	running = true;
 
@@ -42,10 +39,7 @@ bool Application::Initialize()
 	//  Before creating the Windows window, tell the container what Message Handler function to use.
 	window.SetMessageHandler<Application>((*this), std::mem_fn(&Application::MessageHandler));
 
-
-
 	window.Create("Engine", 720, 450, m_hinstance, fullscreen);
-
 
 	// Initialize the Direct3D object.
 	result = m_D3D.Initialize(window.GetWidth(), window.GetHeight(), vSyncEnabled, window.GetHandleToWindow(), fullscreen, 1000.0f, 0.1f);
@@ -161,7 +155,6 @@ void Application::TestUpdate()
 	std::list<rabd::ObjectID>::iterator it;
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
 		manager.GetComponent<Controller>(*it).Update();
-
 	}
 
 
@@ -211,7 +204,6 @@ void Application::TestUpdate()
 		else 
 			window.SetMouseLockedCentreWindow();
 	}
-
 }
 
 bool Application::Frame()
