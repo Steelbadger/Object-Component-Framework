@@ -5,6 +5,7 @@
 #include "Position.h"
 #include "Orientation.h"
 #include "ObjectManager.h"
+#include "Emitter.h"
 
 FirstPersonController::FirstPersonController():
 	sensitivity(5.0f), autorun(false)
@@ -22,7 +23,9 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 	Camera* camera = &manager->GetComponent<Camera>(id);
 	Position* position = &manager->GetComponent<Position>(id);
 	Orientation* orientation = &manager->GetComponent<Orientation>(id);
+	rabd::Emitter* emitter = &manager->GetComponent<rabd::Emitter>(id);
 	float mulp = sensitivity*input.GetTimeForLastFrameHighResolution();
+	bool moving = false;
 
 	//  Zoom with mouse wheel
 	if (input.CheckMouseWheel()) {
@@ -43,11 +46,13 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		position->Translate(translation);
 		//  if we press to move forward then turn off autorun
 		autorun = false;
+		moving = true;
 	}
 	//  If we're autorunning move forward
 	if (autorun) {
 		D3DXVECTOR3 translation = orientation->GetTransformedZ() * mulp;
 		position->Translate(translation);
+		moving = true;
 	}
 
 	//  Move backwards
@@ -56,6 +61,7 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		position->Translate(translation);
 		//  if we press to move backwards then turn off autorun
 		autorun = false;
+		moving = true;
 	}
 
 	//  Middle mouse to toggle autorun
@@ -71,10 +77,12 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		if (input.Button('D')) {
 			D3DXVECTOR3 translation = orientation->GetTransformedX() * mulp;
 			position->Translate(translation);
+			moving = true;
 		}
 		if (input.Button('A')) {
 			D3DXVECTOR3 translation = orientation->GetTransformedX() * -mulp;
 			position->Translate(translation);
+			moving = true;
 		}
 	} else {
 		if (input.Button('D')) {
@@ -83,6 +91,12 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		if (input.Button('A')) {
 			orientation->Rotate(-mulp/5, D3DXVECTOR3(0,1,0));
 		}
+	}
+
+	if (!moving) {
+		emitter->Pause();
+	} else {
+		emitter->Play();
 	}
 }
 

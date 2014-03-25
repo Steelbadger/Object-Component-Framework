@@ -11,7 +11,8 @@
 
 #include "HeightmapBuilder.h"
 #include "UtilityFunctions.h"
-
+#include "AllanMilne\XACore.hpp"
+#include "Emitter.h"
 #include <functional>
 
 Application::Application(): window(this)
@@ -55,8 +56,8 @@ bool Application::Initialize()
 	//////////////////////////////IMPORTANT////////////////////////////////
 	rabd::TextureBase::SetDevice(m_D3D.GetDevice());
 	rabd::TextureBase::SetManager(&textureManager);
+	AllanMilne::Audio::XACore::CreateInstance();
 	///////////////////////////////////////////////////////////////////////
-
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
 	if(!m_Graphics)
@@ -78,10 +79,12 @@ bool Application::Initialize()
 	manager.RegisterType<Controller>();
 	manager.RegisterType<PointLight>();
 	manager.RegisterType<Transformation>();
+	manager.RegisterType<rabd::Emitter>();
 
 	world.CreateScene();
 
-	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller, PointLight, Transformation>();
+	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller,
+																PointLight, Transformation, rabd::Emitter>();
 
 	FirstPersonController cont;
 	cont.SetSensitivity(50.0f);
@@ -91,8 +94,8 @@ bool Application::Initialize()
 	manager.GetComponent<Controller>(camera).SetControlFunction(cont);
 	manager.GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	manager.GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
-
-
+	manager.GetComponent<rabd::Emitter>(camera).LoadFile("Phyre1.wav");
+	
 	world.SetCameraObject(camera);
 	return true;
 }
@@ -106,6 +109,8 @@ void Application::Shutdown()
 		delete m_Graphics;
 		m_Graphics = 0;
 	}
+
+	AllanMilne::Audio::XACore::DeleteInstance();
 
 	return;
 }
@@ -168,7 +173,7 @@ void Application::TestUpdate()
 	}
 
 	if (m_Input->Pressed('K')) {
-		rabd::ObjectID light3 = manager.CreateObjectAndComponents<Position, Orientation, PointLight>();
+		rabd::ObjectID light3 = manager.CreateObjectAndComponents<Position, Orientation, Transformation, PointLight>();
 		manager.GetComponent<PointLight>(light3).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
 		manager.GetComponent<PointLight>(light3).SetSpecularPower(100.0f);
 		manager.GetComponent<Position>(light3).SetPosition(rand()%200-100,0.5,rand()%200-100);

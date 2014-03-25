@@ -1,6 +1,7 @@
 #include "Listener.h"
 #include "ObjectManager.h"
 #include "Position.h"
+#include "AllanMilne\XASound.hpp"
 
 namespace rabd
 {

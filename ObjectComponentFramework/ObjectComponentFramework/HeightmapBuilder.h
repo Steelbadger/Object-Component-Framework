@@ -27,7 +27,6 @@ public:
 	void GenerateHeightmapAsync(unsigned short** output, float x, float y, NoiseObject n, float square);
 
 private:
-	static unsigned short* GenerateHeights(float x, float y, NoiseObject n, float square);
 	void write_tga(const char *filename, int size, unsigned char* base);
 	void write_tga(const char *filename, int size, unsigned short* base);
 	static unsigned __stdcall GenerateSection(void *data);
