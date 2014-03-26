@@ -1,151 +1,213 @@
-//#pragma once
-//
-//#include <mmintrin.h>
-//#include <xmmintrin.h>
-//#include <emmintrin.h>
-//#include <smmintrin.h>
-//#include <iostream>
-//#include "Matrix4x4.h"
-//#include "simd.h"
-//
-//class Vector3;
-//class Vector4;
-//
-//namespace SIMD
-//{
-//	class Matrix4x4
-//	{
-//	public:
-//		Matrix4x4(void);
-//		Matrix4x4(const Matrix4x4 & rhs);
-//		Matrix4x4(Floats _elem[4]);
-//		Matrix4x4(	float _11, float _12, float _13, float _14,
-//					float _21, float _22, float _23, float _24,
-//					float _31, float _32, float _33, float _34,
-//					float _41, float _42, float _43, float _44);
-//
-//		Matrix4x4(const Quaternion &rhs);
-//
-//		~Matrix4x4(void);
-//
-//		void Translation(float x, float y, float z);
-//		void Translation(const Vector3 &vec);
+#pragma once
+#include <mmintrin.h>
+#include <xmmintrin.h>
+#include <emmintrin.h>
+
+#include "simdVector4.h"
+
+namespace SIMD
+{
+	class Matrix4x4
+	{
+	public:
+		Matrix4x4();
+		Matrix4x4(const float* data);
+		Matrix4x4(	const float f11, const float f12, const float f13, const float f14,
+					const float f21, const float f22, const float f23, const float f24,
+					const float f31, const float f32, const float f33, const float f34, 
+					const float f41, const float f42, const float f43, const float f44	);
+		Matrix4x4(const __m128* data);
+
+		~Matrix4x4();
+
 //		void Translation(const Vector4 &vec);
 //		void RotationX(float fAngle);
 //		void RotationY(float fAngle);
 //		void RotationZ(float fAngle);
+
 //		void RotationAroundVectorThroughZero(const Vector4 &Vector, float angle);
 //		void Projection(float fov, float aspect, float near, float far);
 //		void Transpose();
-//
-//		void Scale(float xScale, float yScale, float zScale);
-//		void Scale(const Vector3 &scale);
+
 //		void Scale(const Vector4 &scale);
-//
+
 //		void LookAt(const Vector4 & vFrom,
 //					const Vector4 & vTo,
 //					const Vector4 & vUp);
-//
-//		inline float operator()( unsigned int Row, unsigned int Column ) const
-//		{ return elem[Row][Column]; }
-//
-//		inline Floats operator()( unsigned int Row ) const
-//		{ return elem[Row]; }
-//
-//		// Output
+
+		inline float const &operator()( unsigned int Row, unsigned int Column ) const
+		{ return rows[Row].m128_f32[3-Column]; }
+
+		// Output
 //		friend std::ostream& operator<<(std::ostream& out, Matrix4x4& object);
-//
-//		static const Matrix4x4 IDENTITY;
-//		static const Matrix4x4 NULLMATRIX;
-//		static const double PI;
-//
-//	private:
-//		Floats elem[4];
-//	};
-//
-//	Matrix4x4 operator * ( const Matrix4x4 & M1, const Matrix4x4 & M2 );
-//
-//	Vector4 operator * ( const Matrix4x4 & M,  const Vector4 & V );
-//
-//	inline Matrix4x4 operator - ( const Matrix4x4 & M )
-//	{
-//		Floats mat[4] = {M(0), M(1), M(2), M(3)};
-//
-//		mat[0] = -1.0f * mat[0];
-//		mat[1] = -1.0f * mat[1];
-//		mat[2] = -1.0f * mat[2];
-//		mat[3] = -1.0f * mat[3];
-//		
-//		return Matrix4x4(mat);
-//	}
-//
-//	inline Matrix4x4 operator - ( const Matrix4x4 & M1,
-//								  const Matrix4x4 & M2 )
-//	{
-//		Floats mat1[4] = {M1(0), M1(1), M1(2), M1(3)};
-//		Floats mat2[4] = {M2(0), M2(1), M2(2), M2(3)};
-//		Floats outMat[4];
-//
-//		outMat[0] = mat1[0] - mat2[0];
-//		outMat[1] = mat1[1] - mat2[1];
-//		outMat[2] = mat1[2] - mat2[2];
-//		outMat[3] = mat1[3] - mat2[3];
-//
-//		return Matrix4x4(outMat);
-//	}
-//
-//	inline Matrix4x4 operator + ( const Matrix4x4 & M1,
-//								  const Matrix4x4 & M2 )
-//	{
-//		Floats mat1[4] = {M1(0), M1(1), M1(2), M1(3)};
-//		Floats mat2[4] = {M2(0), M2(1), M2(2), M2(3)};
-//		Floats outMat[4];
-//
-//		outMat[0] = mat1[0] + mat2[0];
-//		outMat[1] = mat1[1] + mat2[1];
-//		outMat[2] = mat1[2] + mat2[2];
-//		outMat[3] = mat1[3] + mat2[3];
-//
-//		return Matrix4x4(outMat);
-//	}
-//
-//	inline Matrix4x4 operator * ( const Matrix4x4 & M,
-//								  const float & s )
-//	{
-//		Floats mat1[4] = {M(0), M(1), M(2), M(3)};
-//		Floats outMat[4];
-//
-//		outMat[0] = mat1[0] * s;
-//		outMat[1] = mat1[1] * s;
-//		outMat[2] = mat1[2] * s;
-//		outMat[3] = mat1[3] * s;
-//
-//		return Matrix4x4(outMat);
-//	}
-//
-//	inline Matrix4x4 operator * ( const float & s,
-//								  const Matrix4x4 & M )
-//	{
-//		Floats mat1[4] = {M(0), M(1), M(2), M(3)};
-//		Floats outMat[4];
-//
-//		outMat[0] = mat1[0] * s;
-//		outMat[1] = mat1[1] * s;
-//		outMat[2] = mat1[2] * s;
-//		outMat[3] = mat1[3] * s;
-//
-//		return Matrix4x4(outMat);
-//	}
-//
-//	inline Matrix4x4 Transpose( Matrix4x4 const & M )
-//	{
-//		Floats mat[4] = {	Floats(M(0, 0), M(1, 0), M(2, 0), M(3, 0)),
-//							Floats(M(0, 1), M(1, 1), M(2, 1), M(3, 1)),
-//							Floats(M(0, 2), M(1, 2), M(2, 2), M(3, 2)),
-//							Floats(M(0, 3), M(1, 3), M(2, 3), M(3, 3)) };
-//
-//		return Matrix4x4(mat);
-//	}
-//
-//
-//}
+
+		static const Matrix4x4 IDENTITY;
+		static const Matrix4x4 NULLMATRIX;
+		static const double PI;
+
+		inline __m128 GetRow(int i) const {
+			return rows[i];
+		};
+
+	private:
+		__m128 rows[4];
+	};
+
+	inline Matrix4x4 Transpose( Matrix4x4 const & M )
+	{
+		__m128 data[4];
+		data[0] = M.GetRow(0);
+		data[1] = M.GetRow(1);
+		data[2] = M.GetRow(2);
+		data[3] = M.GetRow(3);
+
+		_MM_TRANSPOSE4_PS(data[3], data[2], data[1], data[0]);
+
+		return Matrix4x4(data);
+	}
+
+	inline Matrix4x4 CollapseMulp (Matrix4x4 const &M1, Matrix4x4 const& M2)
+	{
+		__m128 out[4];
+
+		const int mask1 = 0xF1;
+		const int mask2 = 0xF2;
+		const int mask3 = 0xF4;
+		const int mask4 = 0xF8;
+
+		__m128 m1[4];
+		__m128 m2[4];
+		for (int i = 0 ; i < 4; i++) {
+			m1[i] = M1.GetRow(i);
+			m2[i] = M2.GetRow(i);
+			out[i] = ZERO;
+		}
+
+		for (int j = 0; j < 4; j++) {
+			__m128 res = _mm_dp_ps(m1[j], m2[0], mask4);
+			out[j] = _mm_add_ps(out[j], res);
+
+			res = _mm_dp_ps(m1[j], m2[1], mask3);
+			out[j] = _mm_add_ps(out[j], res);
+
+			res = _mm_dp_ps(m1[j], m2[2], mask2);
+			out[j] = _mm_add_ps(out[j], res);
+
+			res = _mm_dp_ps(m1[j], m2[3], mask1);
+			out[j] = _mm_add_ps(out[j], res);
+		}
+
+		return Matrix4x4(out);
+	}
+
+	inline Matrix4x4 operator * ( const Matrix4x4 & M1,
+									const Matrix4x4 & M2 )
+	{
+		Matrix4x4 temp = Transpose(M2);
+		return CollapseMulp(M1, temp);
+	}
+
+	inline Vector4 operator * ( const Matrix4x4 & M,
+						 const Vector4 & V )
+	{
+		__m128 result = ZERO;
+		Matrix4x4 M2;
+		M2 = Transpose(M);
+		const int mask1 = 0xF1;
+		const int mask2 = 0xF2;
+		const int mask3 = 0xF4;
+		const int mask4 = 0xF8;
+
+		__m128 temp = _mm_dp_ps(M2.GetRow(3), V.GetData(), mask1);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(2), V.GetData(), mask2);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(1), V.GetData(), mask3);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(0), V.GetData(), mask4);
+		result = _mm_add_ps(result, temp);
+
+		return Vector4(result);
+	}
+
+	inline Vector4 operator * ( const Vector4 & V,
+						 const Matrix4x4 & M )
+	{
+		__m128 result = ZERO;
+		Matrix4x4 M2;
+		M2 = Transpose(M);
+		const int mask1 = 0xF1;
+		const int mask2 = 0xF2;
+		const int mask3 = 0xF4;
+		const int mask4 = 0xF8;
+
+		__m128 temp = _mm_dp_ps(M2.GetRow(3), V.GetData(), mask1);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(2), V.GetData(), mask2);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(1), V.GetData(), mask3);
+		result = _mm_add_ps(result, temp);
+
+		temp = _mm_dp_ps(M2.GetRow(0), V.GetData(), mask4);
+		result = _mm_add_ps(result, temp);
+
+		return Vector4(result);
+	}
+
+	inline Matrix4x4 operator - ( const Matrix4x4 & M )
+	{
+		__m128 out[4];
+		for (int i = 0; i < 4; i++) {
+			out[i] = _mm_sub_ps(ZERO, M.GetRow(i));	
+		}
+		return Matrix4x4(out);
+	}
+
+	inline Matrix4x4 operator - ( const Matrix4x4 & M1,
+								  const Matrix4x4 & M2 )
+	{
+		__m128 out[4];
+		for (int i = 0; i < 4; i++) {
+			out[i] = _mm_sub_ps(M1.GetRow(i), M2.GetRow(i));	
+		}
+		return Matrix4x4(out);
+	}
+
+	inline Matrix4x4 operator + ( const Matrix4x4 & M1,
+								  const Matrix4x4 & M2 )
+	{
+		__m128 out[4];
+		for (int i = 0; i < 4; i++) {
+			out[i] = _mm_add_ps(M1.GetRow(i), M2.GetRow(i));	
+		}
+		return Matrix4x4(out);
+	}
+
+	inline Matrix4x4 operator * ( const Matrix4x4 & M,
+								  const float & s )
+	{
+		__m128 out[4];
+		__m128 num = _mm_set_ps1(s);
+		for (int i = 0; i < 4; i++) {
+			out[i] = _mm_mul_ps(M.GetRow(i), num);	
+		}
+		return Matrix4x4(out);
+	}
+
+	inline Matrix4x4 operator * ( const float & s,
+								  const Matrix4x4 & M )
+	{
+		__m128 out[4];
+		__m128 num = _mm_set_ps1(s);
+		for (int i = 0; i < 4; i++) {
+			out[i] = _mm_mul_ps(M.GetRow(i), num);	
+		}
+		return Matrix4x4(out);
+	}
+
+};

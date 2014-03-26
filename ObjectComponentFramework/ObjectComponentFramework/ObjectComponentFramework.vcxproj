@@ -123,6 +123,7 @@
     <ClCompile Include="simdMatrix.cpp" />
     <ClCompile Include="simdQuaternion.cpp" />
     <ClCompile Include="simdUtility.cpp" />
+    <ClCompile Include="simdVector4.cpp" />
     <ClCompile Include="TerrainManager.cpp" />
     <ClCompile Include="TextureBase.cpp" />
     <ClCompile Include="TextureToScreenShader.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="simdMatrix.h" />
     <ClInclude Include="simdQuaternion.h" />
     <ClInclude Include="simdUtility.h" />
+    <ClInclude Include="simdVector4.h" />
     <ClInclude Include="TerrainManager.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureBase.h" />

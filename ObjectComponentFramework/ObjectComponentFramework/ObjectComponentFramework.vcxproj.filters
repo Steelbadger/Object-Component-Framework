@@ -231,6 +231,9 @@
     <ClCompile Include="TerrainManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="simdVector4.cpp">
+      <Filter>Source Files\Maths\SIMD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MathsClasses.h">
@@ -415,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="TerrainManager.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="simdVector4.h">
+      <Filter>Header Files\Maths\SIMD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

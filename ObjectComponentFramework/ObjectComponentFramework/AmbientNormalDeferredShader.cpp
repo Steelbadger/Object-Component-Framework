@@ -380,8 +380,8 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	deviceContext->PSSetShaderResources(0, 3, textures.data());
 
 
-	// Set shader texture array resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 2, textures.data());
+	//// Set shader texture array resource in the pixel shader.
+	//deviceContext->PSSetShaderResources(0, 2, textures.data());
 
 	return true;
 }

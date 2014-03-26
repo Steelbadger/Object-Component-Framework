@@ -15,6 +15,9 @@
 #include "Emitter.h"
 #include <functional>
 
+#include "simdMatrix.h"
+#include "simdVector4.h"
+
 Application::Application(): window(this)
 {
 	m_Input = 0;
@@ -27,6 +30,96 @@ Application::Application(): window(this)
 
 Application::~Application()
 {
+}
+
+void TESTFUNCTION()
+{
+	const int tests = 1000;
+
+	//D3DXMATRIX in1[tests];
+	//D3DXMATRIX in2 = D3DXMATRIX(rand(), rand(), rand(), rand(),
+	//							rand(), rand(), rand(), rand(),
+	//							rand(), rand(), rand(), rand(), 
+	//							rand(), rand(), rand(), rand());
+	//D3DXMATRIX out[tests];
+
+	//for (int i = 0; i < tests; i++) {
+	//	in1[i] = D3DXMATRIX(rand(), rand(), rand(), rand(),
+	//							rand(), rand(), rand(), rand(),
+	//							rand(), rand(), rand(), rand(), 
+	//							rand(), rand(), rand(), rand());
+	//}
+
+	//std::cout << "Do DirectX Vector Multiplies..." << std::endl;
+	//HardwareState::GetInstance().Update();
+	//for (int i = 0; i < tests; i++) {
+	//	D3DXMatrixMultiply(&out[i], &in1[i], &in2);
+	//}
+	//HardwareState::GetInstance().Update();
+	//std::cout << "Time: " << HardwareState::GetInstance().GetTimeForLastFrameHighResolution() << std::endl;
+
+	//SIMD::Matrix4x4 in3[tests];
+	//SIMD::Matrix4x4 in4 (	rand(), rand(), rand(), rand(),
+	//						rand(), rand(), rand(), rand(),
+	//						rand(), rand(), rand(), rand(), 
+	//						rand(), rand(), rand(), rand());
+	//SIMD::Matrix4x4 out2[tests];
+
+	//for (int i = 0; i < tests; i++) {
+	//	in3[i] = SIMD::Matrix4x4 (	rand(), rand(), rand(), rand(),
+	//						rand(), rand(), rand(), rand(),
+	//						rand(), rand(), rand(), rand(), 
+	//						rand(), rand(), rand(), rand());
+	//}
+
+	//std::cout << "Do SIMD Vector Multiplies..." << std::endl;
+	//HardwareState::GetInstance().Update();
+	//for (int i = 0; i < tests; i++) {
+	//	out2[i] = in3[i] * in4;
+	//}
+	//HardwareState::GetInstance().Update();
+	//std::cout << "Time: " << HardwareState::GetInstance().GetTimeForLastFrameHighResolution() << std::endl;
+
+
+	D3DXVECTOR4 in1[tests];
+	D3DXMATRIX in2 = D3DXMATRIX(rand(), rand(), rand(), rand(),
+								rand(), rand(), rand(), rand(),
+								rand(), rand(), rand(), rand(), 
+								rand(), rand(), rand(), rand());
+	D3DXVECTOR4 out[tests];
+
+	for (int i = 0; i < tests; i++) {
+		in1[i] = D3DXVECTOR4(rand(), rand(), rand(), rand());
+	}
+
+	std::cout << "Do DirectX Vector Multiplies..." << std::endl;
+	HardwareState::GetInstance().Update();
+	for (int i = 0; i < tests; i++) {
+		D3DXVec4Transform(&out[i], &in1[i], &in2);
+	}
+	HardwareState::GetInstance().Update();
+	std::cout << "Time: " << HardwareState::GetInstance().GetTimeForLastFrameHighResolution() << std::endl;
+
+	SIMD::Vector4 in3[tests];
+	SIMD::Matrix4x4 in4 (	rand(), rand(), rand(), rand(),
+							rand(), rand(), rand(), rand(),
+							rand(), rand(), rand(), rand(), 
+							rand(), rand(), rand(), rand());
+	SIMD::Vector4 out2[tests];
+
+	for (int i = 0; i < tests; i++) {
+		in3[i] = SIMD::Vector4 (	rand(), rand(), rand(), rand());
+	}
+
+	std::cout << "Do SIMD Vector Multiplies..." << std::endl;
+	HardwareState::GetInstance().Update();
+	for (int i = 0; i < tests; i++) {
+		out2[i] = in3[i] * in4;
+	}
+	HardwareState::GetInstance().Update();
+	std::cout << "Time: " << HardwareState::GetInstance().GetTimeForLastFrameHighResolution() << std::endl;
+
+
 }
 
 bool Application::Initialize()
@@ -71,6 +164,8 @@ bool Application::Initialize()
 	{
 		return false;
 	}
+
+	TESTFUNCTION();
 
 	manager.RegisterType<rabd::GameObject>();
 	manager.RegisterType<Position>();
