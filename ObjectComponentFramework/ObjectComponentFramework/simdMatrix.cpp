@@ -1,8 +1,5 @@
 #include "simdMatrix.h"
 
-#include "Vector3.h"
-#include "Vector4.h"
-
 #include <memory.h>
 #include <stdio.h>
 #include <math.h>
