@@ -51,6 +51,15 @@ namespace SIMD
 		}
 	}
 
+	Matrix4x4::Matrix4x4(const __m128& row0, const __m128& row1, const __m128& row2, const __m128& row3)
+	{
+		rows[0] = row0;
+		rows[1] = row1;
+		rows[2] = row2;
+		rows[3] = row3;
+	}
+
+
 	//Matrix4x4::Matrix4x4(float _elem[][4])
 	//{
 	//	memcpy(elem, _elem, sizeof(float) * 16);
@@ -252,4 +261,108 @@ namespace SIMD
 	//	}
 	//	return out;
 	//}
+
+	Matrix4x4 Perspective(const float fov, const float aspect, const float znear, const float zfar)
+	{
+		float yScale = 1.0f / tan(fov/2);
+		float xScale = yScale/aspect;
+		return Matrix4x4(	xScale,		0.0f,		0.0f,						0.0f,
+							0.0f,		yScale,		0.0f,						0.0f,
+							0.0f,		0.0f,		zfar/(zfar-znear),			1.0f,
+							0.0f,		0.0f,		-znear*zfar/(zfar-znear),	0.0f);
+
+	}
+
+	Matrix4x4 Orthographic(const float width, const float height, const float znear, const float zfar)
+	{
+		return Matrix4x4(	2/width,	0.0f,		0.0f,						0.0f,
+							0.0f,		2/height,	0.0f,						0.0f,
+							0.0f,		0.0f,		1/(zfar-znear),				0.0f,
+							0.0f,		0.0f,		-znear/(zfar-znear),		1.0f);
+	}
+
+	Matrix4x4 Inverse(const Matrix4x4& in)
+	{
+		//  Main body of algorithm found at http://download.intel.com/design/PentiumIII/sml/24504301.pdf
+		//  Modified slightly to work with this implementation
+
+		//  DOESN'T WORK!!!!
+
+		__m128 minor0, minor1, minor2, minor3;
+		__m128 row0, row1, row2, row3;
+		__m128 det, tmp1;
+
+		row0 = in.GetRow(3);
+		row1 = in.GetRow(2);
+		row2 = in.GetRow(1);
+		row3 = in.GetRow(0);
+
+//		_MM_TRANSPOSE4_PS(row0, row1, row2, row3);
+		
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(row2, row3);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor0 = _mm_mul_ps(row1, tmp1);
+		minor1 = _mm_mul_ps(row0, tmp1);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0 = _mm_sub_ps(_mm_mul_ps(row1, tmp1), minor0);
+		minor1 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor1);
+		minor1 = _mm_shuffle_ps(minor1, minor1, 0x4E);
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(row1, row2);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor0 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor0);
+		minor3 = _mm_mul_ps(row0, tmp1);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row3, tmp1));
+		minor3 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor3);
+		minor3 = _mm_shuffle_ps(minor3, minor3, 0x4E);
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(_mm_shuffle_ps(row1, row1, 0x4E), row3);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		row2 = _mm_shuffle_ps(row2, row2, 0x4E);
+		minor0 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor0);
+		minor2 = _mm_mul_ps(row0, tmp1);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row2, tmp1));
+		minor2 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor2);
+		minor2 = _mm_shuffle_ps(minor2, minor2, 0x4E);
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(row0, row1);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor2 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor2);
+		minor3 = _mm_sub_ps(_mm_mul_ps(row2, tmp1), minor3);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor2 = _mm_sub_ps(_mm_mul_ps(row3, tmp1), minor2);
+		minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row2, tmp1));
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(row0, row3);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row2, tmp1));
+		minor2 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor2);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor1 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor1);
+		minor2 = _mm_sub_ps(minor2, _mm_mul_ps(row1, tmp1));
+		// -----------------------------------------------
+		tmp1 = _mm_mul_ps(row0, row2);
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor1 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor1);
+		minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row1, tmp1));
+		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row3, tmp1));
+		minor3 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor3);
+		// -----------------------------------------------
+		//det = _mm_mul_ps(row0, minor0);
+		//det = _mm_add_ps(_mm_shuffle_ps(det, det, 0x4E), det);
+		//det = _mm_add_ss(_mm_shuffle_ps(det, det, 0xB1), det);
+		//tmp1 = _mm_rcp_ss(det);
+		//det = _mm_sub_ss(_mm_add_ss(tmp1, tmp1), _mm_mul_ss(det, _mm_mul_ss(tmp1, tmp1)));
+		//det = _mm_shuffle_ps(det, det, 0x00);
+		//minor0 = _mm_mul_ps(det, minor0);
+		//minor1 = _mm_mul_ps(det, minor1);
+		//minor2 = _mm_mul_ps(det, minor2);
+		//minor3 = _mm_mul_ps(det, minor3);
+
+		return Matrix4x4(minor0, minor1, minor2, minor3);
+	}
 }

@@ -17,6 +17,7 @@ namespace SIMD
 					const float f31, const float f32, const float f33, const float f34, 
 					const float f41, const float f42, const float f43, const float f44	);
 		Matrix4x4(const __m128* data);
+		Matrix4x4(const __m128& row0, const __m128& row1, const __m128& row2, const __m128& row3);
 
 		~Matrix4x4();
 
@@ -209,5 +210,9 @@ namespace SIMD
 		}
 		return Matrix4x4(out);
 	}
+
+	Matrix4x4 Perspective(const float fov, const float aspect, const float znear, const float nfar);
+	Matrix4x4 Orthographic(const float width, const float height, const float near, const float far);
+	Matrix4x4 Inverse(const Matrix4x4& in);
 
 };
