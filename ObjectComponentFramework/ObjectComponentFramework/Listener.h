@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "Vector3.h"
+#include "AllanMilne\XACore.hpp"
 
 namespace rabd
 {
@@ -10,6 +10,9 @@ namespace rabd
 	public:
 		Listener();
 		~Listener();
-		void SetAsListener();
+		void Update();
+		inline const X3DAUDIO_LISTENER& GetListenerStruct() const {return listenerData;}
+	private:
+		X3DAUDIO_LISTENER listenerData;
 	};
 };

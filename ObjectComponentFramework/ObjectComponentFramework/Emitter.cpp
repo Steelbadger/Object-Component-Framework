@@ -1,4 +1,6 @@
 #include "Emitter.h"
+#include "ObjectManager.h"
+#include "Listener.h"
 
 namespace rabd
 {
@@ -8,8 +10,9 @@ namespace rabd
 	Emitter::~Emitter()
 	{}
 
-	void Emitter::Update()
+	void Emitter::Update(ObjectID listener)
 	{
+		manager->GetComponent<Listener>(listener);
 	}
 
 	void Emitter::LoadFile(std::string file)

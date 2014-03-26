@@ -1,7 +1,7 @@
 #include "Listener.h"
 #include "ObjectManager.h"
-#include "Position.h"
-#include "AllanMilne\XASound.hpp"
+#include "Transformation.h"
+#include "AllanMilne\XACore.hpp"
 
 namespace rabd
 {
@@ -11,11 +11,8 @@ namespace rabd
 	Listener::~Listener()
 	{}
 
-	void Listener::SetAsListener()
+	void Listener::Update()
 	{
-		if (manager->HasComponent<Position>(GetParentID())) {
-			//  Pass position into Audiomanager as vector3
-		}
+//		manager->GetComponent<Transformation>(GetParentID()).HasC
 	}
-
 };

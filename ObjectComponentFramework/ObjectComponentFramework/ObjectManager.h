@@ -183,6 +183,12 @@ namespace rabd
 			return Manager::Get<T>(Get(parent).GetComponent<T>());
 		}
 
+		//  Get the component of type T attached to the GameObject referenced by the passed ID
+		template<class T>
+		ObjectID GetComponentID(ObjectID parent) {
+			return Get(parent).GetComponent<T>();
+		}
+
 		GameObject& Get(ObjectID object) {
 			return Manager::Get<GameObject>(object);
 		}
