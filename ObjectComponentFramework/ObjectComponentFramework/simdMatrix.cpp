@@ -297,71 +297,82 @@ namespace SIMD
 		row2 = in.GetRow(1);
 		row3 = in.GetRow(0);
 
-//		_MM_TRANSPOSE4_PS(row0, row1, row2, row3);
-		
+		_MM_TRANSPOSE4_PS(row3, row2, row1, row0);
+		row1 = _mm_shuffle_ps(row1, row1, _MM_SHUFFLE(1,0,3,2));
+		row3 = _mm_shuffle_ps(row3, row3, _MM_SHUFFLE(1,0,3,2));
 		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(row2, row3);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
-		minor0 = _mm_mul_ps(row1, tmp1);
-		minor1 = _mm_mul_ps(row0, tmp1);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
-		minor0 = _mm_sub_ps(_mm_mul_ps(row1, tmp1), minor0);
-		minor1 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor1);
-		minor1 = _mm_shuffle_ps(minor1, minor1, 0x4E);
-		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(row1, row2);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
-		minor0 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor0);
-		minor3 = _mm_mul_ps(row0, tmp1);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
-		minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row3, tmp1));
-		minor3 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor3);
-		minor3 = _mm_shuffle_ps(minor3, minor3, 0x4E);
-		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(_mm_shuffle_ps(row1, row1, 0x4E), row3);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
-		row2 = _mm_shuffle_ps(row2, row2, 0x4E);
-		minor0 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor0);
-		minor2 = _mm_mul_ps(row0, tmp1);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
-		minor0 = _mm_sub_ps(minor0, _mm_mul_ps(row2, tmp1));
-		minor2 = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor2);
-		minor2 = _mm_shuffle_ps(minor2, minor2, 0x4E);
-		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(row0, row1);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		tmp1   = _mm_mul_ps(row2, row3);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor0  = _mm_mul_ps(row1, tmp1);
+		minor1  = _mm_mul_ps(row0, tmp1);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0  = _mm_sub_ps(_mm_mul_ps(row1, tmp1), minor0);
+		minor1  = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor1);
+		minor1  = _mm_shuffle_ps(minor1, minor1, 0x4E);
+		//    -----------------------------------------------
+		tmp1   = _mm_mul_ps(row1, row2);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		minor0  = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor0);
+		minor3  = _mm_mul_ps(row0, tmp1);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0  = _mm_sub_ps(minor0, _mm_mul_ps(row3, tmp1));
+		minor3  = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor3);
+		minor3  = _mm_shuffle_ps(minor3, minor3, 0x4E);
+		//    -----------------------------------------------
+		tmp1   = _mm_mul_ps(_mm_shuffle_ps(row1, row1, 0x4E), row3);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		row2   = _mm_shuffle_ps(row2, row2, 0x4E);
+		minor0  = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor0);
+		minor2  = _mm_mul_ps(row0, tmp1);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		minor0  = _mm_sub_ps(minor0, _mm_mul_ps(row2, tmp1));
+		minor2  = _mm_sub_ps(_mm_mul_ps(row0, tmp1), minor2);
+		minor2  = _mm_shuffle_ps(minor2, minor2, 0x4E);
+		//    -----------------------------------------------
+		tmp1   = _mm_mul_ps(row0, row1);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
 		minor2 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor2);
 		minor3 = _mm_sub_ps(_mm_mul_ps(row2, tmp1), minor3);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
 		minor2 = _mm_sub_ps(_mm_mul_ps(row3, tmp1), minor2);
 		minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row2, tmp1));
-		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(row0, row3);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		//           -----------------------------------------------
+		tmp1   = _mm_mul_ps(row0, row3);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
 		minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row2, tmp1));
 		minor2 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor2);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
 		minor1 = _mm_add_ps(_mm_mul_ps(row2, tmp1), minor1);
 		minor2 = _mm_sub_ps(minor2, _mm_mul_ps(row1, tmp1));
-		// -----------------------------------------------
-		tmp1 = _mm_mul_ps(row0, row2);
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
+		//           -----------------------------------------------
+		tmp1   = _mm_mul_ps(row0, row2);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0xB1);
 		minor1 = _mm_add_ps(_mm_mul_ps(row3, tmp1), minor1);
 		minor3 = _mm_sub_ps(minor3, _mm_mul_ps(row1, tmp1));
-		tmp1 = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
+		tmp1   = _mm_shuffle_ps(tmp1, tmp1, 0x4E);
 		minor1 = _mm_sub_ps(minor1, _mm_mul_ps(row3, tmp1));
 		minor3 = _mm_add_ps(_mm_mul_ps(row1, tmp1), minor3);
-		// -----------------------------------------------
-		//det = _mm_mul_ps(row0, minor0);
-		//det = _mm_add_ps(_mm_shuffle_ps(det, det, 0x4E), det);
-		//det = _mm_add_ss(_mm_shuffle_ps(det, det, 0xB1), det);
-		//tmp1 = _mm_rcp_ss(det);
-		//det = _mm_sub_ss(_mm_add_ss(tmp1, tmp1), _mm_mul_ss(det, _mm_mul_ss(tmp1, tmp1)));
-		//det = _mm_shuffle_ps(det, det, 0x00);
-		//minor0 = _mm_mul_ps(det, minor0);
-		//minor1 = _mm_mul_ps(det, minor1);
-		//minor2 = _mm_mul_ps(det, minor2);
-		//minor3 = _mm_mul_ps(det, minor3);
+ 
+		// Evaluation of determinant and its reciprocal value. In the original Intel document,
+		// 1/det was evaluated using a fast rcpps command with subsequent approximation using
+		// the Newton-Raphson algorithm. Here, we go for a IEEE-compliant division instead,
+		// so as to not compromise precision at all.
+		det    = _mm_mul_ps(row0, minor0);
+		det    = _mm_add_ps(_mm_shuffle_ps(det, det, 0x4E), det);
+		det    = _mm_add_ss(_mm_shuffle_ps(det, det, 0xB1), det);
+		det    = _mm_div_ss(_mm_set_ss(1.0f), det); // <--- yay, one original line not copied from Intel
+		det    = _mm_shuffle_ps(det, det, 0x00);
+		// warning, Intel's variable naming is very confusing: now 'det' is 1/det !
+
+		minor0 = _mm_mul_ps(det, minor0);
+		minor1 = _mm_mul_ps(det, minor1);
+		minor2 = _mm_mul_ps(det, minor2);
+		minor3 = _mm_mul_ps(det, minor3);
+
+		minor0 = _mm_shuffle_ps(minor0, minor0, _MM_SHUFFLE(0,1,2,3));
+		minor1 = _mm_shuffle_ps(minor1, minor1, _MM_SHUFFLE(0,1,2,3));
+		minor2 = _mm_shuffle_ps(minor2, minor2, _MM_SHUFFLE(0,1,2,3));
+		minor3 = _mm_shuffle_ps(minor3, minor3, _MM_SHUFFLE(0,1,2,3));
 
 		return Matrix4x4(minor0, minor1, minor2, minor3);
 	}

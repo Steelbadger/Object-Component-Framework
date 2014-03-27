@@ -214,5 +214,4 @@ namespace SIMD
 	Matrix4x4 Perspective(const float fov, const float aspect, const float znear, const float nfar);
 	Matrix4x4 Orthographic(const float width, const float height, const float near, const float far);
 	Matrix4x4 Inverse(const Matrix4x4& in);
-
 };

@@ -32,23 +32,6 @@ Application::~Application()
 {
 }
 
-void FUNCTION()
-{
-	D3DXMATRIX test;
-	D3DXMATRIX inv2;
-	float det;
-	SIMD::Matrix4x4 test2;
-
-	test2 = SIMD::Perspective(1.2f, 1.41f, 0.01f, 1000.0f);
-	D3DXMatrixPerspectiveFovLH(&test, 1.2f, 1.41f, 0.01f, 1000.0f);
-
-	SIMD::Matrix4x4 inv = SIMD::Inverse(test2);
-	D3DXMatrixInverse(&inv2, &det, &test);
-
-	
-	std::cout << "Herp!" << std::endl;
-}
-
 bool Application::Initialize()
 {
 	bool result;
@@ -56,8 +39,6 @@ bool Application::Initialize()
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
-
-	FUNCTION();
 
 	//  Before creating the Windows window, tell the container what Message Handler function to use.
 	window.SetMessageHandler<Application>((*this), std::mem_fn(&Application::MessageHandler));
