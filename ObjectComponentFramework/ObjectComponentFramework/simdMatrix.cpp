@@ -250,17 +250,17 @@ namespace SIMD
 
 	//}
 
-	//std::ostream& operator<<(std::ostream& out, Matrix4x4& object)
-	//{
-	//	for (int i = 0; i < 4; i++) {
-	//		out << "|";
-	//		for (int j = 0; j < 3; j++) {
-	//			out << object(i,j) << ", ";
-	//		}
-	//		out << object(i,4) << "|" << std::endl;
-	//	}
-	//	return out;
-	//}
+	std::ostream& operator<<(std::ostream& out, Matrix4x4& object)
+	{
+		for (int i = 0; i < 4; i++) {
+			out << "|";
+			for (int j = 0; j < 3; j++) {
+				out << object(i,j) << ", ";
+			}
+			out << object(i,3) << "|" << std::endl;
+		}
+		return out;
+	}
 
 	Matrix4x4 Perspective(const float fov, const float aspect, const float znear, const float zfar)
 	{
@@ -285,8 +285,6 @@ namespace SIMD
 	{
 		//  Main body of algorithm found at http://download.intel.com/design/PentiumIII/sml/24504301.pdf
 		//  Modified slightly to work with this implementation
-
-		//  DOESN'T WORK!!!!
 
 		__m128 minor0, minor1, minor2, minor3;
 		__m128 row0, row1, row2, row3;
@@ -360,7 +358,7 @@ namespace SIMD
 		det    = _mm_mul_ps(row0, minor0);
 		det    = _mm_add_ps(_mm_shuffle_ps(det, det, 0x4E), det);
 		det    = _mm_add_ss(_mm_shuffle_ps(det, det, 0xB1), det);
-		det    = _mm_div_ss(_mm_set_ss(1.0f), det); // <--- yay, one original line not copied from Intel
+		det    = _mm_div_ss(_mm_set_ss(1.0f), det);
 		det    = _mm_shuffle_ps(det, det, 0x00);
 		// warning, Intel's variable naming is very confusing: now 'det' is 1/det !
 
@@ -375,5 +373,19 @@ namespace SIMD
 		minor3 = _mm_shuffle_ps(minor3, minor3, _MM_SHUFFLE(0,1,2,3));
 
 		return Matrix4x4(minor0, minor1, minor2, minor3);
+	}
+
+	std::array<float, 16> ConvertToFloats(const Matrix4x4& in)
+	{
+		std::array<float, 16> out;
+		__m128 temp[4];
+		std::memcpy(temp, in.rows, sizeof(in.rows));
+		const int mask = _MM_SHUFFLE(0,1,2,3);
+		temp[0] = _mm_shuffle_ps(temp[0], temp[0], mask);
+		temp[1] = _mm_shuffle_ps(temp[1], temp[1], mask);
+		temp[2] = _mm_shuffle_ps(temp[2], temp[2], mask);
+		temp[3] = _mm_shuffle_ps(temp[3], temp[3], mask);
+		std::memcpy(out.data(), temp, sizeof(temp));
+		return out;
 	}
 }

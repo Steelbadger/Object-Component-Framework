@@ -5,6 +5,8 @@
 
 #include "simdVector4.h"
 
+#include <array>
+
 namespace SIMD
 {
 	class Matrix4x4
@@ -40,7 +42,7 @@ namespace SIMD
 		{ return rows[Row].m128_f32[3-Column]; }
 
 		// Output
-//		friend std::ostream& operator<<(std::ostream& out, Matrix4x4& object);
+		friend std::ostream& operator<<(std::ostream& out, Matrix4x4& object);
 
 		static const Matrix4x4 IDENTITY;
 		static const Matrix4x4 NULLMATRIX;
@@ -49,6 +51,8 @@ namespace SIMD
 		inline __m128 GetRow(int i) const {
 			return rows[i];
 		};
+
+		friend std::array<float, 16> ConvertToFloats(const Matrix4x4& in);
 
 	private:
 		__m128 rows[4];
