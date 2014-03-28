@@ -11,6 +11,8 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 
+#define SIMDALIGN __declspec(align(16))
+
 namespace SIMD
 {
 	class Integers;
