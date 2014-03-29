@@ -77,17 +77,17 @@ void World::CreateScene()
 
 	num = 1000;
 	for (int i = 0 ; i < num; i++) {
-		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
-		//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
+		//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
+		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
 
-		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
+		//spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
-		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,0,rand()%1000-100);
-		manager->GetComponent<Controller>(test).SetControlFunction(spinny);
-		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
-		manager->GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
-		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,-1.0f,rand()%1000-100);
+		//manager->GetComponent<Controller>(test).SetControlFunction(spinny);
+		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("tree.obj", Mesh::NORMALMAPPED));
+		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("treec.jpg");
+		manager->GetComponent<Material>(test).AddTexture<NormalMap>("treecnorm.png");
+		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("treecspec.png");
 		manager->GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
 
 		AddToScene(test);
@@ -97,9 +97,9 @@ void World::CreateScene()
 
 	manager->GetComponent<Position>(ground).SetPosition(-100,-0.5,-100);
 	manager->GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive());
-	manager->GetComponent<Material>(ground).AddTexture<AmbientTexture>("stone01.dds");
-	manager->GetComponent<Material>(ground).AddTexture<NormalMap>("bump01.dds");
-	manager->GetComponent<Material>(ground).AddTexture<SpecularMap>("spec01.jpg");
+	manager->GetComponent<Material>(ground).AddTexture<AmbientTexture>("grass_texture.jpg");
+	manager->GetComponent<Material>(ground).AddTexture<NormalMap>("grassnorm.png");
+	manager->GetComponent<Material>(ground).AddTexture<SpecularMap>("grassspec.png");
 	manager->GetComponent<Material>(ground).SetShader(ShaderLibrary::Shaders::NORMAL);
 	AddToScene(ground);
 }

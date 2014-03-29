@@ -46,11 +46,37 @@ PixelInputType AmbientNormalShader(VertexInputType input)
     // Change the position vector to be 4 units for proper matrix calculations.
     input.position.w = 1.0f;
 	float dist;
+	float4 inv = float4(0.0f,0.0f,0.0f,1.0f);
+	inv = mul(inv, viewMatrix);
+	inv = -inv;
 
     // Calculate the position of the vertex against the world, view, and projection matrices.
     output.position = mul(input.position, worldMatrix);
+	//output.position = mul(vertPos, worldMatrix);
     output.position = mul(output.position, viewMatrix);
 	dist = output.position.z/output.position.w;
+
+	// TESTING
+	// Spherize
+	float groundPlane = -1000.0f;
+
+	float vertR = input.position.y - groundPlane;
+	float playerR = inv - groundPlane;
+
+	float dist2 = length(output.position.xz);
+
+	float yChange = groundPlane + sqrt(pow(vertR,2) - pow(dist2, 2));
+
+	float4 vertPos = input.position;
+	output.position.y += yChange*output.position.w;
+
+	float zcorr = sqrt(pow(input.position.y,2) - pow(yChange, 2));
+
+	output.position.z += zcorr*output.position.w;
+
+	// DONE TESTING
+
+
 	dist = dist/1000.0f;
     output.position = mul(output.position, projectionMatrix);
 

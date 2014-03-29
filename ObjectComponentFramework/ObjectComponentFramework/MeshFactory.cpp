@@ -567,7 +567,7 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
 {
 	NoiseGenerator noise;
-	NoiseObject n(8, 200.0f, 0.43f, 80.0f, 1.155f);
+	NoiseObject n(8, 200.0f, 0.7f, 1.0f, 1.155f);
 	noise.Seed(13.4f);
 //	noise.GeneratePermutationTable();
 

@@ -92,12 +92,12 @@ bool Application::Initialize()
 	FirstPersonController cont;
 	cont.SetSensitivity(50.0f);
 
-	manager.GetComponent<Position>(camera).SetPosition(0,80,-100);
+	manager.GetComponent<Position>(camera).SetPosition(500,1.3,0);
 	manager.GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	manager.GetComponent<Controller>(camera).SetControlFunction(cont);
 	manager.GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	manager.GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
-	manager.GetComponent<rabd::Emitter>(camera).LoadFile("Phyre1.wav");
+//	manager.GetComponent<rabd::Emitter>(camera).LoadFile("Phyre1.wav");
 	
 	world.SetCameraObject(camera);
 	return true;
