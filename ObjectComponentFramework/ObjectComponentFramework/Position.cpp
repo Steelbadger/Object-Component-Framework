@@ -5,7 +5,7 @@
 
 Position::Position()
 {
-	position = D3DXVECTOR3(0,0,0);
+	position = XMVectorZero();
 }
 
 Position::~Position()
@@ -14,23 +14,23 @@ Position::~Position()
 
 void Position::SetPosition(float x, float y, float z)
 {
-	position = D3DXVECTOR3(x, y, z);
+	position = XMVectorSet(x, y, z, 1.0f);
 	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
 void Position::Translate(float x, float y, float z)
 {
-	position += D3DXVECTOR3(x, y, z);
+	position += XMVectorSet(x, y, z, 1.0f);
 	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
-void Position::Translate(D3DXVECTOR3 t)
+void Position::Translate(FXMVECTOR t)
 {
 	position += t;
 	manager->GetComponent<Transformation>(GetParentID()).SetChanged();
 }
 
-D3DXVECTOR3 Position::GetPosition()
+XMVECTOR Position::GetPosition()
 {
 	return position;
 }

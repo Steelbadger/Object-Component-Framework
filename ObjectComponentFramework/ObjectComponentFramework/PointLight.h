@@ -5,26 +5,25 @@
 #include "GameObject.h"
 #include "Transformation.h"
 #include "ObjectManager.h"
+#include <xnamath.h>
+
 
 class PointLight : public rabd::Component<PointLight>
 {
 public:
 	PointLight(){specularPower = 40;};
 	~PointLight(){};
-	void SetColour(float r, float g, float b, float a){m_Colour = D3DXVECTOR4(r,g,b,a);}
+	void SetColour(float r, float g, float b, float a){m_Colour = XMVectorSet(r,g,b,a);}
 	void SetSpecularPower(float p) {specularPower = p;}
 
-	D3DXVECTOR4 GetColour(){return m_Colour;}
-	D3DXVECTOR3 GetPosition(){
-		D3DXVECTOR4 pos(0,0,0, 1);
-		D3DXMATRIX trans = manager->GetComponent<Transformation>(GetParentID()).GetTransformation();
-		D3DXVec4Transform(&pos, &pos, &trans);
-		pos = pos/pos.w;
-		return D3DXVECTOR3(pos.x, pos.y, pos.z);	
+	XMVECTOR GetColour(){return m_Colour;}
+	XMVECTOR GetPosition(){
+		return XMVector3TransformCoord(XMVectorSet(0,0,0,1), manager->GetComponent<Transformation>(GetParentID()).GetTransformation());
 	}
+
 	float GetSpecularPower(){return specularPower;}
 private:
-	D3DXVECTOR4 m_Colour;
-	D3DXVECTOR3 m_Position;
+	XMVECTOR m_Colour;
+	XMVECTOR m_Position;
 	float specularPower;
 };

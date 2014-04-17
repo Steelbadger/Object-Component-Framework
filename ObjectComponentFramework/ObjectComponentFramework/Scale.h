@@ -3,6 +3,7 @@
 #include "Component.h"
 #include <D3D11.h>
 #include <D3DX10math.h>
+#include <xnamath.h>
 
 class Scale : public rabd::Component<Scale>
 {
@@ -14,8 +15,8 @@ public:
 	void CompoundScale(const float x, const float y, const float z);
 	void AdditiveScale(const float x, const float y, const float z);
 
-	D3DXMATRIX GetMatrix();
+	XMMATRIX GetMatrix();
 private:
 	void CalculateScaleMatrix(const float x, const float y, const float z);
-	D3DXMATRIX scaleMatrix;
+	XMMATRIX scaleMatrix;
 };

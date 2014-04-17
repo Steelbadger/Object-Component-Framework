@@ -362,6 +362,10 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	D3DXMatrixTranspose(&dataPtr->viewMatrix, &manager->GetComponent<Camera>(cameraObject).GetViewMatrix());
 	D3DXMatrixTranspose(&dataPtr->projectionMatrix, &manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
 
+	dataPtr->worldMatrix = XMMatrixTranspose(manager->GetComponent<Transformation>(drawObject).GetTransformation());
+	dataPtr->viewMatrix = XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetViewMatrix());
+	dataPtr->projectionMatrix = XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
+
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
 

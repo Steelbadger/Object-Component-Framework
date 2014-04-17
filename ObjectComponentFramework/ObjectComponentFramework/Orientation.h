@@ -2,6 +2,7 @@
 #include "Component.h"
 #include <D3D11.h>
 #include <D3DX10math.h>
+#include <xnamath.h>
 
 class Orientation : public rabd::Component<Orientation>
 {
@@ -9,15 +10,16 @@ public:
 	Orientation();
 	~Orientation();
 
-	void SetOrientation(D3DXQUATERNION in);
-	void SetOrientation(D3DXMATRIX in);
-	void Rotate(float angle, D3DXVECTOR3 axis);
-	void RotateLocal(float angle, D3DXVECTOR3 localAxis);
-	D3DXMATRIX GetMatrix();
-	D3DXVECTOR3 GetTransformedX();
-	D3DXVECTOR3 GetTransformedY();
-	D3DXVECTOR3 GetTransformedZ();
-	D3DXVECTOR3 GetRotatedPoint(float x, float y, float z);
+	void SetOrientation(FXMVECTOR in);
+	void SetOrientation(CXMMATRIX in);
+	void Rotate(float angle, FXMVECTOR axis);
+	void RotateLocal(float angle, FXMVECTOR localAxis);
+	XMMATRIX GetMatrix();
+	XMVECTOR GetTransformedX();
+	XMVECTOR GetTransformedY();
+	XMVECTOR GetTransformedZ();
+	XMVECTOR GetRotatedPoint(float x, float y, float z);
+	XMVECTOR GetRotatedPoint(XMVECTOR v);
 private:
-	D3DXQUATERNION orientation;
+	XMVECTOR orientation;
 };

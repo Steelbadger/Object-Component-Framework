@@ -3,6 +3,7 @@
 #include "Component.h"
 #include <D3D11.h>
 #include <D3DX10math.h>
+#include <xnamath.h>
 
 class Camera : public rabd::Component<Camera>
 {
@@ -17,13 +18,13 @@ public:
 	float GetNearClipPlane();
 	float GetFarClipPlane();
 	void Zoom(float zoom);
-	const D3DXMATRIX& GetViewMatrix();
-	const D3DXMATRIX& GetProjectionMatrix();
+	const XMMATRIX& GetViewMatrix();
+	const XMMATRIX& GetProjectionMatrix();
 
 private:
 	bool perspective;
 	float fieldOfView, nearCull, farCull, viewportWidth, viewportHeight;
-	D3DXMATRIX projectionMatrix;
+	XMMATRIX projectionMatrix;
 	bool projectionChange;
-	D3DXMATRIX viewMatrix;
+	XMMATRIX viewMatrix;
 };

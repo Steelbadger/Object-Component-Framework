@@ -21,7 +21,7 @@ Transformation::~Transformation()
 
 }
 
-const D3DXMATRIX& Transformation::GetTransformation()
+const XMMATRIX& Transformation::GetTransformation()
 {
 	if (globalChanged) {
 		CalculateGlobalTransformation();
@@ -48,13 +48,9 @@ void Transformation::SetGlobalChanged()
 
 void Transformation::CalculateLocalTransformation()
 {
-	D3DXMATRIX rotation;
-	D3DXMATRIX scale;
-	D3DXMATRIX translate;
-
-	D3DXMatrixIdentity(&rotation);
-	D3DXMatrixIdentity(&scale);
-	D3DXMatrixIdentity(&translate);
+	XMMATRIX rotation = XMMatrixIdentity();
+	XMMATRIX scale = XMMatrixIdentity();
+	XMMATRIX translate = XMMatrixIdentity();
 
 	if (manager->HasComponent<Orientation>(GetParentID())) {
 		rotation = manager->GetComponent<Orientation>(GetParentID()).GetMatrix();
@@ -63,12 +59,9 @@ void Transformation::CalculateLocalTransformation()
 		scale = manager->GetComponent<Scale>(GetParentID()).GetMatrix();
 	}
 	if (manager->HasComponent<Position>(GetParentID())) {
-		D3DXVECTOR3 pos = manager->GetComponent<Position>(GetParentID()).GetPosition();
-		D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
+		XMVECTOR pos = manager->GetComponent<Position>(GetParentID()).GetPosition();
+		translate = XMMatrixTranslationFromVector(pos);
 	}
-
-	//localTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(rotation), Matrix4x4(scale))(0,0));
-	//localTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(localTransform), Matrix4x4(translate))(0,0));
 
 	localTransform = rotation * scale * translate;
 	localChanged = false;
@@ -79,12 +72,10 @@ void Transformation::CalculateGlobalTransformation()
 	if (localChanged) {
 		CalculateLocalTransformation();
 	}
-	D3DXMATRIX parent;
-	D3DXMatrixIdentity(&parent);
+	XMMATRIX parent = XMMatrixIdentity();
 	if (manager->Get(GetParentID()).HasParent()) {
 		parent = manager->GetComponent<Transformation>(manager->Get(GetParentID()).GetParentID()).GetTransformation();
 	}
-	//globalTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(localTransform), Matrix4x4(parent))(0,0));
 	globalTransform = localTransform * parent;
 	globalChanged = false;
 }

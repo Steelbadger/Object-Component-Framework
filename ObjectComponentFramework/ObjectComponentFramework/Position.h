@@ -1,6 +1,7 @@
 #pragma once
 #include <D3D11.h>
 #include <D3DX10math.h>
+#include <xnamath.h>
 
 #include "Component.h"
 
@@ -11,8 +12,8 @@ public:
 	~Position();
 	void SetPosition(float x, float y, float z);
 	void Translate(float x, float y, float z);
-	void Translate(D3DXVECTOR3 t);
-	D3DXVECTOR3 GetPosition();
+	void Translate(XMVECTOR t);
+	XMVECTOR GetPosition();
 private:
-	D3DXVECTOR3 position;
+	XMVECTOR position;
 };

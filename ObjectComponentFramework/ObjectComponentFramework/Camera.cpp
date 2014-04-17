@@ -6,7 +6,6 @@
 #include "ObjectManager.h"
 
 
-
 Camera::Camera()
 {
 
@@ -50,21 +49,22 @@ void Camera::SetFieldOfView(float degrees)
 	projectionChange = true;
 }
 
-const D3DXMATRIX& Camera::GetViewMatrix()
+const XMMATRIX& Camera::GetViewMatrix()
 {
 	if (manager->GetComponent<Transformation>(GetParentID()).ViewHasChanged()) {
-		D3DXVECTOR3 up(0,1,0);
-		D3DXVECTOR3 forward(0,0,1);
-		D3DXVECTOR3 position = manager->GetComponent<Position>(GetParentID()).GetPosition();
-		D3DXMATRIX orientationMatrix = manager->GetComponent<Orientation>(GetParentID()).GetMatrix();
+		XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+		XMVECTOR forward = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
+		XMVECTOR position = manager->GetComponent<Position>(GetParentID()).GetPosition();
+		XMMATRIX orientationMatrix = manager->GetComponent<Orientation>(GetParentID()).GetMatrix();
 
-		D3DXVec3TransformCoord(&forward, &forward, &orientationMatrix);
-		D3DXVec3TransformCoord(&up, &up, &orientationMatrix);
+		forward = XMVector3TransformCoord(forward, orientationMatrix);
+		up = XMVector3TransformCoord(up, orientationMatrix);
 
-		D3DXVECTOR3 lookAt = position + forward;
+		XMVECTOR lookAt = position + forward;
 
 		// Finally create the view matrix from the three updated vectors.
-		D3DXMatrixLookAtLH(&viewMatrix, &position, &lookAt, &up);
+		viewMatrix = XMMatrixLookAtLH(position, lookAt, up);
+
 		manager->GetComponent<Transformation>(GetParentID()).SetViewUnchanged();
 	}
 
@@ -72,13 +72,13 @@ const D3DXMATRIX& Camera::GetViewMatrix()
 }
 
 
-const D3DXMATRIX& Camera::GetProjectionMatrix()
+const XMMATRIX& Camera::GetProjectionMatrix()
 {
 	if (projectionChange == true) {
 		if (perspective) {
-			D3DXMatrixPerspectiveFovLH(&projectionMatrix, fieldOfView, (viewportWidth/viewportHeight), nearCull, farCull);		
+			projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, (viewportWidth/viewportHeight), nearCull, farCull);
 		} else {
-			D3DXMatrixOrthoLH(&projectionMatrix, viewportWidth, viewportHeight, nearCull, farCull);
+			projectionMatrix = XMMatrixOrthographicLH(viewportWidth, viewportHeight, nearCull, farCull);
 		}
 		projectionChange = false;
 	} 

@@ -25,6 +25,11 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 	Orientation* orientation = &manager->GetComponent<Orientation>(id);
 	rabd::Emitter* emitter = &manager->GetComponent<rabd::Emitter>(id);
 	float mulp = sensitivity*input.GetTimeForLastFrameHighResolution();
+
+	static const XMVECTOR x = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
+	static const XMVECTOR y = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+	static const XMVECTOR z = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
+
 	bool moving = false;
 
 	//  Zoom with mouse wheel
@@ -42,7 +47,7 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 
 	//  Move forward
 	if (input.Button('W')) {
-		D3DXVECTOR3 translation = orientation->GetTransformedZ() * mulp;
+		XMVECTOR translation = orientation->GetTransformedZ() * mulp;
 		position->Translate(translation);
 		//  if we press to move forward then turn off autorun
 		autorun = false;
@@ -50,14 +55,14 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 	}
 	//  If we're autorunning move forward
 	if (autorun) {
-		D3DXVECTOR3 translation = orientation->GetTransformedZ() * mulp;
+		XMVECTOR translation = orientation->GetTransformedZ() * mulp;
 		position->Translate(translation);
 		moving = true;
 	}
 
 	//  Move backwards
 	if(input.Button('S')) {
-		D3DXVECTOR3 translation = orientation->GetTransformedZ() * -mulp;
+		XMVECTOR translation = orientation->GetTransformedZ() * -mulp;
 		position->Translate(translation);
 		//  if we press to move backwards then turn off autorun
 		autorun = false;
@@ -72,24 +77,24 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 
 	if (input.MouseButton(Mouse::RIGHT)) {
 		D3DXVECTOR2 cursorMov = input.GetMouseDeltaMovement();
-		orientation->Rotate(cursorMov.x/1000.0, D3DXVECTOR3(0,1,0));
-		orientation->RotateLocal(cursorMov.y/1000.0, D3DXVECTOR3(1,0,0));
+		orientation->Rotate(cursorMov.x/1000.0, y);
+		orientation->RotateLocal(cursorMov.y/1000.0, x);
 		if (input.Button('D')) {
-			D3DXVECTOR3 translation = orientation->GetTransformedX() * mulp;
+			XMVECTOR translation = orientation->GetTransformedX() * mulp;
 			position->Translate(translation);
 			moving = true;
 		}
 		if (input.Button('A')) {
-			D3DXVECTOR3 translation = orientation->GetTransformedX() * -mulp;
+			XMVECTOR translation = orientation->GetTransformedX() * -mulp;
 			position->Translate(translation);
 			moving = true;
 		}
 	} else {
 		if (input.Button('D')) {
-			orientation->Rotate(mulp/5, D3DXVECTOR3(0,1,0));
+			orientation->Rotate(mulp/5, y);
 		}
 		if (input.Button('A')) {
-			orientation->Rotate(-mulp/5, D3DXVECTOR3(0,1,0));
+			orientation->Rotate(-mulp/5, y);
 		}
 	}
 
@@ -116,13 +121,16 @@ SpinController::~SpinController()
 void SpinController::operator()(rabd::ObjectID id, rabd::ObjectManager* manager) 
 {
 	HardwareState input = HardwareState::GetInstance();
+	static const XMVECTOR x = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
+	static const XMVECTOR y = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+	static const XMVECTOR z = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
 
 	float time = input.GetTimeForLastFrameHighResolution();
 
 	Orientation* orientation = &manager->GetComponent<Orientation>(id);
-	orientation->Rotate(spinSpeedx*time, D3DXVECTOR3(1,0,0));
-	orientation->Rotate(spinSpeedy*time, D3DXVECTOR3(0,1,0));
-	orientation->Rotate(spinSpeedz*time, D3DXVECTOR3(0,0,1));
+	orientation->Rotate(spinSpeedx*time, x);
+	orientation->Rotate(spinSpeedy*time, y);
+	orientation->Rotate(spinSpeedz*time, z);
 }
 
 void SpinController::SetSpinSpeed(float x, float y, float z)
