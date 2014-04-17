@@ -10,30 +10,49 @@
 #include "LookupTable.h"
 
 
+
 Transformation::Transformation():
 	localChanged(true), globalChanged(true), viewChanged(true)
 {
+	changedLock = new Concurrency::reader_writer_lock;
+	globalLock = new Concurrency::reader_writer_lock;
+	localLock = new Concurrency::reader_writer_lock;
+}
 
+Transformation::Transformation(Transformation& t):
+	localChanged(t.localChanged), globalChanged(t.globalChanged), viewChanged(t.viewChanged)
+{
+	changedLock = new Concurrency::reader_writer_lock;
+	globalLock = new Concurrency::reader_writer_lock;
+	localLock = new Concurrency::reader_writer_lock;
 }
 
 Transformation::~Transformation()
 {
-
+	delete changedLock;
+	delete globalLock;
+	delete localLock;
 }
 
 const D3DXMATRIX& Transformation::GetTransformation()
 {
+	changedLock->lock_read();
 	if (globalChanged) {
+		changedLock->unlock();
 		CalculateGlobalTransformation();
+		changedLock->lock();
 		viewChanged = true;
 	}
+	changedLock->unlock();
 	return globalTransform;
 }
 
 void Transformation::SetChanged()
 {
+	changedLock->lock();
 	localChanged = true;
 	SetGlobalChanged();
+	changedLock->unlock();
 }
 
 void Transformation::SetGlobalChanged()
@@ -66,25 +85,32 @@ void Transformation::CalculateLocalTransformation()
 		D3DXVECTOR3 pos = manager->GetComponent<Position>(GetParentID()).GetPosition();
 		D3DXMatrixTranslation(&translate, pos.x, pos.y, pos.z);
 	}
-
-	//localTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(rotation), Matrix4x4(scale))(0,0));
-	//localTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(localTransform), Matrix4x4(translate))(0,0));
-
+	localLock->lock();
 	localTransform = rotation * scale * translate;
+	localLock->unlock();
+	changedLock->lock();
 	localChanged = false;
+	changedLock->unlock();
 }
 
 void Transformation::CalculateGlobalTransformation()
 {
+	changedLock->lock_read();
 	if (localChanged) {
+		changedLock->unlock();
 		CalculateLocalTransformation();
+		changedLock->lock_read();
 	}
+	changedLock->unlock();
 	D3DXMATRIX parent;
 	D3DXMatrixIdentity(&parent);
 	if (manager->Get(GetParentID()).HasParent()) {
 		parent = manager->GetComponent<Transformation>(manager->Get(GetParentID()).GetParentID()).GetTransformation();
 	}
-	//globalTransform = D3DXMATRIX(&SIMD::Multiply(Matrix4x4(localTransform), Matrix4x4(parent))(0,0));
+	globalLock->lock();
 	globalTransform = localTransform * parent;
+	globalLock->unlock();
+	changedLock->lock();
 	globalChanged = false;
+	changedLock->unlock();
 }

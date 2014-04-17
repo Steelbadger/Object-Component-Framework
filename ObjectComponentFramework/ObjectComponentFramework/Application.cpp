@@ -152,7 +152,6 @@ void Application::Run()
 	}
 
 	return;
-
 }
 
 void Application::TestUpdate()
@@ -164,6 +163,12 @@ void Application::TestUpdate()
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
 		manager.GetComponent<Controller>(*it).Update();
 	}
+
+	//Concurrency::parallel_for(int(0), int(manager.Size<rabd::GameObject>()), [&](int i) {
+	//	if (manager.Exists<rabd::GameObject>(i) && manager.HasComponent<Transformation>(i)) {
+	//		manager.GetComponent<Transformation>(i).GetTransformation();
+	//	}
+	//});
 
 
 	if (m_Input->Pressed(VK_RETURN)) {

@@ -81,6 +81,18 @@ namespace rabd
 			}
 		}
 
+		template<class T>
+		bool Exists(ObjectID id) const {
+			const int typeID = T::GetTypeID();
+			if (typeID < registeredClassLists.size() && registeredClassLists[typeID] != nullptr) {
+				LookupTable<T>* table = static_cast<LookupTable<T>*>(registeredClassLists[typeID]);
+				return table->Exists(id);
+			} else {
+				std::cout << typeid(T).name() << " is an unmanaged type, cannot get objects of this type" << std::endl;
+				return false;
+			}
+		}
+
 		//  An alternative Getter that uses the Component RTTI system to fetch objects
 		//  more type agnostically as void pointers.  Avoid unless absolutely necessary.
 		void* Get(int typeID, ObjectID id) {
@@ -166,6 +178,18 @@ namespace rabd
 		template<class T>
 		bool IsManaged() const {
 			return (registeredClassLists[T::GetTypeID()] != nullptr);
+		}
+
+		template<class T>
+		unsigned int Size() const {
+			const int typeID = T::GetTypeID();
+			if (typeID < registeredClassLists.size() && registeredClassLists[typeID] != nullptr) {
+				LookupTableInterface* table = registeredClassLists[typeID];
+				return table->Size();
+			} else {
+				std::cout << typeID << " is an unmanaged type, cannot remove objects of this type" << std::endl;
+				return 0;
+			}		
 		}
 	private:
 		int registeredClasses;
