@@ -75,23 +75,23 @@ void World::CreateScene()
 		manager->SetParent<rabd::GameObject>(light, test);
 	}
 
-	num = 1000;
-	for (int i = 0 ; i < num; i++) {
-		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
-		//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
+	//num = 1000;
+	//for (int i = 0 ; i < num; i++) {
+	//	rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
+	//	//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
 
-		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
+	//	spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
 
-		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,0,rand()%1000-100);
-		manager->GetComponent<Controller>(test).SetControlFunction(spinny);
-		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
-		manager->GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
-		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
-		manager->GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+	//	manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,0,rand()%1000-100);
+	//	manager->GetComponent<Controller>(test).SetControlFunction(spinny);
+	//	manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
+	//	manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
+	//	manager->GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
+	//	manager->GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+	//	manager->GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
 
-		AddToScene(test);
-	}
+	//	AddToScene(test);
+	//}
 
 	rabd::ObjectID ground = manager->CreateObjectAndComponents<Position, Orientation, Mesh, Material, Transformation>();
 

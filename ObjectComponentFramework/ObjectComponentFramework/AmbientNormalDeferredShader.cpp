@@ -10,6 +10,7 @@
 #include "TextureTypes.h"
 #include <fstream>
 #include <iostream>
+#include "UtilityFunctions.h"
 
 
 AmbientNormalDeferredShader::AmbientNormalDeferredShader()
@@ -357,14 +358,9 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	// Get a pointer to the data in the constant buffer.
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&dataPtr->worldMatrix, &manager->GetComponent<Transformation>(drawObject).GetTransformation());
-	D3DXMatrixTranspose(&dataPtr->viewMatrix, &manager->GetComponent<Camera>(cameraObject).GetViewMatrix());
-	D3DXMatrixTranspose(&dataPtr->projectionMatrix, &manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
-
-	dataPtr->worldMatrix = XMMatrixTranspose(manager->GetComponent<Transformation>(drawObject).GetTransformation());
-	dataPtr->viewMatrix = XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetViewMatrix());
-	dataPtr->projectionMatrix = XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
+	dataPtr->worldMatrix = CvtXMMatToD3DXMat(XMMatrixTranspose(manager->GetComponent<Transformation>(drawObject).GetTransformation()));
+	dataPtr->viewMatrix = CvtXMMatToD3DXMat(XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetViewMatrix()));
+	dataPtr->projectionMatrix = CvtXMMatToD3DXMat(XMMatrixTranspose(manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix()));
 
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);

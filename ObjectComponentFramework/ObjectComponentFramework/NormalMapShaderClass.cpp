@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Position.h"
 #include "TextureTypes.h"
+#include "UtilityFunctions.h"
 
 
 NormalMapShaderClass::NormalMapShaderClass()
@@ -392,10 +393,9 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Get a pointer to the data in the constant buffer.
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&dataPtr->world, &world.GetManager()->GetComponent<Transformation>(drawObject).GetTransformation());
-	D3DXMatrixTranspose(&dataPtr->view, &world.GetManager()->GetComponent<Camera>(cameraObject).GetViewMatrix());
-	D3DXMatrixTranspose(&dataPtr->projection, &world.GetManager()->GetComponent<Camera>(cameraObject).GetProjectionMatrix());
+	dataPtr->world = CvtXMMatToD3DXMat(XMMatrixTranspose(world.GetManager()->GetComponent<Transformation>(drawObject).GetTransformation()));
+	dataPtr->view = CvtXMMatToD3DXMat(XMMatrixTranspose(world.GetManager()->GetComponent<Camera>(cameraObject).GetViewMatrix()));
+	dataPtr->projection = CvtXMMatToD3DXMat(XMMatrixTranspose(world.GetManager()->GetComponent<Camera>(cameraObject).GetProjectionMatrix()));
 
 	// Unlock the matrix constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -425,8 +425,8 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	dataPtr2->lightColor = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetColour();
-	dataPtr2->lightDirection = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetDirection();
+	dataPtr2->lightColor = CvtXMVecToD3DXVec4(world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetColour());
+	dataPtr2->lightDirection = CvtXMVecToD3DXVec3(world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetDirection());
 	dataPtr2->specularPower = world.GetManager()->GetComponent<DirectionalLight>(world.GetLightList().front()).GetSpecularPower();
 
 	// Unlock the constant buffer.
@@ -448,10 +448,8 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Get a pointer to the data in the constant buffer.
 	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
-	D3DXVECTOR3 cameraPosition = world.GetManager()->GetComponent<Position>(cameraObject).GetPosition();
-
 	// Copy the camera position into the constant buffer.
-	dataPtr3->position = cameraPosition;
+	dataPtr3->position = CvtXMVecToD3DXVec3(world.GetManager()->GetComponent<Position>(cameraObject).GetPosition());
 	dataPtr3->padding = 0.0f;
 
 	// Unlock the camera constant buffer.

@@ -8,6 +8,8 @@
 #include "PointLight.h"
 
 #include <D3DX11.h>
+#include <xnamath.h>
+#include "UtilityFunctions.h"
 
 #include "ShaderInterface.h"
 
@@ -296,20 +298,14 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	unsigned int bufferNumber;
 	LightBufferType* dataPtr2;
 
-	D3DXMATRIX projection = manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+	XMVECTOR topRight = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
+	XMMATRIX proj = manager->GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+	XMMATRIX view = manager->GetComponent<Camera>(cameraObject).GetViewMatrix();
 
+	XMMATRIX invProj = XMMatrixInverse(nullptr, proj);
+	topRight = XMVector3TransformCoord(topRight, invProj);
+	topRight /= topRight.m128_f32[2];
 
-
-	D3DXMATRIX view = manager->GetComponent<Camera>(cameraObject).GetViewMatrix();
-	D3DXMATRIX invPersp;
-	float det;
-	D3DXMatrixInverse(&invPersp, &det, &projection);
-	D3DXVECTOR3 topRight(1, 1, 1);
-	D3DXVECTOR4 tR;
-	D3DXVec3Transform(&tR, &topRight, &invPersp);
-	tR /= tR.w;
-	tR /= tR.z;
-	topRight = D3DXVECTOR3(tR);
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -322,28 +318,26 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-
-	D3DXVECTOR4 position;
 	if (manager->HasComponent<DirectionalLight>(lightObject)) {
-		D3DXVECTOR3 direction = manager->GetComponent<DirectionalLight>(lightObject).GetDirection();
-		D3DXVec3TransformNormal(&direction, &direction, &view);
+		XMVECTOR direction = manager->GetComponent<DirectionalLight>(lightObject).GetDirection();
+		direction = XMVector3TransformNormal(direction, view);
+		direction.m128_f32[3] = 0.0f;
 
-		dataPtr2->lightDirection = D3DXVECTOR4(direction, 0.0f);
-		dataPtr2->lightColor = manager->GetComponent<DirectionalLight>(lightObject).GetColour();
+
+		dataPtr2->lightDirection = CvtXMVecToD3DXVec4(direction);
+		dataPtr2->lightColor = CvtXMVecToD3DXVec4(manager->GetComponent<DirectionalLight>(lightObject).GetColour());
 		dataPtr2->specularPower = manager->GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
 	} else if (manager->HasComponent<PointLight>(lightObject)){
 
-		D3DXVECTOR3 pos = manager->GetComponent<PointLight>(lightObject).GetPosition();
-		D3DXVec3Transform(&position, &pos, &view);
-		position = position/position.w;
+		XMVECTOR pos = manager->GetComponent<PointLight>(lightObject).GetPosition();
+		pos = XMVector3TransformCoord(pos, view);
 
-
-		dataPtr2->lightDirection = position;
-		dataPtr2->lightColor = manager->GetComponent<PointLight>(lightObject).GetColour();
+		dataPtr2->lightDirection = CvtXMVecToD3DXVec4(pos);
+		dataPtr2->lightColor = CvtXMVecToD3DXVec4(manager->GetComponent<PointLight>(lightObject).GetColour());
 		dataPtr2->specularPower = manager->GetComponent<PointLight>(lightObject).GetSpecularPower();
 	}
 
-	dataPtr2->topRight = topRight;
+	dataPtr2->topRight = CvtXMVecToD3DXVec3(topRight);
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);
