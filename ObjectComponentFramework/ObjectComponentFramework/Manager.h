@@ -81,6 +81,17 @@ namespace rabd
 			}
 		}
 
+		template<class T>
+		bool Exists(ObjectID id) {
+			const int typeID = T::GetTypeID();
+			if (typeID < registeredClassLists.size() && registeredClassLists[typeID] != nullptr) {
+				LookupTable<T>* table = static_cast<LookupTable<T>*>(registeredClassLists[typeID]);
+				return table->Exists(id);
+			} else {
+				return false;
+			}
+		}
+
 		//  An alternative Getter that uses the Component RTTI system to fetch objects
 		//  more type agnostically as void pointers.  Avoid unless absolutely necessary.
 		void* Get(int typeID, ObjectID id) {

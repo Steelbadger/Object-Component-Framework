@@ -22,6 +22,9 @@ namespace rabd
 		void Stop();
 		void Pause();
 		inline const X3DAUDIO_EMITTER& GetEmitterStruct() const {return emitterData;}
+
+		inline bool IsPlaying() const {return sound->IsPlaying();}
+		inline bool IsPaused() const {return sound->IsPaused();}
 	private:
 		AllanMilne::Audio::XASound* sound;
 		X3DAUDIO_EMITTER emitterData;

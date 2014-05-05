@@ -13,6 +13,7 @@
 #include "UtilityFunctions.h"
 #include "AllanMilne\XACore.hpp"
 #include "Emitter.h"
+#include "Listener.h"
 #include <functional>
 
 #include "simdMatrix.h"
@@ -24,7 +25,7 @@ Application::Application(): window(this)
 	m_Graphics = 0;
 	fullscreen = false;
 	vSyncEnabled = false;
-	deferred = true;
+	deferred = false;
 	wireframe = false;
 }
 
@@ -83,23 +84,31 @@ bool Application::Initialize()
 	manager.RegisterType<PointLight>();
 	manager.RegisterType<Transformation>();
 	manager.RegisterType<rabd::Emitter>();
+	manager.RegisterType<rabd::Listener>();
 
 	world.CreateScene();
 
 	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller,
-																PointLight, Transformation, rabd::Emitter>();
+																PointLight, Transformation, rabd::Listener>();
 
 	FirstPersonController cont;
 	cont.SetSensitivity(50.0f);
 
-	manager.GetComponent<Position>(camera).SetPosition(500,1.3,0);
+	manager.GetComponent<Position>(camera).SetPosition(0,0,0);
 	manager.GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	manager.GetComponent<Controller>(camera).SetControlFunction(cont);
 	manager.GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	manager.GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
-//	manager.GetComponent<rabd::Emitter>(camera).LoadFile("Phyre1.wav");
+
+	sound = manager.CreateObjectAndComponents<Position, Orientation, Transformation, rabd::Emitter>();
+
+	manager.GetComponent<Position>(sound).SetPosition(0,0,0);
+	manager.GetComponent<rabd::Emitter>(sound).LoadFile("Phyre1.wav");
 	
 	world.SetCameraObject(camera);
+
+	manager.GetComponent<rabd::Emitter>(sound).Play();
+
 	return true;
 }
 
@@ -162,8 +171,14 @@ void Application::TestUpdate()
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
 	std::list<rabd::ObjectID>::iterator it;
 	for (it = world.GetUpdateList().begin(); it != world.GetUpdateList().end(); it++) {
-		manager.GetComponent<Controller>(*it).Update();
+		if (manager.Exists<Controller>(*it)) {
+			manager.GetComponent<Controller>(*it).Update();
+		}
 	}
+
+	manager.GetComponent<rabd::Listener>(world.GetCameraObject()).Update();
+
+	manager.GetComponent<rabd::Emitter>(sound).Update(world.GetCameraObject());
 
 
 	if (m_Input->Pressed(VK_RETURN)) {

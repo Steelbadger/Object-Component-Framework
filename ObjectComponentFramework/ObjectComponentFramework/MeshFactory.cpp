@@ -51,7 +51,7 @@ std::shared_ptr<MeshData>& MeshFactory::CreatePrimitive(Primitive prim)
 
 	if (loadedMeshMap.count(lookup) == 0) {
 		Plane(vertsLoad, index, 1000.0f, 1000.0f, 400, 400);
-		ApplyDisplacement(vertsLoad, index);
+	//	ApplyDisplacement(vertsLoad, index);
 		verts = ComputeTangentSpace(vertsLoad, index);
 
 		MeshData output;

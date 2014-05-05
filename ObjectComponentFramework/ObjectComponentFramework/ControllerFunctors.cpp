@@ -93,11 +93,11 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		}
 	}
 
-	if (!moving) {
-		emitter->Pause();
-	} else {
-		emitter->Play();
-	}
+	//if (!moving) {
+	//	emitter->Pause();
+	//} else {
+	//	emitter->Play();
+	//}
 }
 
 void FirstPersonController::SetSensitivity(float s)

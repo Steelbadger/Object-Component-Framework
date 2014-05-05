@@ -47,6 +47,8 @@ private:
 	rabd::ObjectManager manager;
 	rabd::Manager textureManager;
 
+	rabd::ObjectID sound;
+
 	bool fullscreen, vSyncEnabled;
 	bool deferred;
 	bool wireframe;

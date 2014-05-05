@@ -50,49 +50,6 @@ void World::CreateScene()
 	manager->GetComponent<Controller>(light).SetControlFunction(spinny);
 	AddToScene(light);
 
-	int num = 0;
-	for (int i = 0 ; i < num; i++) {
-		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation>();
-
-		spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
-
-		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,0,rand()%1000-100);
-		manager->GetComponent<Controller>(test).SetControlFunction(spinny);
-		AddToScene(test);
-
-		light = manager->CreateObjectAndComponents<Position, Orientation, PointLight, Mesh, Material, Transformation>();
-
-		manager->GetComponent<PointLight>(light).SetColour(float(rand()%100)/100.0f, float(rand()%100)/100.0f, float(rand()%100)/100.0f, 1.0f);
-		manager->GetComponent<PointLight>(light).SetSpecularPower(100.0f);
-		manager->GetComponent<Position>(light).SetPosition(rand()%100-50,50,0);
-		manager->GetComponent<Mesh>(light).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
-		manager->GetComponent<Material>(light).AddTexture<AmbientTexture>("brick1.dds");
-		manager->GetComponent<Material>(light).AddTexture<NormalMap>("brick1norm.jpg");
-		manager->GetComponent<Material>(light).AddTexture<SpecularMap>("brick1spec.jpg");
-		manager->GetComponent<Material>(light).SetShader(ShaderLibrary::Shaders::NORMAL);
-
-		AddToScene(light);
-		manager->SetParent<rabd::GameObject>(light, test);
-	}
-
-	num = 1000;
-	for (int i = 0 ; i < num; i++) {
-		//rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation, Mesh, Material>();
-		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Transformation, Mesh, Material>();
-
-		//spinny.SetSpinSpeed(0.0f, float(rand()%1000)/1000.0f, 0.0f);
-
-		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,-1.0f,rand()%1000-100);
-		//manager->GetComponent<Controller>(test).SetControlFunction(spinny);
-		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("tree.obj", Mesh::NORMALMAPPED));
-		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("treec.jpg");
-		manager->GetComponent<Material>(test).AddTexture<NormalMap>("treecnorm.png");
-		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("treecspec.png");
-		manager->GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
-
-		AddToScene(test);
-	}
-
 	rabd::ObjectID ground = manager->CreateObjectAndComponents<Position, Orientation, Mesh, Material, Transformation>();
 
 	manager->GetComponent<Position>(ground).SetPosition(-100,-0.5,-100);
