@@ -7,9 +7,9 @@
 
 namespace rabd
 {
-	Listener::Listener()
+	Listener::Listener() :
+		listenerData()
 	{
-		ZeroMemory(&listenerData, sizeof(listenerData));
 	}
 
 	Listener::~Listener()

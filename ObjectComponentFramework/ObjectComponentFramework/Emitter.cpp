@@ -6,9 +6,9 @@
 
 namespace rabd
 {
-	Emitter::Emitter() : sound(nullptr)
+	Emitter::Emitter() : sound(nullptr),
+		emitterData()
 	{
-		ZeroMemory(&emitterData, sizeof(emitterData));	
 	}
 
 	Emitter::~Emitter()
