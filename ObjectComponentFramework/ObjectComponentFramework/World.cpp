@@ -50,7 +50,7 @@ void World::CreateScene()
 	manager->GetComponent<Controller>(light).SetControlFunction(spinny);
 	AddToScene(light);
 
-	int num = 0;
+	int num = 20;
 	for (int i = 0 ; i < num; i++) {
 		rabd::ObjectID test= manager->CreateObjectAndComponents<Position, Orientation, Controller, Transformation>();
 
@@ -84,10 +84,10 @@ void World::CreateScene()
 
 		manager->GetComponent<Position>(test).SetPosition(rand()%1000-100,-1.0f,rand()%1000-100);
 		//manager->GetComponent<Controller>(test).SetControlFunction(spinny);
-		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("tree.obj", Mesh::NORMALMAPPED));
-		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("treec.jpg");
-		manager->GetComponent<Material>(test).AddTexture<NormalMap>("treecnorm.png");
-		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("treecspec.png");
+		manager->GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
+		manager->GetComponent<Material>(test).AddTexture<AmbientTexture>("crateDiffuse.jpg");
+		manager->GetComponent<Material>(test).AddTexture<NormalMap>("crateNormal.jpg");
+		manager->GetComponent<Material>(test).AddTexture<SpecularMap>("crateSpec.jpg");
 		manager->GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
 
 		AddToScene(test);

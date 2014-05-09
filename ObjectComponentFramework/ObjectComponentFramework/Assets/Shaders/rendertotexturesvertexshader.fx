@@ -49,6 +49,7 @@ PixelInputType AmbientNormalShader(VertexInputType input)
 	float4 inv = float4(0.0f,0.0f,0.0f,1.0f);
 	inv = mul(inv, viewMatrix);
 	inv = -inv;
+	float frustumDepth = 1000.0f;
 
     // Calculate the position of the vertex against the world, view, and projection matrices.
     output.position = mul(input.position, worldMatrix);
@@ -58,26 +59,26 @@ PixelInputType AmbientNormalShader(VertexInputType input)
 
 	// TESTING
 	// Spherize
-	float groundPlane = -1000.0f;
+	//float groundPlane = -1000.0f;
 
-	float vertR = input.position.y - groundPlane;
-	float playerR = inv - groundPlane;
+	//float vertR = input.position.y - groundPlane;
+	//float playerR = inv - groundPlane;
 
-	float dist2 = length(output.position.xz);
+	//float dist2 = length(output.position.xz);
 
-	float yChange = groundPlane + sqrt(pow(vertR,2) - pow(dist2, 2));
+	//float yChange = groundPlane + sqrt(pow(vertR,2) - pow(dist2, 2));
 
-	float4 vertPos = input.position;
-	output.position.y += yChange*output.position.w;
+	//float4 vertPos = input.position;
+	//output.position.y += yChange*output.position.w;
 
-	float zcorr = sqrt(pow(input.position.y,2) - pow(yChange, 2));
+	//float zcorr = sqrt(pow(input.position.y,2) - pow(yChange, 2));
 
-	output.position.z += zcorr*output.position.w;
+	//output.position.z += zcorr*output.position.w;
 
 	// DONE TESTING
 
 
-	dist = dist/1000.0f;
+	dist = dist/frustumDepth;
     output.position = mul(output.position, projectionMatrix);
 
 	dist = dist * output.position.w;
