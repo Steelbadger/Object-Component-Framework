@@ -21,7 +21,6 @@ void MeshFactory::SetDevice(ID3D11Device* dev)
 
 std::shared_ptr<MeshData>& MeshFactory::CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel features)
 {
-//	MeshData output;
 	std::shared_ptr<MeshData> output;
 	std::string lookup = filename + std::to_string(unsigned long long(features));
 
@@ -42,16 +41,30 @@ std::shared_ptr<MeshData>& MeshFactory::CreateMeshBuffersFromFile(std::string fi
 	return loadedMeshMap[lookup];
 }
 
-std::shared_ptr<MeshData>& MeshFactory::CreatePrimitive(Primitive prim)
+std::shared_ptr<MeshData>& MeshFactory::CreatePrimitive(int heightType)
 {
 	std::vector<LitVertexType> vertsLoad;
 	std::vector<MappedVertexType> verts;
 	std::vector<unsigned int> index;
-	std::string lookup = std::to_string(unsigned long long(prim));
+	std::string lookup = std::to_string(unsigned long long(heightType));
 
 	if (loadedMeshMap.count(lookup) == 0) {
 		Plane(vertsLoad, index, 1000.0f, 1000.0f, 400, 400);
-		ApplyDisplacement(vertsLoad, index);
+
+		switch (heightType) {
+		case 0:
+			ApplyDisplacement(vertsLoad, index);
+			break;
+		case 1:
+			ApplyDisplacementCoherent(vertsLoad, index);
+			break;
+		case 2:
+			ApplyDisplacementSIMD(vertsLoad, index);
+			break;
+		case 3:
+			ApplyDisplacementSimplex(vertsLoad, index);
+			break;
+		}
 		verts = ComputeTangentSpace(vertsLoad, index);
 
 		MeshData output;
@@ -321,8 +334,12 @@ std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(cons
 	std::vector<MappedVertexType> output;
 	output.resize(data.size());
 
-	for (int i = 0; i < index.size();) {
+	TimerMark();
 
+	using namespace Concurrency;
+
+	parallel_for(size_t(0), (index.size()/3), [&](int it) {
+		int i = it*3;
 		LitVertexType vertex1, vertex2, vertex3;
 		vertex1 = data[index[i]];
 		vertex2 = data[index[i+1]];
@@ -401,8 +418,9 @@ std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(cons
 		output[index[i]] = mVertex1;
 		output[index[i+1]] = mVertex2;
 		output[index[i+2]] = mVertex3;
-		i+=3;
-	}
+	});
+
+	TimerMark(true);
 
 	return output;
 }
@@ -534,27 +552,6 @@ void MeshFactory::Plane(std::vector<LitVertexType>& output, std::vector<unsigned
 		}
 	}
 
-
-	//for (int i = 0; i < heightSubDivs; i++) {
-	//	for (int j = 0; j < widthSubDivs; j++) {
-	//		verts.push_back(Vector3(i*widthStep-width/2, 0, j*heightStep-height/2));
-	//		Vector3 normalA = Vector3(0,1,0);
-	//		normals.push_back(normalA);
-	//		texCoords.push_back(Vector2(i*widthStep/width, j*heightStep/height));
-	//	}
-	//}
-
-	//for (int i = 0; i < heightSubDivs-1; i++) {
-	//	for (int j = 0; j < widthSubDivs-1; j++) {
-	//		index.push_back(i+j*widthSubDivs);
-	//		index.push_back(1+i+(1+j)*widthSubDivs);
-	//		index.push_back(i+(1+j)*widthSubDivs);
-	//		index.push_back(1+i+(1+j)*widthSubDivs);
-	//		index.push_back(i+j*widthSubDivs);
-	//		index.push_back(1+i+j*widthSubDivs);
-	//	}
-	//}
-
 	for (int i = 0; i < verts.size(); i++) {
 		LitVertexType temp;
 		temp.position = verts[i];
@@ -572,603 +569,98 @@ void MeshFactory::ApplyDisplacement(std::vector<LitVertexType>& inoutV, std::vec
 //	noise.GeneratePermutationTable();
 
 	using namespace Concurrency;
-
+	std::cout << "Time to Generate Improved Perlin Heights: ";
 	TimerMark();
-	
+
 	parallel_for(size_t(0), inoutIndex.size()-1, [&](int i) {
 		float x, y;
 		x = inoutV[inoutIndex[i]].position.x;
 		y = inoutV[inoutIndex[i]].position.z;
 
 
-		float disp = (noise.SIMDPerlin2D(x, y, n)/noise.MaxAmplitude(n))*n.amplitude;
+		float disp = (noise.ImprovedFractal2DPerlin(x, y, n)/noise.MaxAmplitude(n))*n.amplitude;
 		Vector3 displacementV = disp * Vector3(0, 1, 0);
 		inoutV[inoutIndex[i]].position.y = disp;
-		inoutV[inoutIndex[i]].normal = noise.SIMDPerlinNormal(x, y, n, 0.5f);
+		inoutV[inoutIndex[i]].normal = noise.ImprovedPerlinNormal(x, y, n, 0.5f);
 	});
 
 	TimerMark(true);
 }
 
-//
-//void MeshFactory::SimpleInnerBox(std::vector<LitVertexType>& output, std::vector<unsigned int>& index)
-//{
-//	std::vector<D3DXVECTOR3> verts;
-//	std::vector<D3DXVECTOR3> normals;
-//	std::vector<D3DXVECTOR2> texCoords;
-//
-//	std::vector<D3DXVECTOR3> points;
-//	std::vector<D3DXVECTOR3> faceNormals;
-//	std::vector<D3DXVECTOR2> uvPoints;
-//
-//	output.clear();
-//	index.clear();
-//
-//	for(int i = 0; i < 2; i++) {
-//		for(int j = 0; j < 2; j++) {
-//			for (int k = 0; k < 2; k++) {
-//				points.push_back(D3DXVECTOR3(-0.5+i, -0.5+j, -0.5+k));
-//			}
-//		}
-//	}
-//
-//	faceNormals.push_back(D3DXVECTOR3(1.0, 0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(-1.0, 0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 1.0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, -1.0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 0, 1.0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 0, -1.0));
-//
-//	for (int i = 0; i < 4; i++) {
-//		for (int j = 0; j < 5; j++) {
-//			uvPoints.push_back(D3DXVECTOR2(0.25*j, 0.25*i));
-//		}
-//	}
-//
-//
-//	//  Face 1 - Triangle 1
-//	verts.push_back(points[1]);
-//	verts.push_back(points[5]);
-//	verts.push_back(points[0]);
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[2]);
-//	}
-//	texCoords.push_back(uvPoints[5]);
-//	texCoords.push_back(uvPoints[10]);
-//	texCoords.push_back(uvPoints[6]);
-//
-//
-//
-//	//  Face 1 - Triangle 2
-//	verts.push_back(points[5]);
-//	verts.push_back(points[4]);
-//	verts.push_back(points[0]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[2]);
-//	}
-//	texCoords.push_back(uvPoints[10]);
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[6]);
-//
-//
-//	//  Face 2 - Triangle 1
-//	verts.push_back(points[5]);
-//	verts.push_back(points[7]);
-//	verts.push_back(points[4]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[1]);
-//	}
-//	texCoords.push_back(uvPoints[10]);
-//	texCoords.push_back(uvPoints[15]);
-//	texCoords.push_back(uvPoints[11]);
-//
-//
-//
-//	//  Face 2 - Triangle 2
-//	verts.push_back(points[7]);
-//	verts.push_back(points[6]);
-//	verts.push_back(points[4]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[1]);
-//	}
-//	texCoords.push_back(uvPoints[15]);
-//	texCoords.push_back(uvPoints[16]);
-//	texCoords.push_back(uvPoints[11]);
-//
-//
-//	//  Face 3 - Triangle 1
-//	verts.push_back(points[3]);
-//	verts.push_back(points[1]);
-//	verts.push_back(points[2]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[0]);
-//	}
-//	texCoords.push_back(uvPoints[0]);
-//	texCoords.push_back(uvPoints[5]);
-//	texCoords.push_back(uvPoints[1]);
-//
-//
-//	//  Face 3 - Triangle 2
-//	verts.push_back(points[1]);
-//	verts.push_back(points[0]);
-//	verts.push_back(points[2]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[0]);
-//	}
-//	texCoords.push_back(uvPoints[5]);
-//	texCoords.push_back(uvPoints[6]);
-//	texCoords.push_back(uvPoints[1]);
-//
-//
-//	//  Face 4 - Triangle 1
-//	verts.push_back(points[0]);
-//	verts.push_back(points[4]);
-//	verts.push_back(points[2]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[4]);
-//	}
-//	texCoords.push_back(uvPoints[6]);
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[7]);
-//
-//
-//	//  Face 4 - Triangle 2
-//	verts.push_back(points[4]);
-//	verts.push_back(points[6]);
-//	verts.push_back(points[2]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[4]);
-//	}
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[12]);
-//	texCoords.push_back(uvPoints[7]);
-//
-//
-//	//  Face 5 - Triangle 1
-//	verts.push_back(points[2]);
-//	verts.push_back(points[6]);
-//	verts.push_back(points[3]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[3]);
-//	}
-//	texCoords.push_back(uvPoints[7]);
-//	texCoords.push_back(uvPoints[12]);
-//	texCoords.push_back(uvPoints[8]);
-//
-//
-//	//  Face 5 - Triangle 2
-//	verts.push_back(points[6]);
-//	verts.push_back(points[7]);
-//	verts.push_back(points[3]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[3]);
-//	}
-//	texCoords.push_back(uvPoints[12]);
-//	texCoords.push_back(uvPoints[13]);
-//	texCoords.push_back(uvPoints[8]);
-//
-//
-//	//  Face 6 - Triangle 1
-//	verts.push_back(points[3]);
-//	verts.push_back(points[7]);
-//	verts.push_back(points[1]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[5]);
-//	}
-//	texCoords.push_back(uvPoints[8]);
-//	texCoords.push_back(uvPoints[13]);
-//	texCoords.push_back(uvPoints[9]);
-//
-//
-//	//  Face 6 - Triangle 2
-//	verts.push_back(points[7]);
-//	verts.push_back(points[5]);
-//	verts.push_back(points[1]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[5]);
-//	}
-//	texCoords.push_back(uvPoints[13]);
-//	texCoords.push_back(uvPoints[14]);
-//	texCoords.push_back(uvPoints[9]);
-//
-//	for (int i = 0; i < verts.size(); i++) {
-//		LitVertexType temp;
-//		temp.position = verts[i];
-//		temp.normal = normals[i];
-//		temp.texture = texCoords[i];
-//		output.push_back(temp);
-//		index.push_back(i);
-//	}
-//}
-//
-//Mesh MeshFactory::UnitCube()
-//{
-//	std::vector<D3DXVECTOR3> verts;
-//	std::vector<D3DXVECTOR3> normals;
-//	std::vector<D3DXVECTOR2> texCoords;
-//
-//	std::vector<D3DXVECTOR3> points;
-//	std::vector<D3DXVECTOR3> faceNormals;
-//	std::vector<D3DXVECTOR2> uvPoints;
-//
-//	for(int i = 0; i < 2; i++) {
-//		for(int j = 0; j < 2; j++) {
-//			for (int k = 0; k < 2; k++) {
-//				points.push_back(D3DXVECTOR3(-0.5+i, -0.5+j, -0.5+k));
-//			}
-//		}
-//	}
-//
-//	faceNormals.push_back(D3DXVECTOR3(-1.0, 0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(1.0, 0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, -1.0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 1.0, 0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 0, -1.0));
-//	faceNormals.push_back(D3DXVECTOR3(0, 0, 1.0));
-//
-//	for (int i = 0; i < 4; i++) {
-//		for (int j = 0; j < 5; j++) {
-//			uvPoints.push_back(D3DXVECTOR2(0.25*j, 0.25*i));
-//		}
-//	}
-//
-//
-//	//  Face 1 - Triangle 1
-//	verts.push_back(points[1]);
-//	verts.push_back(points[0]);
-//	verts.push_back(points[5]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[2]);
-//	}
-//	texCoords.push_back(uvPoints[5]);
-//	texCoords.push_back(uvPoints[6]);
-//	texCoords.push_back(uvPoints[10]);
-//
-//
-//
-//
-//	//  Face 1 - Triangle 2
-//	verts.push_back(points[5]);
-//	verts.push_back(points[0]);
-//	verts.push_back(points[4]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[2]);
-//	}
-//	texCoords.push_back(uvPoints[10]);
-//	texCoords.push_back(uvPoints[6]);
-//	texCoords.push_back(uvPoints[11]);
-//
-//
-//
-//	//  Face 2 - Triangle 1
-//	verts.push_back(points[5]);
-//	verts.push_back(points[4]);
-//	verts.push_back(points[7]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[1]);
-//	}
-//	texCoords.push_back(uvPoints[10]);
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[15]);
-//
-//
-//
-//
-//	//  Face 2 - Triangle 2
-//	verts.push_back(points[7]);
-//	verts.push_back(points[4]);
-//	verts.push_back(points[6]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[1]);
-//	}
-//	texCoords.push_back(uvPoints[15]);
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[16]);
-//
-//
-//	//  Face 3 - Triangle 1
-//	verts.push_back(points[3]);
-//	verts.push_back(points[2]);
-//	verts.push_back(points[1]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[0]);
-//	}
-//	texCoords.push_back(uvPoints[0]);
-//	texCoords.push_back(uvPoints[1]);
-//	texCoords.push_back(uvPoints[5]);
-//
-//
-//	//  Face 3 - Triangle 2
-//	verts.push_back(points[1]);
-//	verts.push_back(points[2]);
-//	verts.push_back(points[0]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[0]);
-//	}
-//	texCoords.push_back(uvPoints[5]);
-//	texCoords.push_back(uvPoints[1]);
-//	texCoords.push_back(uvPoints[6]);
-//
-//
-//	//  Face 4 - Triangle 1
-//	verts.push_back(points[0]);
-//	verts.push_back(points[2]);
-//	verts.push_back(points[4]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[4]);
-//	}
-//	texCoords.push_back(uvPoints[6]);
-//	texCoords.push_back(uvPoints[7]);
-//	texCoords.push_back(uvPoints[11]);
-//
-//
-//	//  Face 4 - Triangle 2
-//	verts.push_back(points[4]);
-//	verts.push_back(points[2]);
-//	verts.push_back(points[6]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[4]);
-//	}
-//	texCoords.push_back(uvPoints[11]);
-//	texCoords.push_back(uvPoints[7]);
-//	texCoords.push_back(uvPoints[12]);
-//
-//
-//	//  Face 5 - Triangle 1
-//	verts.push_back(points[2]);
-//	verts.push_back(points[3]);
-//	verts.push_back(points[6]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[3]);
-//	}
-//	texCoords.push_back(uvPoints[7]);
-//	texCoords.push_back(uvPoints[8]);
-//	texCoords.push_back(uvPoints[12]);
-//
-//
-//	//  Face 5 - Triangle 2
-//	verts.push_back(points[6]);
-//	verts.push_back(points[3]);
-//	verts.push_back(points[7]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[3]);
-//	}
-//	texCoords.push_back(uvPoints[12]);
-//	texCoords.push_back(uvPoints[8]);
-//	texCoords.push_back(uvPoints[13]);
-//
-//
-//	//  Face 6 - Triangle 1
-//	verts.push_back(points[3]);
-//	verts.push_back(points[1]);
-//	verts.push_back(points[7]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[5]);
-//	}
-//	texCoords.push_back(uvPoints[8]);
-//	texCoords.push_back(uvPoints[9]);
-//	texCoords.push_back(uvPoints[13]);
-//
-//	//  Face 6 - Triangle 2
-//	verts.push_back(points[7]);
-//	verts.push_back(points[1]);
-//	verts.push_back(points[5]);
-//
-//	for (int i = 0; i < 3; i++) {
-//		normals.push_back(faceNormals[5]);
-//	}
-//	texCoords.push_back(uvPoints[13]);
-//	texCoords.push_back(uvPoints[9]);
-//	texCoords.push_back(uvPoints[14]);
-//
-//
-//
-//	return Mesh(verts, normals, texCoords);
-//}
-//
-//Mesh MeshFactory::LSphere(int lats, int longs)
-//{
-//	const float pi = 3.14159265359;
-//
-//	std::vector<D3DXVECTOR3> verts;
-//	std::vector<D3DXVECTOR3> normals;
-//	std::vector<D3DXVECTOR2> texCoords;
-//	std::vector<unsigned int> index;
-//
-//
-//	//  Find the angles between consecutive radii
-//	float deltaTheta = pi/(lats-1);
-//	float deltaGamma = 2*pi/(longs-1);
-//
-//	//  Add the Poles
-//	verts.push_back(D3DXVECTOR3(0, 1, 0));
-//	verts.push_back(D3DXVECTOR3(0, -1, 0));
-//
-//
-//	//  Add the other points
-//	//  Outer Loop for latitudes
-//	//  Inner Loop for Longitudes
-//	for(float Theta = deltaTheta; Theta < (pi - deltaTheta); Theta+=deltaTheta) {
-//		for(float Gamma = 0; Gamma < 2*pi; Gamma+=deltaGamma) {
-//			float sinTheta = sin(Theta);
-//			float cosTheta = cos(Theta);
-//			float sinGamma = sin(Gamma);
-//			float cosGamma = cos(Gamma);
-//			D3DXVECTOR3 point(sinTheta*cosGamma, sinTheta*sinGamma, cosTheta);
-//			verts.push_back(point);
-//			texCoords.push_back(D3DXVECTOR2(Theta/(pi), Gamma/(pi*2)));
-//		}
-//	}
-//
-//	normals = verts;
-//
-//	//  Now to index the sphere
-//
-//	//  First do two loops, as the area from the pole to the first line of latitude is a unique case
-//
-//	for (int i = 0; i < lats*2; i++) {
-//		index.push_back(0);
-//		index.push_back(2+i*lats);
-//		index.push_back(2+(i+1)*lats);
-//	}
-//
-//	return Mesh(verts, normals, texCoords, index);
-//}
-//
-//Mesh MeshFactory::SubDivide(Mesh m)
-//{
-//	//  First turn into a non indexed vertex array
-//	std::vector<Point> points;
-//
-//	std::vector<unsigned int>::iterator indexIt;
-//	std::vector<unsigned int> index = m.GetIndex();
-//
-//	std::vector<D3DXVECTOR3> verts = m.GetVerts();
-//	std::vector<D3DXVECTOR3> normals = m.GetNormals();
-//	std::vector<D3DXVECTOR2> uvs = m.GetUVs();
-//
-//	for(indexIt = index.begin(); indexIt != index.end(); indexIt++) {
-//		LitVertexType temp;
-//		temp.position = verts[*indexIt];
-//		temp.normal = normals[*indexIt];
-//		temp.texture = uvs[*indexIt];
-//		points.push_back(temp);
-//	}
-//
-//	//  Now create a bunch of new faces (non indexed)
-//	std::vector<LitVertexType> newPoints;
-//
-//	for(int i = 0; i < points.size(); i+=3) {
-//		LitVertexType p1 = points[i];
-//		LitVertexType p2 = points[i+1];
-//		LitVertexType p3 = points[i+2];
-//		LitVertexType p12 = AveragePoints(p1, p2);
-//		LitVertexType p13 = AveragePoints(p1, p3);
-//		LitVertexType p23 = AveragePoints(p2, p3);
-//
-//		//  Push four new triangles to the newPoints array
-//
-//		newPoints.push_back(p1);
-//		newPoints.push_back(p12);
-//		newPoints.push_back(p13);
-//
-//		newPoints.push_back(p2);
-//		newPoints.push_back(p23);
-//		newPoints.push_back(p12);
-//
-//		newPoints.push_back(p12);
-//		newPoints.push_back(p23);
-//		newPoints.push_back(p13);
-//
-//		newPoints.push_back(p13);
-//		newPoints.push_back(p23);
-//		newPoints.push_back(p3);
-//	}
-//
-//	//  Now pull the data out into the 3 arrays needed for the mesh constructor
-//
-//	std::vector<LitVertexType>::iterator pointIt;
-//
-//	verts.clear();
-//	normals.clear();
-//	uvs.clear();
-//	
-//	for(pointIt = newPoints.begin(); pointIt != newPoints.end(); pointIt++) {
-//		verts.push_back((*pointIt).p);
-//		normals.push_back((*pointIt).n);
-//		uvs.push_back((*pointIt).u);		
-//	}
-//
-//	return Mesh(verts, normals, uvs);
-//}
-//
-//Mesh MeshFactory::SubDivide(Mesh m, int count)
-//{
-//	if (count == 0) {
-//		return m;
-//	} else {
-//		return SubDivide(SubDivide(m), --count);
-//	}
-//}
-//
-//Point MeshFactory::AveragePoints(LitVertexType p1, LitVertexType p2)
-//{
-//	Point out;
-//	out.position = (p1.position+p2.position)/2;
-//	out.normal = (p1.normal+p2.normal)/2;
-//	out.texture = (p1.texture+p2.texture)/2;
-//
-//	return out;
-//}
-//
-//Mesh MeshFactory::Spherize(Mesh m)
-//{
-//	//  First turn into a non indexed vertex array
-//	std::vector<LitVertexType> points;
-//
-//	std::vector<unsigned int>::iterator indexIt;
-//	std::vector<unsigned int> index = m.GetIndex();
-//
-//	std::vector<D3DXVECTOR3> verts = m.GetVerts();
-//	std::vector<D3DXVECTOR3> normals = m.GetNormals();
-//	std::vector<D3DXVECTOR2> uvs = m.GetUVs();
-//
-//	for(indexIt = index.begin(); indexIt != index.end(); indexIt++) {
-//		LitVertexType temp;
-//		temp.p = verts[*indexIt];
-//		temp.n = normals[*indexIt];
-//		temp.u = uvs[*indexIt];
-//		points.push_back(temp);
-//	}
-//
-//	std::vector<LitVertexType>::iterator pointIt;
-//
-//	verts.clear();
-//	normals.clear();
-//	uvs.clear();
-//	
-//	for(pointIt = points.begin(); pointIt != points.end(); pointIt++) {
-//		verts.push_back((*pointIt).p.Normalize());
-//		normals.push_back((*pointIt).p.Normalize());
-//		uvs.push_back((*pointIt).u);		
-//	}
-//
-//	return Mesh(verts, normals, uvs);
-//}
-//
-//Mesh MeshFactory::CubeSphere(int resolution)
-//{
-//	Mesh m(SubDivide(UnitCube(), resolution));
-//
-//	return Mesh(Spherize(m));
-//}
-//
-//Mesh MeshFactory::InwardCubeSphere(int resolution)
-//{
-//	Mesh m(Spherize(SubDivide(SimpleInnerBox(), resolution)));
-//	m.ReverseNormals();
-//
-//	return Mesh(m);
-//}
+void MeshFactory::ApplyDisplacementSimplex(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
+{
+	NoiseGenerator noise;
+	NoiseObject n(8, 200.0f, 0.41f, 80.0f, 1.155f);
+	noise.Seed(12.3f);
+//	noise.GeneratePermutationTable();
+
+	using namespace Concurrency;
+	std::cout << "Time to Generate Simplex Heights: ";
+	TimerMark();
+
+	parallel_for(size_t(0), inoutIndex.size()-1, [&](int i) {
+		float x, y;
+		x = inoutV[inoutIndex[i]].position.x;
+		y = inoutV[inoutIndex[i]].position.z;
+
+
+		float disp = noise.FractalSimplex(x, y, n);
+		Vector3 displacementV = disp * Vector3(0, 1, 0);
+		inoutV[inoutIndex[i]].position.y = disp;
+		inoutV[inoutIndex[i]].normal = noise.FractalSimplexNormal(x, y, n, 0.5f);
+	});
+
+	TimerMark(true);
+}
+
+void MeshFactory::ApplyDisplacementSIMD(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
+{
+	NoiseGenerator noise;
+	NoiseObject n(8, 200.0f, 0.41f, 80.0f, 1.155f);
+	noise.Seed(13.4f);
+//	noise.GeneratePermutationTable();
+
+	using namespace Concurrency;
+	std::cout << "Time to Generate SIMD Accelerated Coherent Heights: ";
+	TimerMark();
+
+	parallel_for(size_t(0), inoutIndex.size()-1, [&](int i) {
+		float x, y;
+		x = inoutV[inoutIndex[i]].position.x;
+		y = inoutV[inoutIndex[i]].position.z;
+
+
+		float disp = (noise.SIMDCoherentFractalNoise(x, y, n)/noise.MaxAmplitude(n))*n.amplitude;
+		Vector3 displacementV = disp * Vector3(0, 1, 0);
+		inoutV[inoutIndex[i]].position.y = disp;
+		inoutV[inoutIndex[i]].normal = noise.SIMDCoherentNoiseNormal(x, y, n, 0.5f);
+	});
+
+	TimerMark(true);
+}
+
+void MeshFactory::ApplyDisplacementCoherent(std::vector<LitVertexType>& inoutV, std::vector<unsigned int>& inoutIndex)
+{
+	NoiseGenerator noise;
+	NoiseObject n(8, 200.0f, 0.41f, 80.0f, 1.155f);
+	noise.Seed(13.4f);
+//	noise.GeneratePermutationTable();
+
+	using namespace Concurrency;
+
+	TimerMark();
+
+	parallel_for(size_t(0), inoutIndex.size()-1, [&](int i) {
+		float x, y;
+		x = inoutV[inoutIndex[i]].position.x;
+		y = inoutV[inoutIndex[i]].position.z;
+
+
+		float disp = noise.FractalCoherentNoise(x, y, n);
+		Vector3 displacementV = disp * Vector3(0, 1, 0);
+		inoutV[inoutIndex[i]].position.y = disp;
+		inoutV[inoutIndex[i]].normal = noise.CoherentNoiseNormal(x, y, n, 0.5f);
+	});
+
+	TimerMark(true);
+}

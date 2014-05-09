@@ -30,7 +30,7 @@ World::~World()
 }
 
 
-void World::CreateScene()
+void World::CreateScene(int heightsType)
 {
 	manager->RegisterType<DirectionalLight>();
 	manager->RegisterType<Mesh>();
@@ -96,7 +96,7 @@ void World::CreateScene()
 	rabd::ObjectID ground = manager->CreateObjectAndComponents<Position, Orientation, Mesh, Material, Transformation>();
 
 	manager->GetComponent<Position>(ground).SetPosition(-100,-0.5,-100);
-	manager->GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive());
+	manager->GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive(heightsType));
 	manager->GetComponent<Material>(ground).AddTexture<AmbientTexture>("grass_texture.jpg");
 	manager->GetComponent<Material>(ground).AddTexture<NormalMap>("grassnorm.png");
 	manager->GetComponent<Material>(ground).AddTexture<SpecularMap>("grassspec.png");

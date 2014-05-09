@@ -59,7 +59,7 @@ void HeightmapBuilder::GenHeightsSIMD(float x, float y, NoiseObject n, float squ
 		for (float i = 0; i < size; i++) {
 			float height = 0;
 			for (int k = 0; k < n.octaves; k+=4) {
-				height += noise.Perlin2DFourPass(i*step + x, j*step + y, n.zoom, n.persistance, k);
+				height += noise.CoherentNoiseOpt(i*step + x, j*step + y, n.zoom, n.persistance, k);
 			}
 			
 			height /= maxAmp;
@@ -273,8 +273,8 @@ unsigned __stdcall HeightmapBuilder::GenerateSection(void *data)
 		counter = (j+args.imageBaseY) * args.imageSize + args.imageBaseX;
 		currentpixel = counter*4;
 		for (float i = 0; i < args.sectionSize; i++) {
-			height = noise.SIMDPerlin2D(i*step + x, j *step + y, args.n);
-			normal = noise.SIMDPerlinNormal(i*step + x, j*step + y, args.n, step);
+			height = noise.SIMDCoherentFractalNoise(i*step + x, j *step + y, args.n);
+			normal = noise.SIMDCoherentNoiseNormal(i*step + x, j*step + y, args.n, step);
 
 			//  Convert the numbers to short int
 			args.start[currentpixel] = unsigned short((normal.x+1)/2 * 65535);			//  R

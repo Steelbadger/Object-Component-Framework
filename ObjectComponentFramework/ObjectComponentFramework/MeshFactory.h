@@ -37,13 +37,11 @@ private:
 	};
 
 public:
-	enum Primitive {INNERCUBE, OUTERCUBE, INNERSPHERE, OUTERSPHERE, PLANE};
-
 	MeshFactory();
 	~MeshFactory();
 
 	std::shared_ptr<MeshData>& CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel featurelevel);
-	std::shared_ptr<MeshData>& CreatePrimitive(Primitive prim = Primitive::PLANE);
+	std::shared_ptr<MeshData>& CreatePrimitive(int heighttype);
 	void SetDevice(ID3D11Device* device);
 private:
 
@@ -57,6 +55,9 @@ private:
 
 	void LoadObj(std::string filename, std::vector<LitVertexType>& outverts, std::vector<unsigned int>& outindex);
 	void ApplyDisplacement(std::vector<LitVertexType>& inoutVerts, std::vector<unsigned int>& inoutIndex);
+	void ApplyDisplacementSimplex(std::vector<LitVertexType>& inoutVerts, std::vector<unsigned int>& inoutIndex);
+	void ApplyDisplacementSIMD(std::vector<LitVertexType>& inoutVerts, std::vector<unsigned int>& inoutIndex);
+	void ApplyDisplacementCoherent(std::vector<LitVertexType>& inoutVerts, std::vector<unsigned int>& inoutIndex);
 
 	void Plane(std::vector<LitVertexType>& output, std::vector<unsigned int>& indexout, float width, float height, int widthSubDivs, int heightSubDivs);
 	void SimpleInnerBox(std::vector<LitVertexType>& output, std::vector<unsigned int>& index);

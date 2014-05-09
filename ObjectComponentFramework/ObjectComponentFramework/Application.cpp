@@ -84,7 +84,21 @@ bool Application::Initialize()
 	manager.RegisterType<Transformation>();
 	manager.RegisterType<rabd::Emitter>();
 
-	world.CreateScene();
+	std::cout << "Choose Terrain Type: " << std::endl;
+	std::cout << "\tImproved Perlin = 0" << std::endl;
+	std::cout << "\tCoherent Noise = 1" << std::endl;
+	std::cout << "\tSIMD Enhanced Coherent Noise = 2" << std::endl;
+	std::cout << "\tSimplex Noise = 3" << std::endl << std::endl;
+
+	std::cout << "Enter Choice: ";
+	
+	int option;
+
+	std::cin >> option;
+
+	std::cout << std::endl;
+
+	world.CreateScene(option);
 
 	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller,
 																PointLight, Transformation, rabd::Emitter>();

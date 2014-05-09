@@ -77,9 +77,9 @@ NoiseGenerator::~NoiseGenerator(void)
 {
 }
 
-float NoiseGenerator::Perlin2DSinglePass(float x, float y)
+float NoiseGenerator::CoherentNoise(float x, float y)
 /*-------------------------------------------------------------------------*\
-|	Purpose:	Do a single Perlin coherent noise calculation				|
+|	Purpose:	Do a single coherent noise calculation				|
 |																			|
 |	Parameters:	the x and y position of the point to sample					|
 |																			|
@@ -102,7 +102,159 @@ float NoiseGenerator::Perlin2DSinglePass(float x, float y)
 	return Interpolate(int1, int2, y-floorY);	//Here we use y-floory, to get the 2nd dimension.
 }
 
-float NoiseGenerator::Perlin2DFourPass(float xin, float yin, float zoom, float persistance, int base)
+float NoiseGenerator::Improved2DPerlin(float x, float y)
+/*-------------------------------------------------------------------------*\
+|	Purpose:	Do a single Perlin coherent noise calculation				|
+|																			|
+|	Parameters:	the x and y position of the point to sample					|
+|																			|
+|	Returns:	the magnitude of the perlin function at that point			|
+|																			|
+\*-------------------------------------------------------------------------*/
+{
+		int X = (int)x & 255;				// FIND UNIT CUBE THAT
+		int Y = (int)y & 255;				// CONTAINS POINT.
+		x -= (float)int(x);					// FIND RELATIVE X,Y,Z
+		y -= (float)int(y);					// OF POINT IN CUBE.
+
+		float u = Fade(x);					// COMPUTE FADE CURVES
+		float v = Fade(y);					// FOR EACH OF X,Y,Z.
+
+		int A = perm[X]+Y;
+		int AA = perm[A];
+		int AB = perm[A+1];
+		int B = perm[X+1]+Y;	
+		int BA = perm[B];
+		int BB = perm[B+1];
+
+		float s1 = Lerp(u, Grad(perm[AA], x, y, 0.0f), Grad(perm[BA], x-1, y, 0.0f));
+		float s2 = Lerp(u, Grad(perm[AB], x, y-1, 0.0f), Grad(perm[BB], x-1, y-1, 0.0f));
+
+		return Lerp(v, s1, s2);
+}
+
+Vector3 NoiseGenerator::ImprovedPerlinNormal(float x, float y, NoiseObject n, float step)
+/*-------------------------------------------------------------------------*\
+|	Purpose:	Normal sampling function for perlin noise					|
+|				Samples 3 points around point of interest					|
+|				and interpolates normal based on this information			|
+|																			|
+|	Parameters:	the x and y position of the point to sample and the noise	|
+|				parameters to use											|					
+|																			|
+|	Returns:	A normalised vectorthat describes the normal of the perlin	|
+|				noise function at that point								|
+|																			|
+\*-------------------------------------------------------------------------*/
+{
+
+	float offs = step;
+	float xtrioffs = offs * 0.86602540378;
+	float ytrioffs = offs * 0.5;
+	float maxamp = MaxAmplitude(n);
+	Vector4 A(x, (ImprovedFractal2DPerlin(x,y+xtrioffs, n)*n.amplitude)/maxamp, y+xtrioffs, 1.0f);
+	Vector4 B(x-xtrioffs, (ImprovedFractal2DPerlin(x-xtrioffs,y-ytrioffs, n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
+	Vector4 C(x+xtrioffs, (ImprovedFractal2DPerlin(x+xtrioffs,y-ytrioffs, n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
+
+	Vector4 AB = B - A;
+	Vector4 AC = C - A;
+
+	Vector4 Normal = Cross(AC, AB);
+	Normal.NormaliseSelf();
+	Vector3 output(Normal);
+	return output;
+}
+
+float NoiseGenerator::ImprovedFractal2DPerlin(float x, float y, NoiseObject n)
+/*-------------------------------------------------------------------------*\
+|	Purpose:	Sample the fractal perlin function at point x,y using		|
+|				noise decribed by noise parameters							|
+|																			|
+|	Parameters:	the x and y position of the point to sample and the noise	|
+|				parameters to use											|					
+|																			|
+|	Returns:	The magnitude of the fractal perlin noise function at that	|
+|				point														|
+|																			|
+\*-------------------------------------------------------------------------*/
+{
+	float noise = 0;
+	for(int i = 0; i < n.octaves; i++) {
+		float frequency = pow(2.0f,i);//This increases the frequency with every loop of the octave.
+		float amplitude = pow(n.persistance,i);//This decreases the amplitude with every loop of the octave.
+
+		noise += Improved2DPerlin(x*frequency/n.zoom, y/n.zoom*frequency)*amplitude;
+	}
+
+	return noise;
+}
+
+float NoiseGenerator::Improved3DPerlin(float x, float y, float z)
+/*-------------------------------------------------------------------------*\
+|	Purpose:	Do a single Perlin coherent noise calculation				|
+|																			|
+|	Parameters:	the x and y position of the point to sample					|
+|																			|
+|	Returns:	the magnitude of the perlin function at that point			|
+|																			|
+\*-------------------------------------------------------------------------*/
+{
+		int X = (int)x & 255;				// FIND UNIT CUBE THAT
+		int Y = (int)y & 255;				// CONTAINS POINT.
+		int Z = (int)z & 255;
+		x -= (float)int(x);					// FIND RELATIVE X,Y,Z
+		y -= (float)int(y);					// OF POINT IN CUBE.
+		z -= (float)int(z);
+
+		float u = Fade(x);					// COMPUTE FADE CURVES
+		float v = Fade(y);					// FOR EACH OF X,Y,Z.
+		float w = Fade(z);
+
+		int A = perm[X]+Y;
+		int AA = perm[A]+Z;
+		int AB = perm[A+1]+Z;		// HASH COORDINATES OF
+		int B = perm[X+1]+Y;			// THE 8 CUBE CORNERS,
+		int BA = perm[B]+Z;
+		int BB = perm[B+1]+Z;
+
+		float s1 = Lerp(u, Grad(perm[AA], x, y, z), Grad(perm[BA], x-1, y, z));
+		float s2 = Lerp(u, Grad(perm[AB], x, y-1, z), Grad(perm[BB], x-1, y-1, z));
+
+		float s = Lerp(v, s1, s2);
+
+		s1 = Lerp(u, Grad(perm[AA+1], x, y, z-1), Grad(perm[BA+1], x-1, y, z-1));
+		s2 = Lerp(u, Grad(perm[AB+1], x  , y-1, z-1 ), Grad(perm[BB+1], x-1, y-1, z-1));
+
+		return Lerp(w, s, Lerp(v, s1, s2));
+}
+
+
+float NoiseGenerator::ImprovedFractal3DPerlin(float x, float y, float z, NoiseObject n)
+/*-------------------------------------------------------------------------*\
+|	Purpose:	Sample the fractal perlin function at point x,y,z using		|
+|				noise decribed by noise parameters							|
+|																			|
+|	Parameters:	the x, y & z position of the point to sample and the noise	|
+|				parameters to use											|					
+|																			|
+|	Returns:	The magnitude of the fractal perlin noise function at that	|
+|				point														|
+|																			|
+\*-------------------------------------------------------------------------*/
+{
+	float noise = 0;
+	for(int i = 0; i < n.octaves; i++) {
+		float frequency = pow(2.0f,i);//This increases the frequency with every loop of the octave.
+		float amplitude = pow(n.persistance,i);//This decreases the amplitude with every loop of the octave.
+
+		noise += Improved3DPerlin(x*frequency/n.zoom, y/n.zoom*frequency, z/n.zoom*frequency)*amplitude;
+	}
+
+	return noise;
+}
+
+
+float NoiseGenerator::CoherentNoiseOpt(float xin, float yin, float zoom, float persistance, int base)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	Do 4 Perlin checks for a given point (Fractal)				|
 |																			|
@@ -161,7 +313,7 @@ SIMD::Floats NoiseGenerator::Interpolate (SIMD::Floats& a, SIMD::Floats& b, SIMD
 	return (a * (1.0 - f) + b * f);
 }
 
-float NoiseGenerator::SIMDPerlin2D(float x, float y, NoiseObject n)
+float NoiseGenerator::SIMDCoherentFractalNoise(float x, float y, NoiseObject n)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	Sample the fractal perlin function at point x,y using		|
 |				noise decribed by noiseobject n								|
@@ -177,7 +329,7 @@ float NoiseGenerator::SIMDPerlin2D(float x, float y, NoiseObject n)
 	float height = 0;
 
 	for (int k = 0; k < n.octaves; k+=4) {
-		height += Perlin2DFourPass(x, y, n.zoom, n.persistance, k);
+		height += CoherentNoiseOpt(x, y, n.zoom, n.persistance, k);
 	}
 
 	return height;
@@ -197,38 +349,41 @@ float NoiseGenerator::MaxAmplitude(NoiseObject n)
 {
 	float maxAmp = 0;
 	for (int i = 0; i < n.octaves; i++) {
-		maxAmp += pow(n.persistance,i);//This decreases the amplitude with every loop of the octave.
+		maxAmp += pow(n.persistance,i);		//This decreases the amplitude with every loop of the octave.
 	}
 
 	return maxAmp;
 }
 
 
-float NoiseGenerator::Perlin2D(float x, float y, int octaves, float zoom, float persistance, float amp)
+float NoiseGenerator::FractalCoherentNoise(float x, float y, int octaves, float zoom, float persistance, float amp)
 /*-------------------------------------------------------------------------*\
-|	Purpose:	Sample the fractal perlin function at point x,y using		|
+|	Purpose:	Sample the fractal coherent function at point x,y using		|
 |				noise decribed by noise parameters							|
 |																			|
 |	Parameters:	the x and y position of the point to sample and the noise	|
 |				parameters to use											|					
 |																			|
-|	Returns:	The magnitude of the fractal perlin noise function at that	|
+|	Returns:	The magnitude of the fractal coherent noise function at that|
 |				point														|
 |																			|
 \*-------------------------------------------------------------------------*/
 {
 	float noise = 0;
+	float maxamp = 0;
+
 	for(int i = 0; i < octaves; i++) {
 		float frequency = pow(2.0f,i);//This increases the frequency with every loop of the octave.
 		float amplitude = pow(persistance,i);//This decreases the amplitude with every loop of the octave.
-
-		noise += Perlin2DSinglePass(x*frequency/zoom, y/zoom*frequency)*amplitude;
+		maxamp += amplitude;
+		noise += CoherentNoise(x*frequency/(zoom*2), y*frequency/(zoom*2))*amplitude;
 	}
+	noise /= maxamp;
 
-	return noise*amp;
+	return noise*amp;	
 }
 
-Vector3 NoiseGenerator::NormalToPerlin2D(float x, float y, int octaves, float zoom, float persistance, float amp, float step)
+Vector3 NoiseGenerator::CoherentNoiseNormal(float x, float y, int octaves, float zoom, float persistance, float amp, float step)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	High accuracy normal sampling function for perlin noise		|
 |				samples 7 points around point of interest and interpolates	|
@@ -251,15 +406,15 @@ Vector3 NoiseGenerator::NormalToPerlin2D(float x, float y, int octaves, float zo
 	float y3 = y+step;
 
 	//  Find the six corners
-	Vector4 A(x1, Perlin2D(x1,y1,octaves,zoom,persistance,amp), y1, 1.0f);
-	Vector4 B(x2, Perlin2D(x2,y1,octaves,zoom,persistance,amp), y1, 1.0f);
+	Vector4 A(x1, FractalCoherentNoise(x1,y1,octaves,zoom,persistance,amp), y1, 1.0f);
+	Vector4 B(x2, FractalCoherentNoise(x2,y1,octaves,zoom,persistance,amp), y1, 1.0f);
 
-	Vector4 C(x1, Perlin2D(x1,y2,octaves,zoom,persistance,amp), y2, 1.0f);
-	Vector4 D(x2, Perlin2D(x2,y2,octaves,zoom,persistance,amp), y2, 1.0f);
-	Vector4 E(x3, Perlin2D(x3,y2,octaves,zoom,persistance,amp), y2, 1.0f);
+	Vector4 C(x1, FractalCoherentNoise(x1,y2,octaves,zoom,persistance,amp), y2, 1.0f);
+	Vector4 D(x2, FractalCoherentNoise(x2,y2,octaves,zoom,persistance,amp), y2, 1.0f);
+	Vector4 E(x3, FractalCoherentNoise(x3,y2,octaves,zoom,persistance,amp), y2, 1.0f);
 
-	Vector4 F(x2, Perlin2D(x2,y3,octaves,zoom,persistance,amp), y3, 1.0f);
-	Vector4 G(x3, Perlin2D(x2,y3,octaves,zoom,persistance,amp), y3, 1.0f);
+	Vector4 F(x2, FractalCoherentNoise(x2,y3,octaves,zoom,persistance,amp), y3, 1.0f);
+	Vector4 G(x3, FractalCoherentNoise(x2,y3,octaves,zoom,persistance,amp), y3, 1.0f);
 
 	//  Find all edges
 	Vector4 DC = C - D;
@@ -285,7 +440,7 @@ Vector3 NoiseGenerator::NormalToPerlin2D(float x, float y, int octaves, float zo
 	return Normal;
 }
 
-float NoiseGenerator::Perlin2D(float x, float y, NoiseObject n)
+float NoiseGenerator::FractalCoherentNoise(float x, float y, NoiseObject n)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	Sample the fractal perlin function at point x,y using		|
 |				noise decribed by noise parameters							|
@@ -298,10 +453,10 @@ float NoiseGenerator::Perlin2D(float x, float y, NoiseObject n)
 |																			|
 \*-------------------------------------------------------------------------*/
 {
-	return Perlin2D(x, y, n.octaves, n.zoom, n.persistance, n.amplitude);
+	return FractalCoherentNoise(x, y, n.octaves, n.zoom, n.persistance, n.amplitude);
 }
 
-Vector3 NoiseGenerator::NormalToPerlin2D(float x, float y, NoiseObject n, float step)
+Vector3 NoiseGenerator::CoherentNoiseNormal(float x, float y, NoiseObject n, float step)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	High accuracy normal sampling function for perlin noise		|
 |				samples 7 points around point of interest and interpolates	|
@@ -315,7 +470,7 @@ Vector3 NoiseGenerator::NormalToPerlin2D(float x, float y, NoiseObject n, float 
 |																			|
 \*-------------------------------------------------------------------------*/
 {
-	return NormalToPerlin2D(x, y, n.octaves, n.zoom, n.persistance, n.amplitude, step);
+	return CoherentNoiseNormal(x, y, n.octaves, n.zoom, n.persistance, n.amplitude, step);
 }
 
 float NoiseGenerator::Interpolate(float a, float b, float x)
@@ -545,7 +700,7 @@ Vector3 NoiseGenerator::FractalSimplexNormal(float x, float y, NoiseObject n, fl
 	return output;
 }
 
-Vector3 NoiseGenerator::SIMDPerlinNormal(float x, float y, NoiseObject n, float step)
+Vector3 NoiseGenerator::SIMDCoherentNoiseNormal(float x, float y, NoiseObject n, float step)
 /*-------------------------------------------------------------------------*\
 |	Purpose:	Normal sampling function for perlin noise using SIMD to		|
 |				increase speed, samples 3 points around point of interest	|
@@ -564,9 +719,9 @@ Vector3 NoiseGenerator::SIMDPerlinNormal(float x, float y, NoiseObject n, float 
 	float xtrioffs = offs * 0.86602540378;
 	float ytrioffs = offs * 0.5;
 	float maxamp = MaxAmplitude(n);
-	Vector4 A(x, (SIMDPerlin2D(x,y+xtrioffs,n)*n.amplitude)/maxamp, y+xtrioffs, 1.0f);
-	Vector4 B(x-xtrioffs, (SIMDPerlin2D(x-xtrioffs,y-ytrioffs,n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
-	Vector4 C(x+xtrioffs, (SIMDPerlin2D(x+xtrioffs,y-ytrioffs,n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
+	Vector4 A(x, (SIMDCoherentFractalNoise(x,y+xtrioffs,n)*n.amplitude)/maxamp, y+xtrioffs, 1.0f);
+	Vector4 B(x-xtrioffs, (SIMDCoherentFractalNoise(x-xtrioffs,y-ytrioffs,n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
+	Vector4 C(x+xtrioffs, (SIMDCoherentFractalNoise(x+xtrioffs,y-ytrioffs,n)*n.amplitude)/maxamp, y-ytrioffs, 1.0f);
 
 	Vector4 AB = B - A;
 	Vector4 AC = C - A;

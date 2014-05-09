@@ -13,7 +13,7 @@ public:
 	World();
 	~World();
 
-	void CreateScene();
+	void CreateScene(int heightsType);
 	void SetCameraObject(rabd::ObjectID id);
 	rabd::ObjectID GetCameraObject();
 	std::list<rabd::ObjectID> GetDrawList();
