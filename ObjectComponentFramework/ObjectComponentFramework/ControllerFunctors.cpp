@@ -5,7 +5,7 @@
 #include "Position.h"
 #include "Orientation.h"
 #include "ObjectManager.h"
-#include "Emitter.h"
+//#include "Emitter.h"
 
 FirstPersonController::FirstPersonController():
 	sensitivity(5.0f), autorun(false)
@@ -23,7 +23,7 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 	Camera* camera = &manager->GetComponent<Camera>(id);
 	Position* position = &manager->GetComponent<Position>(id);
 	Orientation* orientation = &manager->GetComponent<Orientation>(id);
-	rabd::Emitter* emitter = &manager->GetComponent<rabd::Emitter>(id);
+//	rabd::Emitter* emitter = &manager->GetComponent<rabd::Emitter>(id);
 	float mulp = sensitivity*input.GetTimeForLastFrameHighResolution();
 	bool moving = false;
 
@@ -93,11 +93,11 @@ void FirstPersonController::operator()(rabd::ObjectID id, rabd::ObjectManager* m
 		}
 	}
 
-	if (!moving) {
-		emitter->Pause();
-	} else {
-		emitter->Play();
-	}
+//	if (!moving) {
+//		emitter->Pause();
+//	} else {
+//		emitter->Play();
+//	}
 }
 
 void FirstPersonController::SetSensitivity(float s)

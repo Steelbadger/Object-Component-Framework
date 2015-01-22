@@ -11,8 +11,6 @@
 
 #include "HeightmapBuilder.h"
 #include "UtilityFunctions.h"
-#include "AllanMilne\XACore.hpp"
-#include "Emitter.h"
 #include <functional>
 
 #include "simdMatrix.h"
@@ -59,7 +57,6 @@ bool Application::Initialize()
 	//////////////////////////////IMPORTANT////////////////////////////////
 	rabd::TextureBase::SetDevice(m_D3D.GetDevice());
 	rabd::TextureBase::SetManager(&textureManager);
-	AllanMilne::Audio::XACore::CreateInstance();
 	///////////////////////////////////////////////////////////////////////
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
@@ -82,26 +79,11 @@ bool Application::Initialize()
 	manager.RegisterType<Controller>();
 	manager.RegisterType<PointLight>();
 	manager.RegisterType<Transformation>();
-	manager.RegisterType<rabd::Emitter>();
 
-	std::cout << "Choose Terrain Type: " << std::endl;
-	std::cout << "\tImproved Perlin = 0" << std::endl;
-	std::cout << "\tCoherent Noise = 1" << std::endl;
-	std::cout << "\tSIMD Enhanced Coherent Noise = 2" << std::endl;
-	std::cout << "\tSimplex Noise = 3" << std::endl << std::endl;
-
-	std::cout << "Enter Choice: ";
-	
-	int option;
-
-	std::cin >> option;
-
-	std::cout << std::endl;
-
-	world.CreateScene(option);
+	world.CreateScene(2);
 
 	rabd::ObjectID camera = manager.CreateObjectAndComponents<Position, Orientation, Camera, Controller,
-																PointLight, Transformation, rabd::Emitter>();
+																PointLight, Transformation>();
 
 	FirstPersonController cont;
 	cont.SetSensitivity(50.0f);
@@ -126,8 +108,6 @@ void Application::Shutdown()
 		delete m_Graphics;
 		m_Graphics = 0;
 	}
-
-	AllanMilne::Audio::XACore::DeleteInstance();
 
 	return;
 }
