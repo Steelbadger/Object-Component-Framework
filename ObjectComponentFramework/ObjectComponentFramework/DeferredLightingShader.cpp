@@ -353,7 +353,6 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 
 	// Finally set the light constant buffer in the pixel shader with the updated values.
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
-
 	//  Get the render target and map it as input.
 	std::vector<ID3D11ShaderResourceView*> textures = renderTarget.GetShaderResourceViews();
 

@@ -93,7 +93,6 @@ bool Application::Initialize()
 	manager.GetComponent<Controller>(camera).SetControlFunction(cont);
 	manager.GetComponent<PointLight>(camera).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	manager.GetComponent<PointLight>(camera).SetSpecularPower(100.0f);
-//	manager.GetComponent<rabd::Emitter>(camera).LoadFile("Phyre1.wav");
 	
 	world.SetCameraObject(camera);
 	return true;

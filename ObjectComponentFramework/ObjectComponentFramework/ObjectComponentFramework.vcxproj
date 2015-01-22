@@ -156,6 +156,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GeneralTestShader.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
